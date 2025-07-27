@@ -141,112 +141,112 @@ void Game::addPlayer(str role)
 				newPlayer = new Werewolf(this);
 				break;
 			case WOLFCUB_ROLE:
-				newPlayer = new WolfCub();
+				newPlayer = new WolfCub(this);
 				break;
 			case LONEWOLF_ROLE:
-				newPlayer = new LoneWolf();
+				newPlayer = new LoneWolf(this);
 				break;
 			case VAMPIRE_ROLE:
-				newPlayer = new Vampire();
+				newPlayer = new Vampire(this);
 				break;
 			case APPRENTICESEER_ROLE:
-				newPlayer = new ApprenticeSeer();
+				newPlayer = new ApprenticeSeer(this);
 				break;
 			case AURASEER_ROLE:
-				newPlayer = new AuraSeer();
+				newPlayer = new AuraSeer(this);
 				break;
 			case BODYGUARD_ROLE:
-				newPlayer = new Bodyguard();
+				newPlayer = new Bodyguard(this);
 				break;
 			case CUPID_ROLE:
-				newPlayer = new Cupid();
+				newPlayer = new Cupid(this);
 				break;
 			case DISEASED_ROLE:
-				newPlayer = new Diseased();
+				newPlayer = new Diseased(this);
 				break;
 			case GHOST_ROLE:
-				newPlayer = new Ghost();
+				newPlayer = new Ghost(this);
 				break;
 			case HUNTER_ROLE:
-				newPlayer = new Hunter();
+				newPlayer = new Hunter(this);
 				break;
 			case IDIOT_ROLE:
-				newPlayer = new Idiot();
+				newPlayer = new Idiot(this);
 				break;
 			case LYCAN_ROLE:
-				newPlayer = new Lycan();
+				newPlayer = new Lycan(this);
 				break;
 			case MAGICIAN_ROLE:
-				newPlayer = new Magician();
+				newPlayer = new Magician(this);
 				break;
 			case MARTYR_ROLE:
-				newPlayer = new Martyr();
+				newPlayer = new Martyr(this);
 				break;
 			case MASON_ROLE:
-				newPlayer = new Mason();
+				newPlayer = new Mason(this);
 				break;
 			case MAYOR_ROLE:
-				newPlayer = new Mayor();
+				newPlayer = new Mayor(this);
 				break;
 			case OLDHAG_ROLE:
-				newPlayer = new OldHag();
+				newPlayer = new OldHag(this);
 				break;
 			case OLDMAN_ROLE:
-				newPlayer = new OldMan();
+				newPlayer = new OldMan(this);
 				break;
 			case PI_ROLE:
-				newPlayer = new PI();
+				newPlayer = new PI(this);
 				break;
 			case PACIFIST_ROLE:
-				newPlayer = new Pacifist();
+				newPlayer = new Pacifist(this);
 				break;
 			case PRIEST_ROLE:
-				newPlayer = new Priest();
+				newPlayer = new Priest(this);
 				break;
 			case PRINCE_ROLE:
-				newPlayer = new Prince();
+				newPlayer = new Prince(this);
 				break;
 			case SEER_ROLE:
-				newPlayer = new Seer();
+				newPlayer = new Seer(this);
 				break;
 			case SPELLCASTER_ROLE:
-				newPlayer = new Spellcaster();
+				newPlayer = new Spellcaster(this);
 				break;
 			case TOUGHGUY_ROLE:
-				newPlayer = new ToughGuy();
+				newPlayer = new ToughGuy(this);
 				break;
 			case TROUBLEMAKER_ROLE:
-				newPlayer = new TroubleMaker();
+				newPlayer = new TroubleMaker(this);
 				break;
 			case VILLAGER_ROLE:
-				newPlayer = new Villager();
+				newPlayer = new Villager(this);
 				break;
 			case WITCH_ROLE:
-				newPlayer = new Witch();
+				newPlayer = new Witch(this);
 				break;
 			case SORCERER_ROLE:
-				newPlayer = new Sorcerer();
+				newPlayer = new Sorcerer(this);
 				break;
 			case MINION_ROLE:
-				newPlayer = new Minion();
+				newPlayer = new Minion(this);
 				break;
 			case CURSED_ROLE:
-				newPlayer = new Cursed();
+				newPlayer = new Cursed(this);
 				break;
 			case DOPPELGANGER_ROLE:
-				newPlayer = new Doppelganger();
+				newPlayer = new Doppelganger(this);
 				break;
 			case DRUNK_ROLE:
-				newPlayer = new Drunk();
+				newPlayer = new Drunk(this);
 				break;
 			case CULTLEADER_ROLE:
-				newPlayer = new CultLeader();
+				newPlayer = new CultLeader(this);
 				break;
 			case HOODLUM_ROLE:
-				newPlayer = new Hoodlum();
+				newPlayer = new Hoodlum(this);
 				break;
 			case TANNER_ROLE:
-				newPlayer = new Tanner();
+				newPlayer = new Tanner(this);
 				break;
 			default:
 				break;
@@ -372,4 +372,14 @@ void Game::resetNightlyDeaths()
 	for (int i = 0; i < 68; i++)
 		_diedInTheNight[i] = -1;
 	_diedIndex = 0;
+}
+
+void Game::setVampVictim(int index)
+{
+	_vampireVictim = index;
+}
+
+bool Game::getTimeOfDay() const
+{
+	return _nighttime;
 }

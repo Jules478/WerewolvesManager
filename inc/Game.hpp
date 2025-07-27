@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <cctype>
 
+#define NIGHT true
+#define DAY false
+
 class Game
 {
 	private:
@@ -25,6 +28,8 @@ class Game
 			bool _cultLeaderWin = false;
 			int _diedInTheNight[68];
 			int _diedIndex = 0;
+			int	_vampireVictim;
+			bool _nighttime = true;
 
 	public:
 			Game(int playerno);
@@ -43,6 +48,8 @@ class Game
 			int* getNightlyDeaths();
 			void setNightlyDeaths(int index);
 			void resetNightlyDeaths();
+			void setVampVictim(int index);
+			bool getTimeOfDay() const;
 };
 
 str get_input();

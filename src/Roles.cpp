@@ -12,12 +12,9 @@ Werewolf::~Werewolf()
 
 void Werewolf::beAttacked(int attacker)
 {
+	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+		_game->setVampVictim(_index);
 }
-
-void Werewolf::beLynched()
-{
-}
-
 
 WolfCub::WolfCub(Game* game) : ACard(WOLFCUB_ROLE, "Wolfcub", WEREWOLF, true, game)
 {
@@ -30,10 +27,8 @@ WolfCub::~WolfCub()
 
 void WolfCub::beAttacked(int attacker)
 {
-}
-
-void WolfCub::beLynched()
-{
+	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+		_game->setVampVictim(_index);
 }
 
 LoneWolf::LoneWolf(Game* game) : ACard(LONEWOLF_ROLE, "Lonewolf", WEREWOLF, true, game)
@@ -47,12 +42,9 @@ LoneWolf::~LoneWolf()
 
 void LoneWolf::beAttacked(int attacker)
 {
+	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+		_game->setVampVictim(_index);
 }
-
-void LoneWolf::beLynched()
-{
-}
-
 
 Vampire::Vampire(Game* game) : ACard(VAMPIRE_ROLE, "Vampire", VAMPIRE, true, game)
 {
@@ -62,30 +54,16 @@ Vampire::~Vampire()
 {
 }
 
-
 void Vampire::beAttacked(int attacker)
 {
+	(void)attacker;
 }
-
-void Vampire::beLynched()
-{
-}
-
 
 ApprenticeSeer::ApprenticeSeer(Game* game) : ACard(APPRENTICESEER_ROLE, "Apprentice seer", VILLAGER, true, game)
 {
 }
 
 ApprenticeSeer::~ApprenticeSeer()
-{
-}
-
-
-void ApprenticeSeer::beAttacked(int attacker)
-{
-}
-
-void ApprenticeSeer::beLynched()
 {
 }
 
@@ -106,17 +84,16 @@ AuraSeer::~AuraSeer()
 {
 }
 
-
-void AuraSeer::beAttacked(int attacker)
-{
-}
-
-void AuraSeer::beLynched()
-{
-}
-
 int AuraSeer::See(int index)
 {
+	if (_game->getPlayerByIndex(index)->getName() = "Villager")
+		return 0;
+	else if (_game->getPlayerByIndex(index)->getName() = "Werewolf")
+		return 0;
+	else if (_game->getPlayerByIndex(index)->getName() = "Vampire")
+		return 0;
+	else
+		return 1;
 }
 
 
@@ -128,17 +105,14 @@ Bodyguard::~Bodyguard()
 {
 }
 
-
-void Bodyguard::beAttacked(int attacker)
-{
-}
-
-void Bodyguard::beLynched()
-{
-}
-
 void Bodyguard::Protect(int index)
 {
+	int i = -1;
+	while (_game->getNightlyDeaths[++i] != -1)
+	{
+		if (_game->getNightlyDeaths[i] == index)
+			_game->getNightlyDeaths[i] = -1;
+	}
 }
 
 Cupid::Cupid(Game* game) : ACard(CUPID_ROLE, "Cupid", VILLAGER, false, game)
@@ -146,15 +120,6 @@ Cupid::Cupid(Game* game) : ACard(CUPID_ROLE, "Cupid", VILLAGER, false, game)
 }
 
 Cupid::~Cupid()
-{
-}
-
-
-void Cupid::beAttacked(int attacker)
-{
-}
-
-void Cupid::beLynched()
 {
 }
 
@@ -184,6 +149,19 @@ Hunter::Hunter(Game* game) : ACard(HUNTER_ROLE, "Hunter", VILLAGER, true, game)
 }
 
 Hunter::~Hunter()
+{
+}
+
+void Hunter::beAttacked(int attacker, int victim)
+{
+	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+		_game->setVampVictim(_index);
+	_game->getPlayerByIndex(victim)->beAttacked(_index);
+}
+
+void Hunter::beLynched()
 {
 }
 

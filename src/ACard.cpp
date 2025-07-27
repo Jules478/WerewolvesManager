@@ -61,8 +61,17 @@ str ACard::getName() const
 
 void ACard::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF_ROLE)
+	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
 		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+		_game->setVampVictim(_index);
+	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	{
+		if (_game->getTimeOfDay() == NIGHT)
+			_game->setNightlyDeaths(_index);
+		else
+			_alive = false;
+	}
 }
 
 void ACard::beLynched()

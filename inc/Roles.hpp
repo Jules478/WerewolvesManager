@@ -11,7 +11,6 @@ class Werewolf : public ACard
 			~Werewolf();
 
 			void beAttacked(int attacker);
-			void beLynched();
 };
 
 class WolfCub : public ACard
@@ -21,7 +20,6 @@ class WolfCub : public ACard
 			~WolfCub();
 
 			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -32,7 +30,6 @@ class LoneWolf : public ACard
 			~LoneWolf();
 
 			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -43,7 +40,6 @@ class Vampire : public ACard
 			~Vampire();
 
 			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -53,8 +49,6 @@ class ApprenticeSeer : public ACard
 			ApprenticeSeer(Game* game);
 			~ApprenticeSeer();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void bePromoted();
 			int See(int index);
 
@@ -66,8 +60,6 @@ class AuraSeer : public ACard
 			AuraSeer(Game* game);
 			~AuraSeer();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			int See(int index);
 };
 
@@ -77,8 +69,6 @@ class Bodyguard : public ACard
 			Bodyguard(Game* game);
 			~Bodyguard();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Protect(int index);
 
 };
@@ -89,8 +79,6 @@ class Cupid : public ACard
 			Cupid(Game* game);
 			~Cupid();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Love(int index1, int index2);
 
 };
@@ -101,9 +89,6 @@ class Diseased : public ACard
 			Diseased(Game* game);
 			~Diseased();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Ghost : public ACard
@@ -111,9 +96,6 @@ class Ghost : public ACard
 	public:
 			Ghost(Game* game);
 			~Ghost();
-
-			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -123,7 +105,7 @@ class Hunter : public ACard
 			Hunter(Game* game);
 			~Hunter();
 
-			void beAttacked(int attacker);
+			void beAttacked(int attacker, int victim);
 			void beLynched();
 
 };
@@ -134,9 +116,6 @@ class Idiot : public ACard
 			Idiot(Game* game);
 			~Idiot();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Lycan : public ACard
@@ -144,9 +123,6 @@ class Lycan : public ACard
 	public:
 			Lycan(Game* game);
 			~Lycan();
-
-			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -156,9 +132,6 @@ class Magician : public ACard
 			Magician(Game* game);
 			~Magician();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Martyr : public ACard
@@ -166,9 +139,6 @@ class Martyr : public ACard
 	public:
 			Martyr(Game* game);
 			~Martyr();
-
-			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -178,9 +148,6 @@ class Mason : public ACard
 			Mason(Game* game);
 			~Mason();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Mayor : public ACard
@@ -188,9 +155,6 @@ class Mayor : public ACard
 	public:
 			Mayor(Game* game);
 			~Mayor();
-
-			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -200,8 +164,6 @@ class OldHag : public ACard
 			OldHag(Game* game);
 			~OldHag();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Pox(int index);
 
 };
@@ -212,8 +174,6 @@ class OldMan : public ACard
 			OldMan(Game* game);
 			~OldMan();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Dies(int round);
 
 };
@@ -224,8 +184,6 @@ class PI : public ACard
 			PI(Game* game);
 			~PI();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			int See(int index);
 
 };
@@ -236,8 +194,6 @@ class Pacifist : public ACard
 			Pacifist(Game* game);
 			~Pacifist();
 
-			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -247,8 +203,6 @@ class Priest : public ACard
 			Priest(Game* game);
 			~Priest();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Protect(int index);
 			int See(int index);
 
@@ -260,7 +214,6 @@ class Prince : public ACard
 			Prince(Game* game);
 			~Prince();
 
-			void beAttacked(int attacker);
 			void beLynched();
 
 };
@@ -271,8 +224,6 @@ class Seer : public ACard
 			Seer(Game* game);
 			~Seer();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			int See(int index);
 
 };
@@ -283,9 +234,6 @@ class Spellcaster : public ACard
 			Spellcaster(Game* game);
 			~Spellcaster();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class ToughGuy : public ACard
@@ -295,7 +243,7 @@ class ToughGuy : public ACard
 			~ToughGuy();
 
 			void beAttacked(int attacker);
-			void beLynched();
+			void actuallyDies(int attacker);
 
 };
 
@@ -305,9 +253,6 @@ class TroubleMaker : public ACard
 			TroubleMaker(Game* game);
 			~TroubleMaker();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Villager : public ACard
@@ -315,9 +260,6 @@ class Villager : public ACard
 	public:
 			Villager(Game* game);
 			~Villager();
-
-			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -327,9 +269,6 @@ class Witch : public ACard
 			Witch(Game* game);
 			~Witch();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Sorcerer : public ACard
@@ -338,8 +277,6 @@ class Sorcerer : public ACard
 			Sorcerer(Game* game);
 			~Sorcerer();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			int SorcSee(int index);
 
 };
@@ -350,9 +287,6 @@ class Minion : public ACard
 			Minion(Game* game);
 			~Minion();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class Cursed : public ACard
@@ -362,7 +296,6 @@ class Cursed : public ACard
 			~Cursed();
 
 			void beAttacked(int attacker);
-			void beLynched();
 
 };
 
@@ -372,8 +305,6 @@ class Doppelganger : public ACard
 			Doppelganger(Game* game);
 			~Doppelganger();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Steal(int index);
 
 };
@@ -384,9 +315,6 @@ class Drunk : public ACard
 			Drunk(Game* game);
 			~Drunk();
 
-			void beAttacked(int attacker);
-			void beLynched();
-
 };
 
 class CultLeader : public ACard
@@ -395,8 +323,6 @@ class CultLeader : public ACard
 			CultLeader(Game* game);
 			~CultLeader();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Convert(int index);
 
 };
@@ -407,8 +333,6 @@ class Hoodlum : public ACard
 			Hoodlum(Game* game);
 			~Hoodlum();
 
-			void beAttacked(int attacker);
-			void beLynched();
 			void Mischief(int index1, int index2);
 
 };
@@ -420,6 +344,5 @@ class Tanner : public ACard
 			~Tanner();
 
 			void beAttacked(int attacker);
-			void beLynched();
 
 };

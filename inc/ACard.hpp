@@ -45,7 +45,6 @@ typedef enum e_roles
 	MINION_ROLE,
 	CURSED_ROLE,
 	DOPPELGANGER_ROLE,
-	DRUNK_ROLE,
 	CULTLEADER_ROLE,
 	HOODLUM_ROLE,
 	TANNER_ROLE
@@ -63,7 +62,7 @@ class Game;
 class ACard
 {
 	protected:
-			ACard(t_roles role, str name, int side, bool wakes, Game* game);
+			ACard(t_roles role, str name, int side, bool wakes, Game* game, int value);
 			t_roles _role;
 			str _name;
 			int _side;
@@ -71,6 +70,9 @@ class ACard
 			bool _alive = true;
 			bool _wakes;
 			Game* _game;
+			bool _exiled = false;
+			int _value;
+			bool _isDrunk = false;
 	
 	public:
 			virtual ~ACard();
@@ -79,7 +81,6 @@ class ACard
 			virtual void bePromoted() { return ; }
 			virtual void Love(int index1, int index2) { (void)index1; (void)index2; return ; }
 			virtual void Pox(int index) { (void)index; return ; }
-			virtual void Dies(int round) { (void)round; return ; }
 			virtual void Protect(int index) { (void)index; return ; }
 			virtual int SorcSee(int index) { (void)index; return -1; }
 			virtual void Steal(int index) { (void)index; return ; }
@@ -92,11 +93,14 @@ class ACard
 			bool getWakes() const;
 			t_roles getRole() const;
 			str getName() const;
+			bool getInVillage() const;
+			int getValue() const;
 
 			void setRole(t_roles role);
 			void setIndex(int index);
 			void setSide(int side);
 			void setLife(bool alive);
+			void setInVillage(bool exile);
 
 			virtual void beAttacked(int attacker);
 			virtual void beLynched();

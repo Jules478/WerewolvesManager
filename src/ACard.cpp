@@ -1,7 +1,7 @@
 #include "../inc/ACard.hpp"
 #include "../inc/Game.hpp"
 
-ACard::ACard(t_roles role, str name, int side, bool wakes, Game* game) : _role(role), _name(name), _side(side), _wakes(wakes), _game(game)
+ACard::ACard(t_roles role, str name, int side, bool wakes, Game* game, int value) : _role(role), _name(name), _side(side), _wakes(wakes), _game(game), _value(value)
 {
 }
 
@@ -77,4 +77,19 @@ void ACard::beAttacked(int attacker)
 void ACard::beLynched()
 {
 	_alive = false;
+}
+
+bool ACard::getInVillage() const
+{
+	return _exiled;
+}
+
+void ACard::setInVillage(bool exile)
+{
+	_exiled = exile;
+}
+
+int ACard::getValue() const
+{
+	return _value;
 }

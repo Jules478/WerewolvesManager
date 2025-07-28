@@ -36,6 +36,9 @@ RESET = \e[0m
 TOTAL_FILES = $(words $(SRCS))
 CURRENT_FILE = 0
 
+nice: CFLAGS := $(CFLAGS) -D NICE
+nice: re
+
 all: $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
@@ -74,4 +77,4 @@ debug: $(DEBUG_OBJS)
 
 re: fclean all
 
-.PHONY: all clean fclean debug shadow re
+.PHONY: all clean fclean debug shadow nice re

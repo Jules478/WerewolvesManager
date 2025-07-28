@@ -75,6 +75,10 @@ class Bodyguard : public ACard
 
 class Cupid : public ACard
 {
+	private:
+			int _player1;
+			int _player2;
+
 	public:
 			Cupid(Game* game);
 			~Cupid();
@@ -104,10 +108,8 @@ class Hunter : public ACard
 	public:
 			Hunter(Game* game);
 			~Hunter();
-
-			void beAttacked(int attacker, int victim);
-			void beLynched();
-
+			
+			void takePlayerWith(int victim);
 };
 
 class Idiot : public ACard
@@ -174,7 +176,7 @@ class OldMan : public ACard
 			OldMan(Game* game);
 			~OldMan();
 
-			void Dies(int round);
+			void Dies();
 
 };
 
@@ -199,6 +201,9 @@ class Pacifist : public ACard
 
 class Priest : public ACard
 {
+	private:
+			bool _abilityUsed = false;
+
 	public:
 			Priest(Game* game);
 			~Priest();
@@ -210,6 +215,9 @@ class Priest : public ACard
 
 class Prince : public ACard
 {
+	private:
+			bool _abilityUsed = false;
+
 	public:
 			Prince(Game* game);
 			~Prince();
@@ -238,12 +246,14 @@ class Spellcaster : public ACard
 
 class ToughGuy : public ACard
 {
+	private:
+			bool _goingToDie = false;
+
 	public:
 			ToughGuy(Game* game);
 			~ToughGuy();
 
 			void beAttacked(int attacker);
-			void actuallyDies(int attacker);
 
 };
 
@@ -301,19 +311,14 @@ class Cursed : public ACard
 
 class Doppelganger : public ACard
 {
+	private:
+			ACard* _identity;
+
 	public:
 			Doppelganger(Game* game);
 			~Doppelganger();
 
 			void Steal(int index);
-
-};
-
-class Drunk : public ACard
-{
-	public:
-			Drunk(Game* game);
-			~Drunk();
 
 };
 
@@ -329,6 +334,10 @@ class CultLeader : public ACard
 
 class Hoodlum : public ACard
 {
+	private:
+			int _player1;
+			int _player2;
+
 	public:
 			Hoodlum(Game* game);
 			~Hoodlum();
@@ -342,7 +351,5 @@ class Tanner : public ACard
 	public:
 			Tanner(Game* game);
 			~Tanner();
-
-			void beAttacked(int attacker);
 
 };

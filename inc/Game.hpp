@@ -9,6 +9,8 @@
 
 #define NIGHT true
 #define DAY false
+#define ALIVE true
+#define DEAD false
 
 class Game
 {
@@ -21,7 +23,6 @@ class Game
 			bool _wolfWin = false;
 			bool _villageWin = false;
 			bool _vampWin = false;
-			int _nightNo;
 			bool _tannerWin = false;
 			bool _loneWolfWin = false;
 			bool _hoodlumWin = false;
@@ -31,8 +32,9 @@ class Game
 			int	_vampireVictim;
 			bool _nighttime = true;
 			int	_balance = 0;
-			bool _whichRoles[36];
-			int _howManyRoles[36];
+			int _nightNo = 1;
+			bool _whichRoles[MAX_ROLES];
+			int _howManyRoles[MAX_ROLES];
 
 	public:
 			Game(int playerno);
@@ -47,6 +49,7 @@ class Game
 
 			bool isValidPlayerEntry(const str& input);
 			bool isValidPlayerNumber(const str& input);
+			bool isValidAlivePlayer(const str& input);
 			void resetNightlyDeaths();
 			
 			void setPlayerNo(int playerno);
@@ -58,11 +61,12 @@ class Game
 			ACard* getPlayerByIndex(int index);
 			int* getNightlyDeaths();
 			bool getTimeOfDay() const;
-			int getCurrentNight() const;
 			int getWereNo() const;
 			std::vector<ACard*>& getPlayers();
 			int getBalance() const;
 			int getPlayerNo() const;
+			bool stopGame() const;
+			int getCurrentNight() const;
 };
 
 str get_input();

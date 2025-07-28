@@ -120,7 +120,29 @@ bool Game::isValidPlayerNumber(const str& input)
 	}
 }
 
-Game::Game(int playerno) : _playerNo(playerno), _nightNo(0)
+bool Game::isValidAlivePlayer(const str& input)
+{
+	if (input.empty())
+		return false;
+	for (char c : input)
+	{
+		if (!std::isdigit(c))
+			return false;
+	}
+	try
+	{
+		int number = std::stoi(input);
+		if (number > _playerNo || number < 1)
+			return false;
+		return (_player[number]->getLife());
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+}
+
+Game::Game(int playerno) : _playerNo(playerno)
 {
 	_player.reserve(playerno);
 	for (int i = 0; i < 68; i++)
@@ -498,6 +520,27 @@ void Game::removePlayer(str role)
 
 void Game::nightPhase()
 {
+	int wolf = -1;
+	std::cout << "Wake up the werewolves: ";
+	for (int i = 0; i < _playerNo; i++)
+	{
+		if (_player[i]->getSide() == WEREWOLF && _player[i]->getLife() == ALIVE)
+		{
+			std::cout << _player[i]->getIndex() << " ";
+			wolf = i;
+		}
+	}
+	std::cout << std::endl << std::endl << "Choose player to attack: ";
+	if (wolf != -1)
+	{
+		str input = get_input();
+		while (!isValidAlivePlayer(input))
+		{
+			std::cout << "ERROR: Enter player number: ";
+			input = get_input();
+		}
+		_player[std::stoi(input)]->beAttacked(wolf);
+	}
 }
 
 void Game::firstNight()
@@ -510,6 +553,9 @@ void Game::firstNight()
 			seer = i;
 		else
 		{
+#ifdef NICE
+			system("clear");
+#endif
 			std::cout << "Wake up " << _player[i]->getName() << std::endl;
 			std::cout << "Enter player number: ";
 			input = get_input();
@@ -520,7 +566,11 @@ void Game::firstNight()
 			}
 			_player[i]->setIndex(std::stoi(input));
 		}
+		_nightNo++;
 	}
+#ifdef NICE
+	system("clear");
+#endif
 	std::cout << "Wake up seer" << std::endl;
 	std::cout << "Enter player number: ";
 	input = get_input();
@@ -539,7 +589,10 @@ void Game::firstNight()
 		input = get_input();
 	}
 	int res = _player[seer]->See(std::stoi(input));
-	std::cout << "Player " << input << " is " << (res ? "is a werewolf" : "not a werewolf") << std::endl;
+#ifdef NICE
+	system("clear");
+#endif
+	std::cout << "Player " << input << " is " << (res ? " a werewolf" : "not a werewolf") << std::endl;
 	std::cout << "FIRST NIGHT OVER" << std::endl;
 }
 
@@ -604,11 +657,6 @@ void Game::setVampVictim(int index)
 bool Game::getTimeOfDay() const
 {
 	return _nighttime;
-}
-
-int Game::getCurrentNight() const
-{
-	return _nightNo;
 }
 
 int Game::getWereNo() const
@@ -704,4 +752,16 @@ bool Game::tryStart()
 		return false;
 	}
 	return true;
+}
+
+bool Game::stopGame() const
+{
+	if (_villageWin == true || _wolfWin == true || _vampWin == true)
+		return true;
+	return false;
+}
+
+int Game::getCurrentNight() const
+{
+	return _nightNo;
 }

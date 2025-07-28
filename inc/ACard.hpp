@@ -47,7 +47,8 @@ typedef enum e_roles
 	DOPPELGANGER_ROLE,
 	CULTLEADER_ROLE,
 	HOODLUM_ROLE,
-	TANNER_ROLE
+	TANNER_ROLE,
+	MAX_ROLES
 } t_roles;
 
 typedef enum	e_sides
@@ -66,7 +67,7 @@ class ACard
 			t_roles _role;
 			str _name;
 			int _side;
-			int	_index;
+			int	_index = -1;
 			bool _alive = true;
 			bool _wakes;
 			Game* _game;

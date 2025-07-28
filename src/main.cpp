@@ -75,6 +75,9 @@ int main()
 			if (game.tryStart() == true)
 			{
 				std::cout << "Game is Good we can start..." << std::endl;
+				game.firstNight();
+				while (game.stopGame() == false)
+					game.nightPhase();
 				exit (0);
 			}
 		}

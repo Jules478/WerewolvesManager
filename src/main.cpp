@@ -77,7 +77,14 @@ int main()
 				std::cout << "Game is Good we can start..." << std::endl;
 				game.firstNight();
 				while (game.stopGame() == false)
-					game.nightPhase();
+				{
+					if (!game.checkWin())
+						game.nightPhase();
+					if (!game.checkWin())
+						game.dayPhase();
+					if (game.checkWin())
+						break;
+				}
 				exit (0);
 			}
 		}

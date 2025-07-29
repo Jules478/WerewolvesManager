@@ -62,7 +62,9 @@ str ACard::getName() const
 void ACard::beAttacked(int attacker)
 {
 	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
+	{
 		_game->setNightlyDeaths(_index);
+	}
 	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
 	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
@@ -70,13 +72,27 @@ void ACard::beAttacked(int attacker)
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
 		else
+		{
 			_alive = false;
+			if (_side == WEREWOLF)
+				_game->killWolf();
+			else if (_side == VAMPIRE)
+				_game->killVampire();
+			else
+				_game->killVillager();
+		}
 	}
 }
 
 void ACard::beLynched()
 {
 	_alive = false;
+	if (_side == WEREWOLF)
+		_game->killWolf();
+	else if (_side == VAMPIRE)
+		_game->killVampire();
+	else
+		_game->killVillager();
 }
 
 bool ACard::getInVillage() const
@@ -92,4 +108,9 @@ void ACard::setInVillage(bool exile)
 int ACard::getValue() const
 {
 	return _value;
+}
+
+void ACard::setInCult()
+{
+	_inCult = true;
 }

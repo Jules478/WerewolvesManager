@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <iomanip>
 #include <cctype>
 
 #define NIGHT true
@@ -15,6 +16,7 @@
 class Game
 {
 	private:
+			bool _revealCards = true;
 			int _playerNo = 0;
 			int _wolfNo = 0;
 			int _vampNo = 0;
@@ -33,6 +35,9 @@ class Game
 			bool _nighttime = true;
 			int	_balance = 0;
 			int _nightNo = 1;
+			bool _seerReplaced = false;
+			bool _secondWolfKill = false;
+			bool _secondLynching = false;
 			bool _whichRoles[MAX_ROLES];
 			int _howManyRoles[MAX_ROLES];
 
@@ -44,7 +49,8 @@ class Game
 			void removePlayer(str role);
 			void nightPhase();
 			void firstNight();
-			void checkWin();
+			void dayPhase();
+			bool checkWin();
 			bool tryStart();
 
 			bool isValidPlayerEntry(const str& input);
@@ -52,6 +58,10 @@ class Game
 			bool isValidAlivePlayer(const str& input);
 			void resetNightlyDeaths();
 			
+			void killVillager();
+			void killWolf();
+			void killVampire();
+
 			void setPlayerNo(int playerno);
 			void setNightlyDeaths(int index);
 			void setVampVictim(int index);
@@ -59,6 +69,8 @@ class Game
 			void setBalance(int value);
 			
 			ACard* getPlayerByIndex(int index);
+			ACard* getPlayerByName(str name);
+			ACard* getPlayerByRole(int role);
 			int* getNightlyDeaths();
 			bool getTimeOfDay() const;
 			int getWereNo() const;
@@ -67,6 +79,10 @@ class Game
 			int getPlayerNo() const;
 			bool stopGame() const;
 			int getCurrentNight() const;
+			void wakeAllActiveRoles();
+			bool getGameMode() const;
+			void wolfCubKilled();
+			void printGameStatus();
 };
 
 str get_input();

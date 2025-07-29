@@ -8,6 +8,7 @@ typedef std::string str;
 # define BLUE "\e[0;34m"
 # define GREEN "\e[0;32m"
 # define PURPLE "\e[0;35m"
+# define YELLOW "\e[0;33m"
 # define RESET "\e[0m"
 
 typedef enum e_roles
@@ -74,6 +75,7 @@ class ACard
 			bool _exiled = false;
 			int _value;
 			bool _isDrunk = false;
+			bool _inCult = false;
 	
 	public:
 			virtual ~ACard();
@@ -87,6 +89,12 @@ class ACard
 			virtual void Steal(int index) { (void)index; return ; }
 			virtual void Convert(int index) { (void)index; return ; }
 			virtual void Mischief(int index1, int index2) { (void)index1; (void)index2; return ; }
+			virtual void setVictim(int victim) { (void)victim ; }
+			virtual bool getSpellUsed(str spell) const { (void)spell; return false ; }
+			virtual void setSpellUsed(str spell) { (void)spell ; }
+			virtual bool getAbilityUsed() const { return true ; }
+			virtual void setAbilityUsed() { return ; }
+			virtual ACard* getStolenIdentity() const { return nullptr ; }
 
 			int getSide() const;
 			int getIndex() const;
@@ -102,6 +110,7 @@ class ACard
 			void setSide(int side);
 			void setLife(bool alive);
 			void setInVillage(bool exile);
+			void setInCult();
 
 			virtual void beAttacked(int attacker);
 			virtual void beLynched();

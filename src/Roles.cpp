@@ -31,6 +31,13 @@ void WolfCub::beAttacked(int attacker)
 		_game->setVampVictim(_index);
 }
 
+void WolfCub::beLynched()
+{
+	_alive = false;
+	_game->killWolf();
+	_game->wolfCubKilled();
+}
+
 LoneWolf::LoneWolf(Game* game) : ACard(LONEWOLF_ROLE, "Lone Wolf", WEREWOLF, true, game, -5)
 {
 }
@@ -66,23 +73,6 @@ ApprenticeSeer::ApprenticeSeer(Game* game) : ACard(APPRENTICESEER_ROLE, "Apprent
 ApprenticeSeer::~ApprenticeSeer()
 {
 }
-
-void ApprenticeSeer::bePromoted()
-{
-}
-
-int ApprenticeSeer::See(int index)
-{
-	if (_game->getPlayerByIndex(index)->getName() == "Villager")
-		return 0;
-	else if (_game->getPlayerByIndex(index)->getName() == "Werewolf")
-		return 0;
-	else if (_game->getPlayerByIndex(index)->getName() == "Vampire")
-		return 0;
-	else
-		return 1;
-}
-
 
 AuraSeer::AuraSeer(Game* game) : ACard(AURASEER_ROLE, "Aura Seer", VILLAGER, true, game, 3)
 {
@@ -162,6 +152,46 @@ Hunter::~Hunter()
 {
 }
 
+void Hunter::beAttacked(int attacker)
+{
+	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
+	{
+		_game->setNightlyDeaths(_index);
+		takePlayerWith(_victim);
+	}
+	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+		_game->setVampVictim(_index);
+}
+
+void Hunter::beLynched()
+{
+	_alive = false;
+	if (_side == WEREWOLF)
+		_game->killWolf();
+	else if (_side == VAMPIRE)
+		_game->killVampire();
+	else
+		_game->killVillager();
+	if (_game->getGameMode() == false)
+		_lynched = true;
+	else
+	{
+		std::cout << "Player to die with the Hunter: ";
+		str input = get_input();
+		while (!_game->isValidPlayerNumber(input))
+		{
+			std::cout << "ERROR: Enter player number: ";
+			input = get_input();
+		}
+		_game->getPlayerByIndex(std::stol(input))->beAttacked(_index);
+	}
+}
+
+void Hunter::setVictim(int victim)
+{
+	_victim = victim;
+}
+
 void Hunter::takePlayerWith(int victim)
 {
 	_game->getPlayerByIndex(victim)->beAttacked(_index);
@@ -189,6 +219,22 @@ Magician::Magician(Game* game) : ACard(MAGICIAN_ROLE, "Magician", VILLAGER, true
 
 Magician::~Magician()
 {
+}
+
+bool Magician::getSpellUsed(str spell) const
+{
+	if (spell == "heal")
+		return _healUsed;
+	else
+		return _killUsed;
+}
+
+void Magician::setSpellUsed(str spell)
+{
+	if (spell == "heal")
+		_healUsed = true;
+	else
+		_killUsed = true;
 }
 
 Martyr::Martyr(Game* game) : ACard(MARTYR_ROLE, "Martyr", VILLAGER, false, game, 3)
@@ -294,6 +340,11 @@ int PI::See(int index)
 	return 0;
 }
 
+bool PI::getAbilityUsed() const
+{
+	return _abilityUsed;
+}
+
 Pacifist::Pacifist(Game* game) : ACard(PACIFIST_ROLE, "Pacifist", VILLAGER, false, game, -2)
 {
 }
@@ -322,9 +373,14 @@ void Priest::Protect(int index)
 
 int Priest::See(int index)
 {
-	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
+	if (_game->getPlayerByIndex(index)->getRole() == LYCAN_ROLE || _game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
 		return 1;
 	return 0;
+}
+
+bool Priest::getAbilityUsed() const
+{
+	return _abilityUsed;
 }
 
 Prince::Prince(Game* game) : ACard(PRINCE_ROLE, "Prince", VILLAGER, false, game, 3)
@@ -353,7 +409,7 @@ Seer::~Seer()
 
 int Seer::See(int index)
 {
-	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
+	if (_game->getPlayerByIndex(index)->getRole() == LYCAN_ROLE || _game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
 		return 1;
 	return 0;
 }
@@ -397,6 +453,16 @@ TroubleMaker::~TroubleMaker()
 {
 }
 
+void TroubleMaker::setAbilityUsed()
+{
+	_abilityUsed = true;
+}
+
+bool TroubleMaker::getAbilityUsed() const
+{
+	return _abilityUsed;
+}
+
 Villager::Villager(Game* game) : ACard(VILLAGER_ROLE, "Villager", VILLAGER, false, game, 1)
 {
 }
@@ -411,6 +477,22 @@ Witch::Witch(Game* game) : ACard(WITCH_ROLE, "WITCH", VILLAGER, true, game, 4)
 
 Witch::~Witch()
 {
+}
+
+bool Witch::getSpellUsed(str spell) const
+{
+	if (spell == "heal")
+		return _healUsed;
+	else
+		return _killUsed;
+}
+
+void Witch::setSpellUsed(str spell)
+{
+	if (spell == "heal")
+		_healUsed = true;
+	else
+		_killUsed = true;
 }
 
 Sorcerer::Sorcerer(Game* game) : ACard(SORCERER_ROLE, "Sorcerer", WEREWOLF, true, game, -3)
@@ -448,7 +530,7 @@ void Cursed::beAttacked(int attacker)
 	if (_side == VILLAGER)
 	{
 		if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
-			_side = WEREWOLF;
+			_game->setNightlyDeaths(_index);
 		else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 			_game->setVampVictim(_index);
 		else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
@@ -485,6 +567,11 @@ void Doppelganger::Steal(int index)
 	_identity = _game->getPlayerByIndex(index);
 }
 
+ACard* Doppelganger::getStolenIdentity() const
+{
+	return _identity;
+}
+
 CultLeader::CultLeader(Game* game) : ACard(CULTLEADER_ROLE, "Cult Leader", VILLAGER, true, game, 1)
 {
 }
@@ -495,7 +582,7 @@ CultLeader::~CultLeader()
 
 void CultLeader::Convert(int index)
 {
-	(void)index;
+	_game->getPlayerByIndex(index)->setInCult();
 }
 
 Hoodlum::Hoodlum(Game* game) : ACard(HOODLUM_ROLE, "Hoodlum", VILLAGER, false, game, 0)

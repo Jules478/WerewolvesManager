@@ -20,6 +20,7 @@ class WolfCub : public ACard
 			~WolfCub();
 
 			void beAttacked(int attacker);
+			void beLynched();
 
 };
 
@@ -48,9 +49,6 @@ class ApprenticeSeer : public ACard
 	public:
 			ApprenticeSeer(Game* game);
 			~ApprenticeSeer();
-
-			void bePromoted();
-			int See(int index);
 
 };
 
@@ -105,10 +103,17 @@ class Ghost : public ACard
 
 class Hunter : public ACard
 {
+	private:
+			int _victim;
+			bool _lynched = false;
+
 	public:
 			Hunter(Game* game);
 			~Hunter();
 			
+			void beAttacked(int attacker);
+			void beLynched();
+			void setVictim(int victim);
 			void takePlayerWith(int victim);
 };
 
@@ -130,9 +135,17 @@ class Lycan : public ACard
 
 class Magician : public ACard
 {
+	private:
+			bool _healUsed = false;
+			bool _killUsed = false;
+
 	public:
 			Magician(Game* game);
 			~Magician();
+
+			bool getSpellUsed(str spell) const;
+
+			void setSpellUsed(str spell);
 
 };
 
@@ -182,11 +195,15 @@ class OldMan : public ACard
 
 class PI : public ACard
 {
+	private:
+			bool _abilityUsed = false;
+
 	public:
 			PI(Game* game);
 			~PI();
 
 			int See(int index);
+			bool getAbilityUsed() const;
 
 };
 
@@ -210,6 +227,7 @@ class Priest : public ACard
 
 			void Protect(int index);
 			int See(int index);
+			bool getAbilityUsed() const;
 
 };
 
@@ -259,10 +277,15 @@ class ToughGuy : public ACard
 
 class TroubleMaker : public ACard
 {
+	private:
+			bool _abilityUsed = false;
+
 	public:
 			TroubleMaker(Game* game);
 			~TroubleMaker();
 
+			bool getAbilityUsed() const;
+			void setAbilityUsed();
 };
 
 class Villager : public ACard
@@ -275,10 +298,17 @@ class Villager : public ACard
 
 class Witch : public ACard
 {
+	private:
+			bool _healUsed = false;
+			bool _killUsed = false;
+
 	public:
 			Witch(Game* game);
 			~Witch();
 
+			bool getSpellUsed(str spell) const;
+
+			void setSpellUsed(str spell);
 };
 
 class Sorcerer : public ACard
@@ -319,6 +349,7 @@ class Doppelganger : public ACard
 			~Doppelganger();
 
 			void Steal(int index);
+			ACard* getStolenIdentity() const;
 
 };
 

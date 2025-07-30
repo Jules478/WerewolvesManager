@@ -105,8 +105,7 @@ Bodyguard::~Bodyguard()
 
 void Bodyguard::Protect(int index)
 {
-	int i = -1;
-	while (_game->getNightlyDeaths()[++i] != -1)
+	for (int i = 0; i < 68; i++)
 	{
 		if (_game->getNightlyDeaths()[i] == index)
 			_game->getNightlyDeaths()[i] = -1;
@@ -157,7 +156,6 @@ void Hunter::beAttacked(int attacker)
 	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
 	{
 		_game->setNightlyDeaths(_index);
-		takePlayerWith(_victim);
 	}
 	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
@@ -190,6 +188,11 @@ void Hunter::beLynched()
 void Hunter::setVictim(int victim)
 {
 	_victim = victim;
+}
+
+int Hunter::getVictim() const
+{
+	return _victim;
 }
 
 void Hunter::takePlayerWith(int victim)

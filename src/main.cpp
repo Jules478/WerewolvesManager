@@ -1,5 +1,27 @@
 #include "../inc/Game.hpp"
 
+
+void printTitle()
+{
+	std::cout << YELLOW << "################################################################################" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "########" << WHITE << "." << RED << "####" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "...." << RED << "###" << WHITE << "...." << RED << "########" << WHITE << "." << RED << "########" << WHITE << "......." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << ".........." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << ".." << RED << "###" << WHITE << "..." << RED << "###" << WHITE << "..." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......" << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "............." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << ".........." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << ".." << RED << "####" << WHITE << "." << RED << "####" << WHITE << ".." << RED << "##" << WHITE << "..." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "............." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << ".........." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "###" << WHITE << "." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "...." << RED << "######" << WHITE << "........." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << ".........." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "#########" << WHITE << "...." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "............." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << ".........." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "............." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << ".." << RED << "#######" << WHITE << ".." << RED << "########" << WHITE << "...." << RED << "##" << WHITE << "...." << RED << "####" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << "...." << RED << "########" << WHITE << "......." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << "......" << RED << "##" << WHITE << "." << RED << "########" << WHITE << "." << RED << "########" << WHITE << ".." << RED << "########" << WHITE << "." << RED << "##" << WHITE << "......" << RED << "##" << WHITE << ".." << RED << "#######" << WHITE << ".." << RED << "##" << WHITE << "......." << RED << "########" << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "......" << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "......" << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "######" << WHITE << "..." << RED << "########" << WHITE << ".." << RED << "######" << WHITE << "..." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "######" << WHITE << ".." << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "..." << RED << "##" << WHITE << "..." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "......" << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << "." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "...." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << ".." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "##" << WHITE << "......." << RED << "##" << WHITE << "......" << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "#" << WHITE << ".." << RED << "###" << WHITE << ".." << RED << "###" << WHITE << ".." << RED << "########" << WHITE << "." << RED << "##" << WHITE << "....." << RED << "##" << WHITE << "." << RED << "########" << WHITE << ".." << RED << "###" << WHITE << ".." << RED << "###" << WHITE << "..." << RED << "#######" << WHITE << ".." << RED << "########" << WHITE << "." << RED << "##" << WHITE << "......" << YELLOW << "#" << RESET << std::endl;
+	std::cout << YELLOW << "################################################################################" << RESET << std::endl;
+	std::cout << std::endl;
+}
+
 bool isValidStartNumber(const str& input)
 {
 	if (input.empty())
@@ -24,27 +46,30 @@ int main()
 {
 #ifdef NICE
 	system("clear");
+	printTitle();
 #endif
 	str input = "";
-	std::cout << "Enter number of players: " << std::endl;
+	std::cout << "Enter number of players: ";
 	input = get_input();
 	while (!isValidStartNumber(input))
 	{
-		std::cout << "Enter between 5 and 68 players" << std::endl;
+		std::cout << "Enter between 5 and 68 players: ";
 		input = get_input();
 	}
 	Game game(std::stoi(input));
 #ifdef NICE
 	system("clear");
+	printTitle();
 #endif
 	while (1)
 	{
-		std::cout << "Commands: " << "add | remove | resize | start | quit" << std::endl;
+		std::cout << "Commands: " << "add | remove | resize | start | set reveal | quit" << std::endl;
 		std::cout << "Current Players: " << game.getPlayerNo() << " | Current Roles: " << game.getPlayers().size() << " | Current Balance: " << game.getBalance();
 		if (game.getBalance() > 0)
 			std::cout << " (Villager advantage)";
 		else if (game.getBalance() < 0)
 			std::cout << " (Villager Disadvantage)";
+		std::cout << " | " << (game.getGameMode() ? "Roles are revealed on death" : "Roles are not revealed on death");
 		std::cout << std::endl << std::endl;
 		for (int i = 0; i < static_cast<int>(game.getPlayers().size()); i++)
 			std::cout << game.getPlayers()[i]->getName() << std::endl;
@@ -74,7 +99,6 @@ int main()
 		{
 			if (game.tryStart() == true)
 			{
-				std::cout << "Game is Good we can start..." << std::endl;
 				game.firstNight();
 				while (game.stopGame() == false)
 				{
@@ -88,6 +112,14 @@ int main()
 				exit (0);
 			}
 		}
+		else if (input == "set reveal")
+		{
+			game.setGameMode();
+#ifdef NICE
+			system("clear");
+			printTitle();
+#endif
+		}
 		else if (input == "quit")
 		{
 #ifdef NICE
@@ -99,6 +131,7 @@ int main()
 		{
 #ifdef NICE
 			system("clear");
+			printTitle();
 #endif
 			std::cout << "Command '" << input << "' not recognised" << std::endl;
 		}

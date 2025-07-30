@@ -9,6 +9,7 @@ typedef std::string str;
 # define GREEN "\e[0;32m"
 # define PURPLE "\e[0;35m"
 # define YELLOW "\e[0;33m"
+#define WHITE "\e[0;37m"
 # define RESET "\e[0m"
 
 typedef enum e_roles
@@ -95,6 +96,8 @@ class ACard
 			virtual bool getAbilityUsed() const { return true ; }
 			virtual void setAbilityUsed() { return ; }
 			virtual ACard* getStolenIdentity() const { return nullptr ; }
+			virtual void takePlayerWith(int victim) { (void)victim ; }
+			virtual int getVictim() const { return -1; }
 
 			int getSide() const;
 			int getIndex() const;

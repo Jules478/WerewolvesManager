@@ -38,8 +38,11 @@ class Game
 			bool _seerReplaced = false;
 			bool _secondWolfKill = false;
 			bool _secondLynching = false;
+			bool _wolfUpsetTummy = false;
 			bool _whichRoles[MAX_ROLES];
 			int _howManyRoles[MAX_ROLES];
+			int _assignedPlayers[68];
+			int _assignedIndex = 0;
 
 	public:
 			Game(int playerno);
@@ -56,6 +59,7 @@ class Game
 			bool isValidPlayerEntry(const str& input);
 			bool isValidPlayerNumber(const str& input);
 			bool isValidAlivePlayer(const str& input);
+			bool isValidVoteNumber(const str& input);
 			void resetNightlyDeaths();
 			
 			void killVillager();
@@ -67,6 +71,7 @@ class Game
 			void setVampVictim(int index);
 			void setWinStates(int wolf, int village, int vamp, int tanner, int lone, int hood, int cult);
 			void setBalance(int value);
+			void setGameMode();
 			
 			ACard* getPlayerByIndex(int index);
 			ACard* getPlayerByName(str name);
@@ -83,6 +88,8 @@ class Game
 			bool getGameMode() const;
 			void wolfCubKilled();
 			void printGameStatus();
+
 };
 
 str get_input();
+void printTitle();

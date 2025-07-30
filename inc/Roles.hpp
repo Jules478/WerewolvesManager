@@ -114,6 +114,7 @@ class Hunter : public ACard
 			void beAttacked(int attacker);
 			void beLynched();
 			void setVictim(int victim);
+			int getVictim() const;
 			void takePlayerWith(int victim);
 };
 

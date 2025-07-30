@@ -120,6 +120,26 @@ bool Game::isValidPlayerNumber(const str& input)
 	}
 }
 
+bool Game::isValidVoteNumber(const str& input)
+{
+	if (input.empty())
+		return false;
+	for (char c : input)
+	{
+		if (!std::isdigit(c))
+			return false;
+	}
+	try
+	{
+		int number = std::stoi(input);
+		return (number >= 0 && number <= 68);
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+}
+
 bool Game::isValidAlivePlayer(const str& input)
 {
 	if (input.empty())
@@ -152,6 +172,8 @@ Game::Game(int playerno) : _playerNo(playerno)
 		_whichRoles[i] = false;
 		_howManyRoles[i] = 0;
 	}
+	for (int i = 0; i < 68; i++)
+		_assignedPlayers[i] = -1;
 }
 
 Game::~Game()
@@ -521,30 +543,85 @@ void Game::removePlayer(str role)
 void Game::nightPhase()
 {
 	int wolf = -1;
-	std::cout << "Wake up the werewolves: ";
-	for (int i = 0; i < _playerNo; i++)
+	if (_wolfUpsetTummy == false)
 	{
-		if (_player[i]->getSide() == WEREWOLF && _player[i]->getLife() == ALIVE)
+		std::cout << "Wake up the werewolves: ";
+		for (int i = 0; i < _playerNo; i++)
 		{
-			std::cout << _player[i]->getIndex() << " ";
-			wolf = i + 1;
+			if (_player[i]->getSide() == WEREWOLF && _player[i]->getLife() == ALIVE)
+			{
+				wolf = _player[i]->getIndex();
+				std::cout << wolf << " ";
+			}
 		}
-	}
-	std::cout << std::endl << std::endl << "Choose player to attack: ";
-	if (wolf != -1)
-	{
-		str input = get_input();
-		while (!isValidAlivePlayer(input))
+		if (_secondWolfKill == true)
 		{
-			std::cout << "ERROR: Enter player number: ";
-			input = get_input();
+			std::cout << std::endl << "The Wolf Cub has been lynched. The Werewolves will attack twice tonight" << std::endl;
+			std::cout << std::endl << std::endl << "Choose first player to attack: ";
 		}
-		getPlayerByIndex(std::stoi(input))->beAttacked(wolf);
-	}
+		else
+			std::cout << std::endl << std::endl << "Choose player to attack: ";
+		if (wolf != -1)
+		{
+			str input = get_input();
+			while (!isValidAlivePlayer(input))
+			{
+				std::cout << "ERROR: Enter player number: ";
+				input = get_input();
+			}
+			getPlayerByIndex(std::stoi(input))->beAttacked(wolf);
+		}
 #ifdef NICE
-	system("clear");
-	printGameStatus();
+		system("clear");
+		printGameStatus();
 #endif
+		if (_secondWolfKill == true)
+		{
+			std::cout << "Wake up the werewolves: ";
+			for (int i = 0; i < _playerNo; i++)
+			{
+				if (_player[i]->getSide() == WEREWOLF && _player[i]->getLife() == ALIVE)
+				{
+					std::cout << _player[i]->getIndex() << " ";
+					wolf = i + 1;
+				}
+			}
+			std::cout << std::endl << "The Wolf Cub has been lynched. The Werewolves will attack twice tonight" << std::endl;
+			std::cout << std::endl << std::endl << "Choose second player to attack: ";
+			if (wolf != -1)
+			{
+				str input = get_input();
+				while (!isValidAlivePlayer(input))
+				{
+					std::cout << "ERROR: Enter player number: ";
+					input = get_input();
+				}
+				getPlayerByIndex(std::stoi(input))->beAttacked(wolf);
+			}
+#ifdef NICE
+			system("clear");
+			printGameStatus();
+#endif
+		}
+	}
+	else
+	{
+#ifdef NICE
+		system("clear");
+		printGameStatus();
+#endif
+		std::cout << "The Werewolves ate the Diseased last night. They will not feed tonight" << std::endl;
+		if (_revealCards == false)
+			std::cout << "Call for the Werewolves and ask for a kill to conceal this fact" << std::endl;
+		std::cout << std::endl << "Press enter to continue..." << std::endl;
+		get_input();
+#ifdef NICE
+		system("clear");
+		printGameStatus();
+#endif
+	}
+	_wolfUpsetTummy = false;
+	_secondWolfKill = false;
 	wakeAllActiveRoles();
 }
 
@@ -552,14 +629,142 @@ void Game::firstNight()
 {
 	int seer;
 	str input = "";
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
+	if (_whichRoles[WOLFCUB_ROLE])
+	{
+		std::cout << "Wake up the Wolf Cub" << std::endl;
+		std::cout << "Enter player number: ";
+		input = get_input();
+		while (!isValidPlayerEntry(input))
+		{
+			std::cout << "ERROR: Enter player number: ";
+			input = get_input();
+		}
+		int index = std::stoi(input);
+		getPlayerByRole(WOLFCUB_ROLE)->setIndex(index);
+		_assignedPlayers[_assignedIndex++] = index;
+	}
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
+	if (_whichRoles[LONEWOLF_ROLE])
+	{
+		std::cout << "Wake up the Lone Wolf" << std::endl;
+		std::cout << "Enter player number: ";
+		input = get_input();
+		while (!isValidPlayerEntry(input))
+		{
+			std::cout << "ERROR: Enter player number: ";
+			input = get_input();
+		}
+		int index = std::stoi(input);
+		getPlayerByRole(LONEWOLF_ROLE)->setIndex(index);
+		_assignedPlayers[_assignedIndex++] = index;
+	}
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
+	if (_whichRoles[WEREWOLF_ROLE])
+	{
+		for (size_t i = 0; i < _player.size(); i++)
+		{
+#ifdef NICE
+			system("clear");
+			printGameStatus();
+#endif
+			std::cout << "Wake up all the Werewolves" << std::endl;
+			if (_player[i]->getRole() == WEREWOLF_ROLE)
+			{
+				std::cout << "Enter player number: ";
+				input = get_input();
+				while (!isValidPlayerEntry(input))
+				{
+					std::cout << "ERROR: Enter player number: ";
+					input = get_input();
+				}
+				int index = std::stoi(input);
+				_player[i]->setIndex(index);
+				_assignedPlayers[_assignedIndex++] = index;
+			}
+		}
+	}
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
+	if (_whichRoles[VAMPIRE_ROLE])
+	{
+		for (size_t i = 0; i < _player.size(); i++)
+		{
+#ifdef NICE
+			system("clear");
+			printGameStatus();
+#endif
+			std::cout << "Wake up the Vampires" << std::endl;
+			if (_player[i]->getRole() == VAMPIRE_ROLE)
+			{
+				std::cout << "Enter player number: ";
+				input = get_input();
+				while (!isValidPlayerEntry(input))
+				{
+					std::cout << "ERROR: Enter player number: ";
+					input = get_input();
+				}
+				int index = std::stoi(input);
+				_player[i]->setIndex(index);
+				_assignedPlayers[_assignedIndex++] = index;
+			}
+		}
+	}
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
+	if (_whichRoles[MASON_ROLE])
+	{
+		for (size_t i = 0; i < _player.size(); i++)
+		{
+#ifdef NICE
+			system("clear");
+			printGameStatus();
+#endif
+			std::cout << "Wake up the Masons" << std::endl;
+			if (_player[i]->getRole() == MASON_ROLE)
+			{
+				std::cout << "Enter player number: ";
+				input = get_input();
+				while (!isValidPlayerEntry(input))
+				{
+					std::cout << "ERROR: Enter player number: ";
+					input = get_input();
+				}
+				int index = std::stoi(input);
+				_player[i]->setIndex(index);
+				_assignedPlayers[_assignedIndex++] = index;
+			}
+		}
+	}
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
 	for (size_t i = 0; i < _player.size(); i++)
 	{
-		if (_player[i]->getRole() == SEER_ROLE)
+		int role = _player[i]->getRole();
+		if (role == SEER_ROLE)
 			seer = i;
+		else if (role == VILLAGER_ROLE || role == WOLFCUB_ROLE || role == LONEWOLF_ROLE || role == WEREWOLF_ROLE || role == VAMPIRE_ROLE)
+			continue;
 		else
 		{
 #ifdef NICE
 			system("clear");
+			printGameStatus();
 #endif
 			std::cout << "Wake up " << _player[i]->getName() << std::endl;
 			std::cout << "Enter player number: ";
@@ -569,12 +774,14 @@ void Game::firstNight()
 				std::cout << "ERROR: Enter player number: ";
 				input = get_input();
 			}
-			_player[i]->setIndex(std::stoi(input));
+			int index = std::stoi(input);
+			_player[i]->setIndex(index);
+			_assignedPlayers[_assignedIndex++] = index;
 		}
-		_nightNo++;
 	}
 #ifdef NICE
 	system("clear");
+	printGameStatus();
 #endif
 	std::cout << "Wake up seer" << std::endl;
 	std::cout << "Enter player number: ";
@@ -584,7 +791,32 @@ void Game::firstNight()
 		std::cout << "ERROR: Enter player number: ";
 		input = get_input();
 	}
-	_player[seer]->setIndex(std::stoi(input));
+	int index = std::stoi(input);
+	_player[seer]->setIndex(index);
+	_assignedPlayers[_assignedIndex++] = index;
+	for (size_t i = 0; i < _player.size(); i++)
+	{
+		int index = 1;
+		while (_player[i]->getIndex() == -1 && _player[i]->getRole() != SEER_ROLE)
+		{
+			for (int j = 0; j < 68; j++)
+			{
+				if (_assignedPlayers[j] == index)
+					break;
+				else if (_assignedPlayers[j] == -1)
+				{
+					_assignedPlayers[j] = index;
+					_player[i]->setIndex(index);
+					break;
+				}
+			}
+			index++;
+		}
+	}
+#ifdef NICE
+	system("clear");
+	printGameStatus();
+#endif
 	input = "";
 	std::cout << "Player number to see: ";
 	input = get_input();
@@ -595,13 +827,13 @@ void Game::firstNight()
 	}
 	int res = _player[seer]->See(std::stoi(input));
 	std::cout << "Player " << input << " is " << (res ? "a werewolf" : "not a werewolf") << std::endl;
-	std::cout << "Press Enter to continue...";
+	std::cout << std::endl << "Press Enter to continue...";
 	get_input();
 #ifdef NICE
 	system("clear");
 	printGameStatus();
 #endif
-
+	_nightNo++;
 }
 
 bool Game::checkWin()
@@ -696,6 +928,13 @@ void Game::resetNightlyDeaths()
 		{
 			killVillager();
 			getPlayerByIndex(_diedInTheNight[i])->setLife(DEAD);
+			if (getPlayerByIndex(_diedInTheNight[i])->getRole() == DISEASED_ROLE)
+				_wolfUpsetTummy = true;
+			else if (getPlayerByIndex(_diedInTheNight[i])->getRole() == HUNTER_ROLE)
+			{
+				getPlayerByRole(HUNTER_ROLE)->takePlayerWith(getPlayerByRole(HUNTER_ROLE)->getVictim());
+				std::cout << getPlayerByRole(HUNTER_ROLE)->getVictim();
+			}
 		}
 		_diedInTheNight[i] = -1;
 	}
@@ -821,42 +1060,78 @@ int Game::getCurrentNight() const
 
 void Game::dayPhase()
 {
-	int i = -1;
 #ifdef NICE
 	system("clear");
 	printGameStatus();
 #endif
 	std::cout << "DAY PHASE" << std::endl << "Wake up all players" << std::endl << std::endl;
 	std::cout << "The following players died in the night: ";
-	while (_diedInTheNight[++i] != -1)
+	for (int i = 0; i < 68; i++)
 	{
-		if (getPlayerByIndex(_diedInTheNight[i])->getRole() != CURSED_ROLE)
+		if (_diedInTheNight[i] == -1)
+			continue;
+		else if (getPlayerByIndex(_diedInTheNight[i])->getRole() != CURSED_ROLE)
 			std::cout << _diedInTheNight[i] << " ";
 	}
-	std::cout << std::endl << std::endl;
 	resetNightlyDeaths();
+	std::cout << std::endl << std::endl;
 	if (checkWin())
 		exit(0);
-	std::cout << "Press enter to continue..." << std::endl;
+	std::cout << std::endl << "Press Enter to continue...";
 	get_input();
 #ifdef NICE
 	system("clear");
 	printGameStatus();
 #endif
-	std::cout << "Enter index of lynched player (if no player was lynched enter -1): ";
-	str input = get_input();
-	while (!isValidAlivePlayer(input))
+	while (1)
 	{
-		if (input == "-1")
-			break;
-		std::cout << "ERROR: Enter index: ";
-		input = get_input();
+		std::cout << "Enter index of lynched player (if no player was lynched enter -1): ";
+		str input = get_input();
+		while (!isValidAlivePlayer(input))
+		{
+			if (input == "-1")
+				break;
+			std::cout << "ERROR: Enter index: ";
+			input = get_input();
+		}
+		int index = std::stoi(input);
+		if (index != -1)
+		{
+			std::cout << "Enter number of votes for lynching: ";
+			input = get_input();
+			while (!isValidVoteNumber(input))
+			{
+				std::cout << "ERROR: Enter vote count: ";
+				input = get_input();
+			}
+			int votes = std::stoi(input);
+			if (_whichRoles[MAYOR_ROLE])
+			{
+				std::cout << "Did the Mayor (" << getPlayerByRole(MAYOR_ROLE)->getIndex() << ") vote yes? (1 for yes, 0 for no): ";
+				input = get_input();
+				while (input != "1" && input != "0")
+				{
+					std::cout << "ERROR: Enter vote: ";
+					input = get_input();
+				}
+				if (input == "1")
+					votes++;
+			}
+			if (votes > (_villagerNo + _vampNo + _wolfNo) / 2)
+			{
+				getPlayerByIndex(index)->beLynched();
+				std::cout << "Vote was sucessful" << std::endl;
+				std::cout << std::endl << "Press Enter to continue...";
+				get_input();
+				break;
+			}
+#ifdef NICE
+			system("clear");
+			printGameStatus();
+#endif
+			std::cout << "Vote was unsucessful" << std::endl;
+		}
 	}
-	int index = std::stoi(input);
-	if (index != -1)
-		getPlayerByIndex(index)->beLynched();
-	std::cout << "Press enter to contine..." << std::endl;
-	get_input();
 #ifdef NICE
 	system("clear");
 	printGameStatus();
@@ -903,6 +1178,11 @@ bool Game::getGameMode() const
 	return _revealCards;
 }
 
+void Game::setGameMode()
+{
+	_revealCards = !_revealCards;
+}
+
 void Game::wolfCubKilled()
 {
 	_secondWolfKill = true;
@@ -928,7 +1208,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Apprentice Seer is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -955,7 +1235,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Aura Seer is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -981,7 +1261,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Bodyguard is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1007,7 +1287,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Bodyguard is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1065,7 +1345,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Magician is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1091,7 +1371,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Old Hag is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1129,7 +1409,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The PI is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1164,7 +1444,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Priest is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1191,7 +1471,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Seer is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1210,7 +1490,7 @@ void Game::wakeAllActiveRoles()
 			if (_revealCards == false)
 				std::cout << "The Spellcaster is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1235,7 +1515,7 @@ void Game::wakeAllActiveRoles()
 				if (_revealCards == false)
 				std::cout << "The Troublemaker is dead. Call for them to conceal this fact" << std::endl;
 			}
-			std::cout << "Press Enter to continue...";
+			std::cout << std::endl << "Press Enter to continue...";
 			get_input();
 #ifdef NICE
 			system("clear");
@@ -1294,7 +1574,7 @@ if (_whichRoles[WITCH_ROLE])
 			if (_revealCards == false)
 				std::cout << "The Witch is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1321,7 +1601,7 @@ if (_whichRoles[WITCH_ROLE])
 			if (_revealCards == false)
 				std::cout << "The Sorcerer is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1356,7 +1636,7 @@ if (_whichRoles[WITCH_ROLE])
 			if (_revealCards == false)
 				std::cout << "The Cursed is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1385,7 +1665,7 @@ if (_whichRoles[WITCH_ROLE])
 			if (_revealCards == false)
 				std::cout << "The Doppelganger is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");
@@ -1411,7 +1691,7 @@ if (_whichRoles[WITCH_ROLE])
 			if (_revealCards == false)
 				std::cout << "The Cult Leader is dead. Call for them to conceal this fact" << std::endl;
 		}
-		std::cout << "Press Enter to continue...";
+		std::cout << std::endl << "Press Enter to continue...";
 		get_input();
 #ifdef NICE
 		system("clear");

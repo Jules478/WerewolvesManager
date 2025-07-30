@@ -1,7 +1,7 @@
 #include "../inc/ACard.hpp"
 #include "../inc/Game.hpp"
 
-ACard::ACard(t_roles role, str name, int side, bool wakes, Game* game, int value) : _role(role), _name(name), _side(side), _wakes(wakes), _game(game), _value(value)
+ACard::ACard(t_roles role, str name, int side, bool wakes, Game *game, int value) : _role(role), _name(name), _side(side), _wakes(wakes), _game(game), _value(value)
 {
 }
 

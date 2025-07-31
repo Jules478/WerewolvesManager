@@ -1,6 +1,14 @@
-Werewolves Manager v0.1.1
+Werewolves Manager 
+
+v0.1.2
+
+- Fixed bug where lynching the Prince would give incorrect message
+- Added check for the Mayor being alive during a lynching and not asking for Mayor's vote if dead
+- Minor spelling corrections
+
+v0.1.1
 
 - All roles added (partial functionality for most, some completed)
 - Added menu screen and game options
 - Game detects win states and reports wins when appropriate
-- This changelog was added. Any changes made prior to this and the order of their completion are not tracked. Version history starts here.
+- This changelog was added. Any changes made prior to this and the order of their completion are not tracked. Version history starts here

@@ -10,7 +10,7 @@ The program is constructed in C++ and uses an abstract class as the basis for al
 
 ## How to use it?
 
-Set up a game of Ultimate Werewolf and prepare a deck to play with. Each player should be assigned a number from 1 to the number of players (ie. 1-12 for 12 players) Compile the program and run it. It will prompt you for the number of players (you can change this later) and the program will take you to the main menu. Here you can follow the onscreen commands to add roles to the game as well as set some of the rules. Once the game starts the program will prompt the GM with which steps to complete and when.
+Set up a game of Ultimate Werewolf and prepare a deck to play with. Each player should be assigned a number from 1 to the number of players (ie. 1-12 for 12 players). Compile the program and run it. It will prompt you for the number of players (you can change this later) and the program will take you to the main menu. Here you can follow the onscreen commands to add roles to the game as well as set some of the rules. Once the game starts the program will prompt the GM with which steps to complete and when.
 
 > [!NOTE]
 > This is a work in progress and currently in alpha testing. See changelog for details.

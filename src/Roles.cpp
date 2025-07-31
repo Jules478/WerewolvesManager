@@ -397,9 +397,17 @@ Prince::~Prince()
 void Prince::beLynched()
 {
 	if (_abilityUsed == true)
+	{
+		_game->killVillager();
 		_alive = false;
+	}
 	else
 		_abilityUsed = true;
+}
+
+bool Prince::getAbilityUsed() const
+{
+	return _abilityUsed;
 }
 
 Seer::Seer(Game* game) : ACard(SEER_ROLE, "Seer", VILLAGER, true, game, 7)

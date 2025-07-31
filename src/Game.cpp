@@ -1094,20 +1094,27 @@ void Game::dayPhase()
 			int votes = std::stoi(input);
 			if (_whichRoles[MAYOR_ROLE])
 			{
-				std::cout << "Did the Mayor (" << getPlayerByRole(MAYOR_ROLE)->getIndex() << ") vote yes? (1 for yes, 0 for no): ";
-				input = get_input();
-				while (input != "1" && input != "0")
+				if (getPlayerByRole(MAYOR_ROLE)->getLife() == ALIVE)
 				{
-					std::cout << "ERROR: Enter vote: ";
+					std::cout << "Did the Mayor (" << getPlayerByRole(MAYOR_ROLE)->getIndex() << ") vote yes? (1 for yes, 0 for no): ";
 					input = get_input();
+					while (input != "1" && input != "0")
+					{
+						std::cout << "ERROR: Enter vote: ";
+						input = get_input();
+					}
+					if (input == "1")
+						votes++;
 				}
-				if (input == "1")
-					votes++;
 			}
 			if (votes > (_villagerNo + _vampNo + _wolfNo) / 2)
 			{
+				std::cout << getPlayerByIndex(index)->getRole() << getPlayerByIndex(index)->getAbilityUsed() << std::endl;
+				if (getPlayerByIndex(index)->getRole() == PRINCE_ROLE && getPlayerByIndex(index)->getAbilityUsed() == false)
+					std::cout << "The Prince has been lynched. Reveal their role. The Prince does not die" << std::endl;
+				else
+					std::cout << "Vote was successful. Player " << index << " (" << getPlayerByIndex(index)->getName() << ") has been lynched" << std::endl;
 				getPlayerByIndex(index)->beLynched();
-				std::cout << "Vote was sucessful" << std::endl;
 				std::cout << std::endl << "Press Enter to continue...";
 				get_input();
 				break;

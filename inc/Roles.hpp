@@ -243,6 +243,8 @@ class Prince : public ACard
 
 			void beLynched();
 
+			bool getAbilityUsed() const;
+
 };
 
 class Seer : public ACard

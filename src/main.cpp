@@ -1,5 +1,10 @@
 #include "../inc/Game.hpp"
 
+void clearScreen()
+{
+    std::cout << "\033[H\033[2J";
+    std::cout.flush();
+}
 
 void printTitle()
 {
@@ -44,10 +49,8 @@ bool isValidStartNumber(const str& input)
 
 int main()
 {
-#ifdef NICE
-	system("clear");
+	clearScreen();
 	printTitle();
-#endif
 	str input = "";
 	std::cout << "Enter number of players: ";
 	input = get_input();
@@ -57,10 +60,8 @@ int main()
 		input = get_input();
 	}
 	Game game(std::stoi(input));
-#ifdef NICE
-	system("clear");
+	clearScreen();
 	printTitle();
-#endif
 	while (1)
 	{
 		std::cout << "Commands: " << "add | remove | resize | start | set reveal | set drunk | quit" << std::endl;
@@ -110,41 +111,32 @@ int main()
 					if (game.checkWin())
 						break;
 				}
-				exit (0);
+				return 0;
 			}
 		}
 		else if (input == "set reveal")
 		{
 			game.setGameMode();
-#ifdef NICE
-			system("clear");
+			clearScreen();
 			printTitle();
-#endif
 		}
 		else if (input == "set drunk")
 		{
 			game.setDrunkMode();
-#ifdef NICE
-			system("clear");
+			clearScreen();
 			printTitle();
-#endif
 		}
 		else if (input == "quit")
 		{
-#ifdef NICE
-			system("clear");
-#endif
-			exit(0);
+			clearScreen();
+			return 0;
 		}
 		else
 		{
-#ifdef NICE
-			system("clear");
+			clearScreen();
 			printTitle();
-#endif
 			std::cout << "Command '" << input << "' not recognised" << std::endl;
 		}
-
 	}
 	return 0;
 }

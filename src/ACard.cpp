@@ -114,3 +114,13 @@ void ACard::setInCult()
 {
 	_inCult = true;
 }
+
+void ACard::setDrunk()
+{
+	_isDrunk = !_isDrunk;
+}
+
+bool ACard::getDrunk() const
+{
+	return _isDrunk;
+}

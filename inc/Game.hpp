@@ -44,7 +44,6 @@ class Game
 			int _assignedPlayers[68];
 			int _assignedIndex = 0;
 			bool _drunkInGame = false;
-			int _drunkRole;
 
 	public:
 			Game(int playerno);
@@ -93,7 +92,10 @@ class Game
 			void wolfCubKilled();
 			void printGameStatus();
 
+			void closeProgram();
+
 };
 
 str get_input();
 void printTitle();
+void clearScreen();

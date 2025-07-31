@@ -10,6 +10,7 @@ typedef std::string str;
 # define PURPLE "\e[0;35m"
 # define YELLOW "\e[0;33m"
 # define WHITE "\e[0;37m"
+# define GREY "\e[0;90m"
 # define RESET "\e[0m"
 
 typedef enum e_roles
@@ -107,6 +108,7 @@ class ACard
 			str getName() const;
 			bool getInVillage() const;
 			int getValue() const;
+			bool getDrunk() const;
 
 			void setRole(t_roles role);
 			void setIndex(int index);
@@ -114,6 +116,7 @@ class ACard
 			void setLife(bool alive);
 			void setInVillage(bool exile);
 			void setInCult();
+			void setDrunk();
 
 			virtual void beAttacked(int attacker);
 			virtual void beLynched();

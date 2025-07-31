@@ -111,6 +111,7 @@ int main()
 					if (game.checkWin())
 						break;
 				}
+				game.checkSideWins();
 				return 0;
 			}
 		}

@@ -870,19 +870,16 @@ bool Game::checkWin()
 	if (_villagerNo == _wolfNo && _vampNo == 0)
 	{
 		_wolfWin = true;
-		std::cout << "WEREWOLVES WIN" << std::endl;
 		return true;
 	}
 	else if (_wolfNo == 0 && _vampNo == 0)
 	{
 		_villageWin = true;
-		std::cout << "VILLAGERS WIN" << std::endl;
 		return true;
 	}
 	else if (_vampNo == _villagerNo && _wolfNo == 0)
 	{
 		_vampWin = true;
-		std::cout << "VAMPIRES WIN" << std::endl;
 		return true;
 	}
 	else if (_villagerNo == 0 && _wolfNo != 0 && _vampNo != 0)
@@ -1002,38 +999,6 @@ int Game::getPlayerNo() const
 	return _playerNo;
 }
 
-void Game::setWinStates(int wolf, int village, int vamp, int tanner, int lone, int hood, int cult)
-{
-	if (wolf == 1)
-		_wolfWin = true;
-	else if (wolf == 0)
-		_wolfWin = false;
-	if (village == 1)
-		_villageWin = true;
-	else if (village == 0)
-		_villageWin = false;
-	if (vamp == 1)
-		_vampWin = true;
-	else if (vamp == 0)
-		_vampWin = false;
-	if (tanner == 1)
-		_tannerWin = true;
-	else if (tanner == 0)
-		_tannerWin = false;
-	if (lone == 1)
-		_loneWolfWin = true;
-	else if (lone == 0)
-		_loneWolfWin = false;
-	if (hood == 1)
-		_hoodlumWin = true;
-	else if (hood == 0)
-		_hoodlumWin = false;
-	if (cult == 1)
-		_cultWin = true;
-	else if (cult == 0)
-		_cultWin = false;
-}
-
 bool Game::tryStart()
 {
 	for (int i = 0; i < static_cast<int>(_player.size()); i++)
@@ -1097,7 +1062,10 @@ void Game::dayPhase()
 	resetNightlyDeaths();
 	std::cout << std::endl << std::endl;
 	if (checkWin())
+	{
+		checkSideWins();
 		closeProgram();
+	}
 	std::cout << std::endl << "Press Enter to continue...";
 	get_input();
 	clearScreen();
@@ -1692,6 +1660,30 @@ if (_whichRoles[WITCH_ROLE])
 		get_input();
 		clearScreen();
 		printGameStatus();
+	}
+}
+
+void Game::checkSideWins()
+{
+	
+	if (_villageWin)
+		std::cout << "VILLAGERS WIN" << std::endl;
+	if (_vampWin)
+		std::cout << "VAMPIRES WIN" << std::endl;
+	
+	if (_whichRoles[LONEWOLF_ROLE])
+	{
+		if (getPlayerByRole(LONEWOLF_ROLE)->getLife() == ALIVE && _wolfNo == 1)
+			std::cout << "LONE WOLF WINS" << std::endl;
+		else if (_wolfWin)
+			std::cout << "WEREWOLVES WIN" << std::endl;
+	}
+	else if (_wolfWin)
+		std::cout << "WEREWOLVES WIN" << std::endl;
+	if (_whichRoles[TANNER_ROLE])
+	{
+		if (getPlayerByRole(TANNER_ROLE)->getLife() == DEAD)
+			std::cout << "TANNER WINS" << std::endl;
 	}
 }
 

@@ -25,7 +25,6 @@ class Game
 			bool _wolfWin = false;
 			bool _villageWin = false;
 			bool _vampWin = false;
-			bool _tannerWin = false;
 			bool _loneWolfWin = false;
 			bool _hoodlumWin = false;
 			bool _cultWin = false;
@@ -70,7 +69,6 @@ class Game
 			void setPlayerNo(int playerno);
 			void setNightlyDeaths(int index);
 			void setVampVictim(int index);
-			void setWinStates(int wolf, int village, int vamp, int tanner, int lone, int hood, int cult);
 			void setBalance(int value);
 			void setGameMode();
 			void setDrunkMode();
@@ -91,6 +89,7 @@ class Game
 			bool getDrunkMode() const;
 			void wolfCubKilled();
 			void printGameStatus();
+			void checkSideWins();
 
 			void closeProgram();
 

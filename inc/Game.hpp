@@ -43,6 +43,8 @@ class Game
 			int _howManyRoles[MAX_ROLES];
 			int _assignedPlayers[68];
 			int _assignedIndex = 0;
+			bool _drunkInGame = false;
+			int _drunkRole;
 
 	public:
 			Game(int playerno);
@@ -72,6 +74,7 @@ class Game
 			void setWinStates(int wolf, int village, int vamp, int tanner, int lone, int hood, int cult);
 			void setBalance(int value);
 			void setGameMode();
+			void setDrunkMode();
 			
 			ACard* getPlayerByIndex(int index);
 			ACard* getPlayerByName(str name);
@@ -86,6 +89,7 @@ class Game
 			int getCurrentNight() const;
 			void wakeAllActiveRoles();
 			bool getGameMode() const;
+			bool getDrunkMode() const;
 			void wolfCubKilled();
 			void printGameStatus();
 

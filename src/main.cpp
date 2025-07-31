@@ -63,13 +63,14 @@ int main()
 #endif
 	while (1)
 	{
-		std::cout << "Commands: " << "add | remove | resize | start | set reveal | quit" << std::endl;
+		std::cout << "Commands: " << "add | remove | resize | start | set reveal | set drunk | quit" << std::endl;
 		std::cout << "Current Players: " << game.getPlayerNo() << " | Current Roles: " << game.getPlayers().size() << " | Current Balance: " << game.getBalance();
 		if (game.getBalance() > 0)
 			std::cout << " (Villager advantage)";
 		else if (game.getBalance() < 0)
 			std::cout << " (Villager Disadvantage)";
 		std::cout << " | " << (game.getGameMode() ? "Roles are revealed on death" : "Roles are not revealed on death");
+		std::cout << " | " << (game.getDrunkMode() ? "Drunk is in the game" : "Drunk is not in the game");
 		std::cout << std::endl << std::endl;
 		for (int i = 0; i < static_cast<int>(game.getPlayers().size()); i++)
 			std::cout << game.getPlayers()[i]->getName() << std::endl;
@@ -115,6 +116,14 @@ int main()
 		else if (input == "set reveal")
 		{
 			game.setGameMode();
+#ifdef NICE
+			system("clear");
+			printTitle();
+#endif
+		}
+		else if (input == "set drunk")
+		{
+			game.setDrunkMode();
 #ifdef NICE
 			system("clear");
 			printTitle();

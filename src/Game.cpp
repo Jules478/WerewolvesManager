@@ -188,6 +188,7 @@ void Game::addPlayer(str role)
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << "Game is full. Resize to add more players" << std::endl;
 		return ;
@@ -495,6 +496,7 @@ void Game::addPlayer(str role)
 			_player.push_back(newPlayer);
 #ifdef NICE
 			system("clear");
+			printTitle();
 #endif
 		}
 	}
@@ -502,6 +504,7 @@ void Game::addPlayer(str role)
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << "Error: Invalid role '" << lowerRole << "'. Please use a valid role name." << std::endl;
 	}
@@ -528,6 +531,7 @@ void Game::removePlayer(str role)
 				_player.erase(_player.begin() + i);
 #ifdef NICE
 				system("clear");
+				printTitle();
 #endif
 				std::cout << lowerRole << " removed" << std::endl;
 				return ;
@@ -536,6 +540,7 @@ void Game::removePlayer(str role)
 	}
 #ifdef NICE
 	system("clear");
+	printTitle();
 #endif
 	std::cout << "Role " << lowerRole << " not in game" << std::endl;
 }
@@ -633,6 +638,10 @@ void Game::firstNight()
 	system("clear");
 	printGameStatus();
 #endif
+	if (_drunkInGame)
+	{
+		_drunkRole = 1;
+	}
 	if (_whichRoles[WOLFCUB_ROLE])
 	{
 		std::cout << "Wake up the Wolf Cub" << std::endl;
@@ -872,6 +881,7 @@ void Game::setPlayerNo(int playerno)
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << "Game already has " << playerno << " players" << std::endl;
 		return ;
@@ -880,6 +890,7 @@ void Game::setPlayerNo(int playerno)
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << "Cannot make game smaller than current number of players (" << _player.size() << ")" << std::endl;
 		return ;
@@ -888,6 +899,7 @@ void Game::setPlayerNo(int playerno)
 	_playerNo = playerno;
 #ifdef NICE
 	system("clear");
+	printTitle();
 #endif
 }
 
@@ -1023,6 +1035,7 @@ bool Game::tryStart()
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << _playerNo - static_cast<int>(_player.size()) << " player(s) missing roles" << std::endl;
 		return false;
@@ -1031,6 +1044,7 @@ bool Game::tryStart()
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << "At least 1 Werewolf or Vampire required" << std::endl;
 		return false;
@@ -1039,6 +1053,7 @@ bool Game::tryStart()
 	{
 #ifdef NICE
 		system("clear");
+		printTitle();
 #endif
 		std::cout << "At least 1 Seer required" << std::endl;
 		return false;
@@ -1131,6 +1146,8 @@ void Game::dayPhase()
 #endif
 			std::cout << "Vote was unsucessful" << std::endl;
 		}
+		else
+			break;
 	}
 #ifdef NICE
 	system("clear");
@@ -1178,9 +1195,19 @@ bool Game::getGameMode() const
 	return _revealCards;
 }
 
+bool Game::getDrunkMode() const
+{
+	return _drunkInGame;
+}
+
 void Game::setGameMode()
 {
 	_revealCards = !_revealCards;
+}
+
+void Game::setDrunkMode()
+{
+	_drunkInGame = !_drunkInGame;
 }
 
 void Game::wolfCubKilled()

@@ -9,7 +9,7 @@ typedef std::string str;
 # define GREEN "\e[0;32m"
 # define PURPLE "\e[0;35m"
 # define YELLOW "\e[0;33m"
-#define WHITE "\e[0;37m"
+# define WHITE "\e[0;37m"
 # define RESET "\e[0m"
 
 typedef enum e_roles

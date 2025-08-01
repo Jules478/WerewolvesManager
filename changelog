@@ -1,5 +1,11 @@
 Werewolves Manager 
 
+v0.3.1
+- Added Old Man
+- Added Ghost
+- Added alternate ghost rules which can be toggled on main menu
+- Added Day/Night tracker to game info
+
 v0.2.1
 - Added Old Hag pox feature
 - Tough Guy now avoids death for one night when attacked by werewolves

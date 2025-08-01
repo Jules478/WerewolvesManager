@@ -65,14 +65,15 @@ int main()
 	printTitle();
 	while (1)
 	{
-		std::cout << "Commands: " << "add | remove | resize | start | set reveal | set drunk | quit" << std::endl;
-		std::cout << "Current Players: " << game.getPlayerNo() << " | Current Roles: " << game.getPlayers().size() << " | Current Balance: " << game.getBalance();
+		std::cout << "Commands: " << "add | remove | resize | start | set reveal | set drunk | set ghost | quit" << std::endl;
+		std::cout << std::endl << "Current Players: " << game.getPlayerNo() << " | Current Roles: " << game.getPlayers().size() << " | Current Balance: " << game.getBalance();
 		if (game.getBalance() > 0)
 			std::cout << " (Villager advantage)";
 		else if (game.getBalance() < 0)
 			std::cout << " (Villager Disadvantage)";
-		std::cout << " | " << (game.getGameMode() ? "Roles are revealed on death" : "Roles are not revealed on death");
+		std::cout << std::endl << std::endl << (game.getGameMode() ? "Roles are revealed on death" : "Roles are not revealed on death");
 		std::cout << " | " << (game.getDrunkMode() ? "Drunk is in the game" : "Drunk is not in the game");
+		std::cout << " | " << (game.getGhostMode() ? "First player to die is the Ghost" : "First player to die is not the Ghost");
 		std::cout << std::endl << std::endl;
 		for (int i = 0; i < static_cast<int>(game.getPlayers().size()); i++)
 			std::cout << game.getPlayers()[i]->getName() << std::endl;
@@ -106,9 +107,15 @@ int main()
 				while (game.stopGame() == false)
 				{
 					if (!game.checkWin())
+					{
 						game.nightPhase();
+						game.setTimeOfDay();
+					}
 					if (!game.checkWin())
+					{
 						game.dayPhase();
+						game.setTimeOfDay();
+					}
 					if (game.checkWin())
 						break;
 				}
@@ -125,6 +132,12 @@ int main()
 		else if (input == "set drunk")
 		{
 			game.setDrunkMode();
+			clearScreen();
+			printTitle();
+		}
+		else if (input == "set ghost")
+		{
+			game.setGhostMode();
 			clearScreen();
 			printTitle();
 		}

@@ -40,6 +40,7 @@ class Game
 			int _assignedPlayers[68];
 			int _assignedIndex = 0;
 			bool _drunkInGame = false;
+			bool _altGhostRule = false;
 
 	public:
 			Game(int playerno);
@@ -69,6 +70,7 @@ class Game
 			void setBalance(int value);
 			void setGameMode();
 			void setDrunkMode();
+			void setGhostMode();
 			void setTimeOfDay();
 			
 			ACard* getPlayerByIndex(int index);
@@ -85,6 +87,7 @@ class Game
 			void wakeAllActiveRoles();
 			bool getGameMode() const;
 			bool getDrunkMode() const;
+			bool getGhostMode() const;
 			void wolfCubKilled();
 			void printGameStatus();
 			void checkSideWins();

@@ -543,6 +543,8 @@ void Game::removePlayer(str role)
 
 void Game::nightPhase()
 {
+	clearScreen();
+	printGameStatus();
 	if (_whichRoles[TOUGHGUY_ROLE])
 	{
 		if (getPlayerByRole(TOUGHGUY_ROLE)->getAbilityUsed())
@@ -574,6 +576,10 @@ void Game::nightPhase()
 		}
 		clearScreen();
 		printGameStatus();
+	}
+	if (_whichRoles[OLDMAN_ROLE])
+	{
+		getPlayerByRole(OLDMAN_ROLE)->Dies();
 	}
 	int wolf = -1;
 	if (_wolfUpsetTummy == false)
@@ -648,7 +654,6 @@ void Game::nightPhase()
 	_wolfUpsetTummy = false;
 	_secondWolfKill = false;
 	wakeAllActiveRoles();
-	_nightNo++;
 }
 
 void Game::firstNight()
@@ -866,9 +871,21 @@ void Game::firstNight()
 	std::cout << "Player " << input << " is " << (res ? "a werewolf" : "not a werewolf") << std::endl;
 	std::cout << std::endl << "Press Enter to continue...";
 	get_input();
+	setTimeOfDay();
 	clearScreen();
 	printGameStatus();
+	std::cout << "Let the villagers talk amongst themselves. There are no lynchings today" << std::endl;
+	if (_whichRoles[GHOST_ROLE])
+	{
+		getPlayerByRole(GHOST_ROLE)->setLife(DEAD);
+		std::cout << "The Ghost (" << getPlayerByRole(GHOST_ROLE)->getIndex() << ") has died. They will stay awake during the night phase" << std::endl;
+	}
+	std::cout << std::endl << "Press Enter to continue..." << std::endl;
+	get_input();
+	setTimeOfDay();
 	_nightNo++;
+	clearScreen();
+	printGameStatus();
 }
 
 bool Game::checkWin()
@@ -1156,6 +1173,7 @@ void Game::dayPhase()
 		else
 			break;
 	}
+	_nightNo++;
 	clearScreen();
 	printGameStatus();
 }
@@ -1205,6 +1223,11 @@ bool Game::getDrunkMode() const
 	return _drunkInGame;
 }
 
+bool Game::getGhostMode() const
+{
+	return _altGhostRule;
+}
+
 void Game::setGameMode()
 {
 	_revealCards = !_revealCards;
@@ -1213,6 +1236,11 @@ void Game::setGameMode()
 void Game::setDrunkMode()
 {
 	_drunkInGame = !_drunkInGame;
+}
+
+void Game::setGhostMode()
+{
+	_altGhostRule = !_altGhostRule;
 }
 
 void Game::setTimeOfDay()
@@ -1707,6 +1735,14 @@ if (_whichRoles[WITCH_ROLE])
 		clearScreen();
 		printGameStatus();
 	}
+	if (_whichRoles[GHOST_ROLE] || (_altGhostRule && _villagerNo + _wolfNo + _vampNo < _playerNo))
+	{
+		std::cout << "Ask the Ghost for the letter they wish to give to the Village" << std::endl;
+		std::cout << std::endl << "Press Enter to continue...";
+		get_input();
+		clearScreen();
+		printGameStatus();
+	}
 }
 
 void Game::checkSideWins()
@@ -1810,6 +1846,7 @@ void Game::printGameStatus()
 	for (int i = 0; i < col4Width + 2; i++) std::cout << "-";
 		std::cout << "+" << std::endl;
 
+	std::cout << (_nighttime ? "Night " : "Day " ) << _nightNo << std::endl << std::endl;
 	std::cout << "Alive Villagers: (" << _villagerNo << ")" << std::endl;
 	std::cout << "Alive Werewolves: (" << _wolfNo << ")" << std::endl;
 	std::cout << "Alive Vampires: (" << _vampNo << ")" << std::endl;

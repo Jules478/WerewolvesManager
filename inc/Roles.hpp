@@ -186,12 +186,16 @@ class OldHag : public ACard
 
 class OldMan : public ACard
 {
+	private:
+			bool _diesOldAge = false;
+
 	public:
 			OldMan(Game* game);
 			~OldMan();
 
 			void Dies();
-
+			bool getAbilityUsed() const;
+			
 };
 
 class PI : public ACard

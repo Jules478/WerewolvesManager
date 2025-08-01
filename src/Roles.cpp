@@ -105,6 +105,11 @@ Bodyguard::~Bodyguard()
 
 void Bodyguard::Protect(int index)
 {
+	if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
+	{
+		if (_game->getPlayerByIndex(index)->getAbilityUsed() == true)
+			return ;
+	}
 	for (int i = 0; i < 68; i++)
 	{
 		if (_game->getNightlyDeaths()[i] == index)
@@ -283,10 +288,19 @@ OldMan::OldMan(Game* game) : ACard(OLDMAN_ROLE, "Old Man", VILLAGER, false, game
 OldMan::~OldMan()
 {
 }
+
 void OldMan::Dies()
 {
-	if (_game->getCurrentNight() >= _game->getWereNo() + 1)
+	if (_alive && _game->getCurrentNight() >= _game->getWereNo() + 1)
+	{
+		_diesOldAge = true;
 		_game->setNightlyDeaths(_index);
+	}
+}
+
+bool OldMan::getAbilityUsed() const
+{
+	return _diesOldAge;
 }
 
 PI::PI(Game* game) : ACard(PI_ROLE, "PI", VILLAGER, true, game, 3)
@@ -365,6 +379,11 @@ Priest::~Priest()
 }
 void Priest::Protect(int index)
 {
+	if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
+	{
+		if (_game->getPlayerByIndex(index)->getAbilityUsed() == true)
+			return ;
+	}
 	int i = -1;
 	while (_game->getNightlyDeaths()[++i] != -1)
 	{

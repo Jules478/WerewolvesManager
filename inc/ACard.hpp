@@ -101,6 +101,7 @@ class ACard
 			virtual int getVictim() const { return -1; }
 			virtual int getPlayer1() { return -1; }
 			virtual int getPlayer2() { return -1; }
+			virtual void Dies() { return ; }
 
 			int getSide() const;
 			int getIndex() const;

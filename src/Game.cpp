@@ -19,15 +19,15 @@ static std::map<str, t_roles> roleLookup =
 	{"martyr", MARTYR_ROLE},
 	{"mason", MASON_ROLE},
 	{"mayor", MAYOR_ROLE},
-	{"oldhag", OLDHAG_ROLE},
-	{"oldman", OLDMAN_ROLE},
+	{"old hag", OLDHAG_ROLE},
+	{"old man", OLDMAN_ROLE},
 	{"pi", PI_ROLE},
 	{"pacifist", PACIFIST_ROLE},
 	{"priest", PRIEST_ROLE},
 	{"prince", PRINCE_ROLE},
 	{"seer", SEER_ROLE},
 	{"spellcaster", SPELLCASTER_ROLE},
-	{"toughguy", TOUGHGUY_ROLE},
+	{"tough guy", TOUGHGUY_ROLE},
 	{"troublemaker", TROUBLEMAKER_ROLE},
 	{"villager", VILLAGER_ROLE},
 	{"witch", WITCH_ROLE},
@@ -35,7 +35,7 @@ static std::map<str, t_roles> roleLookup =
 	{"minion", MINION_ROLE},
 	{"cursed", CURSED_ROLE},
 	{"doppelganger", DOPPELGANGER_ROLE},
-	{"cultleader", CULTLEADER_ROLE},
+	{"cult leader", CULTLEADER_ROLE},
 	{"hoodlum", HOODLUM_ROLE},
 	{"tanner", TANNER_ROLE}
 };
@@ -43,6 +43,7 @@ static std::map<str, t_roles> roleLookup =
 void error_max()
 {
 	clearScreen();
+	printTitle();
 	std::cout << "Maximum number already in game" << std::endl;
 }
 
@@ -159,7 +160,7 @@ bool Game::isValidAlivePlayer(const str& input)
 		int number = std::stoi(input);
 		if (number > _playerNo || number < 1)
 			return false;
-		return (getPlayerByIndex(number)->getLife());
+		return (getPlayerByIndex(number)->getLife() && getPlayerByIndex(number)->getInVillage());
 	}
 	catch (const std::exception&)
 	{
@@ -542,6 +543,11 @@ void Game::removePlayer(str role)
 
 void Game::nightPhase()
 {
+	if (_whichRoles[TOUGHGUY_ROLE])
+	{
+		if (getPlayerByRole(TOUGHGUY_ROLE)->getAbilityUsed())
+			setNightlyDeaths(getPlayerByRole(TOUGHGUY_ROLE)->getIndex());
+	}
 	if (_nightNo == 4 && _drunkInGame)
 	{
 		for (size_t i = 0; i < _player.size(); i++)
@@ -794,7 +800,7 @@ void Game::firstNight()
 		int role = _player[i]->getRole();
 		if (role == SEER_ROLE)
 			seer = i;
-		else if (role == VILLAGER_ROLE || role == WOLFCUB_ROLE || role == LONEWOLF_ROLE || role == WEREWOLF_ROLE || role == VAMPIRE_ROLE)
+		else if (role == MASON_ROLE || role == VILLAGER_ROLE || role == WOLFCUB_ROLE || role == LONEWOLF_ROLE || role == WEREWOLF_ROLE || role == VAMPIRE_ROLE)
 			continue;
 		else
 		{
@@ -886,7 +892,6 @@ bool Game::checkWin()
 	{
 		_vampWin = true;
 		_wolfWin = true;
-		std::cout << "WEREWOLVES AND VAMPIRES WIN" << std::endl;
 		return true;
 	}
 	return false;
@@ -921,6 +926,11 @@ int* Game::getNightlyDeaths()
 
 void Game::setNightlyDeaths(int index)
 {
+	for (int i = 0; i < _diedIndex; i++)
+	{
+		if (_diedInTheNight[i] == index)
+			return ;
+	}
 	_diedInTheNight[_diedIndex] = index;
 	_diedIndex++;
 }
@@ -1070,8 +1080,23 @@ void Game::dayPhase()
 	get_input();
 	clearScreen();
 	printGameStatus();
+	if (_whichRoles[OLDHAG_ROLE])
+	{
+		for (size_t i = 0; i < _player.size(); i++)
+		{
+			if (_player[i]->getInVillage() == false)
+			{
+				std::cout << "Player " << _player[i]->getIndex() << " (" << _player[i]->getName() << ") has been exiled. They cannot participate in this day phase" << std::endl;
+				std::cout << std::endl << std::endl << "Press enter to continue..." << std::endl;
+				get_input();
+				break ;
+			}
+		}
+	}
 	while (1)
 	{
+		if (_secondLynching)
+			std::cout << "The Troublemaker has called for two lynchings today" << std::endl;
 		std::cout << "Enter index of lynched player (if no player was lynched enter -1): ";
 		str input = get_input();
 		while (!isValidAlivePlayer(input))
@@ -1109,7 +1134,6 @@ void Game::dayPhase()
 			}
 			if (votes > (_villagerNo + _vampNo + _wolfNo) / 2)
 			{
-				std::cout << getPlayerByIndex(index)->getRole() << getPlayerByIndex(index)->getAbilityUsed() << std::endl;
 				if (getPlayerByIndex(index)->getRole() == PRINCE_ROLE && getPlayerByIndex(index)->getAbilityUsed() == false)
 					std::cout << "The Prince has been lynched. Reveal their role. The Prince does not die" << std::endl;
 				else
@@ -1117,11 +1141,17 @@ void Game::dayPhase()
 				getPlayerByIndex(index)->beLynched();
 				std::cout << std::endl << "Press Enter to continue...";
 				get_input();
-				break;
+				if (_secondLynching)
+				{
+					_secondLynching = false;
+					continue;
+				}
+				else
+					break;
 			}
 			clearScreen();
 			printGameStatus();
-			std::cout << "Vote was unsucessful" << std::endl;
+			std::cout << "Vote was unsuccessful" << std::endl;
 		}
 		else
 			break;
@@ -1183,6 +1213,11 @@ void Game::setGameMode()
 void Game::setDrunkMode()
 {
 	_drunkInGame = !_drunkInGame;
+}
+
+void Game::setTimeOfDay()
+{
+	_nighttime = !_nighttime;
 }
 
 void Game::wolfCubKilled()
@@ -1481,27 +1516,31 @@ void Game::wakeAllActiveRoles()
 	}
 	if (_whichRoles[TROUBLEMAKER_ROLE])
 	{
-		if (getPlayerByRole(TROUBLEMAKER_ROLE)->getAbilityUsed() == false)
+		if (getPlayerByRole(TROUBLEMAKER_ROLE)->getLife() == ALIVE)
 		{
-			if (getPlayerByRole(TROUBLEMAKER_ROLE)->getLife() == ALIVE)
+			if (getPlayerByRole(TROUBLEMAKER_ROLE)->getAbilityUsed() == false)
 			{
 				std::cout << "Wake the Troublemaker" << std::endl << std::endl;
-				std::cout << "Ask if there will be two lynching the next day (1 for yes, 0 for no): " << std::endl;
+				std::cout << "Ask if there will be two lynchings the next day (1 for yes, 0 for no): " << std::endl;
 				str input = get_input();
 				if (input == "1")
-				_secondLynching = true;
-				getPlayerByRole(TROUBLEMAKER_ROLE)->setAbilityUsed();
+				{
+					_secondLynching = true;
+					getPlayerByRole(TROUBLEMAKER_ROLE)->setAbilityUsed();
+				}
 			}
-			else
-			{
-				if (_revealCards == false)
-				std::cout << "The Troublemaker is dead. Call for them to conceal this fact" << std::endl;
-			}
-			std::cout << std::endl << "Press Enter to continue...";
-			get_input();
-			clearScreen();
-			printGameStatus();
 		}
+		else
+		{
+			if (_revealCards == false)
+			{
+				std::cout << "The Troublemaker is dead. Call for them to conceal this fact" << std::endl;
+				std::cout << std::endl << "Press Enter to continue...";
+				get_input();
+			}
+		}
+		clearScreen();
+		printGameStatus();
 	}
 if (_whichRoles[WITCH_ROLE])
 	{
@@ -1672,7 +1711,22 @@ if (_whichRoles[WITCH_ROLE])
 
 void Game::checkSideWins()
 {
-	
+	if (_whichRoles[CULTLEADER_ROLE])
+	{
+		int cult = 0;
+		for (size_t i = 0; i < _player.size(); i++)
+		{
+			if (_player[i]->getInCult())
+				cult++;
+		}
+		if (cult == _villagerNo + _wolfNo + _vampNo)
+			std::cout << "CULT LEADER WINS" << std::endl;
+	}
+	if (_whichRoles[HOODLUM_ROLE])
+	{
+		if (getPlayerByIndex(getPlayerByRole(HOODLUM_ROLE)->getPlayer1())->getLife() == DEAD && getPlayerByIndex(getPlayerByRole(HOODLUM_ROLE)->getPlayer2())->getLife() == DEAD)
+			std::cout << "HOODLUM WINS" << std::endl;
+	}
 	if (_villageWin)
 		std::cout << "VILLAGERS WIN" << std::endl;
 	if (_vampWin)
@@ -1682,9 +1736,13 @@ void Game::checkSideWins()
 	{
 		if (getPlayerByRole(LONEWOLF_ROLE)->getLife() == ALIVE && _wolfNo == 1)
 			std::cout << "LONE WOLF WINS" << std::endl;
+		else if (_vampWin == true && _wolfWin == true)
+			std::cout << "WEREWOLVES AND VAMPIRES WIN" << std::endl;
 		else if (_wolfWin)
 			std::cout << "WEREWOLVES WIN" << std::endl;
 	}
+	else if (_vampWin == true && _wolfWin == true)
+		std::cout << "WEREWOLVES AND VAMPIRES WIN" << std::endl;
 	else if (_wolfWin)
 		std::cout << "WEREWOLVES WIN" << std::endl;
 	if (_whichRoles[TANNER_ROLE])
@@ -1728,8 +1786,8 @@ void Game::printGameStatus()
 		
 	for (size_t i = 0; i < _player.size(); i++)
 	{
-		std::cout << "| " << (_player[i]->getDrunk() ? GREY : RESET) << std::setw(col1Width) << std::left << _player[i]->getIndex() << RESET << " | ";
-		std::cout << (_player[i]->getDrunk() ? GREY : RESET) << std::setw(col2Width) << std::left << _player[i]->getName() << RESET << " | ";
+		std::cout << "| " << (_player[i]->getDrunk() || !_player[i]->getInVillage() ? GREY : RESET) << std::setw(col1Width) << std::left << _player[i]->getIndex() << RESET << " | ";
+		std::cout << (_player[i]->getDrunk() || !_player[i]->getInVillage() ? GREY : RESET) << std::setw(col2Width) << std::left << _player[i]->getName() << RESET << " | ";
 		bool life = _player[i]->getLife();
 		std::cout << (life ? GREEN : RED) << std::setw(col3Width) << std::left << (life ? "Alive" : "Dead") << RESET << " | ";
 		
@@ -1757,3 +1815,4 @@ void Game::printGameStatus()
 	std::cout << "Alive Vampires: (" << _vampNo << ")" << std::endl;
 	std::cout << "Total Alive Players: (" << _villagerNo + _wolfNo + _vampNo << "/" << _playerNo << ")" << std::endl << std::endl;
 }
+ 

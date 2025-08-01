@@ -25,9 +25,6 @@ class Game
 			bool _wolfWin = false;
 			bool _villageWin = false;
 			bool _vampWin = false;
-			bool _loneWolfWin = false;
-			bool _hoodlumWin = false;
-			bool _cultWin = false;
 			int _diedInTheNight[68];
 			int _diedIndex = 0;
 			int	_vampireVictim;
@@ -72,6 +69,7 @@ class Game
 			void setBalance(int value);
 			void setGameMode();
 			void setDrunkMode();
+			void setTimeOfDay();
 			
 			ACard* getPlayerByIndex(int index);
 			ACard* getPlayerByName(str name);

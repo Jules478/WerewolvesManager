@@ -74,7 +74,7 @@ class ACard
 			bool _alive = true;
 			bool _wakes;
 			Game* _game;
-			bool _exiled = false;
+			bool _inVillage = true;
 			int _value;
 			bool _isDrunk = false;
 			bool _inCult = false;
@@ -99,6 +99,8 @@ class ACard
 			virtual ACard* getStolenIdentity() const { return nullptr ; }
 			virtual void takePlayerWith(int victim) { (void)victim ; }
 			virtual int getVictim() const { return -1; }
+			virtual int getPlayer1() { return -1; }
+			virtual int getPlayer2() { return -1; }
 
 			int getSide() const;
 			int getIndex() const;
@@ -109,6 +111,7 @@ class ACard
 			bool getInVillage() const;
 			int getValue() const;
 			bool getDrunk() const;
+			bool getInCult() const;
 
 			void setRole(t_roles role);
 			void setIndex(int index);

@@ -97,12 +97,12 @@ void ACard::beLynched()
 
 bool ACard::getInVillage() const
 {
-	return _exiled;
+	return _inVillage;
 }
 
 void ACard::setInVillage(bool exile)
 {
-	_exiled = exile;
+	_inVillage = exile;
 }
 
 int ACard::getValue() const
@@ -123,4 +123,9 @@ void ACard::setDrunk()
 bool ACard::getDrunk() const
 {
 	return _isDrunk;
+}
+
+bool ACard::getInCult() const
+{
+	return _inCult;
 }

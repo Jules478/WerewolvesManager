@@ -456,6 +456,11 @@ void ToughGuy::beAttacked(int attacker)
 	}
 }
 
+bool ToughGuy::getAbilityUsed() const
+{
+	return _goingToDie;
+}
+
 TroubleMaker::TroubleMaker(Game* game) : ACard(TROUBLEMAKER_ROLE, "Troublemaker", VILLAGER, true, game, 2)
 {
 }
@@ -607,6 +612,16 @@ void Hoodlum::Mischief(int index1, int index2)
 {
 	_player1 = index1;
 	_player2 = index2;
+}
+
+int Hoodlum::getPlayer1()
+{
+	return _player1;
+}
+
+int Hoodlum::getPlayer2()
+{
+	return _player2;
 }
 
 Tanner::Tanner(Game* game) : ACard(TANNER_ROLE, "Tanner", VILLAGER, false, game, 1)

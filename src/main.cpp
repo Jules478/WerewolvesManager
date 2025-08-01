@@ -2,7 +2,8 @@
 
 void clearScreen()
 {
-    std::cout << "\033[H\033[2J";
+    // std::cout << "\033[H\033[2J"; // Use this to keep history of previous window states
+	std::cout << "\033c"; // Use this to erase window and not keep history
     std::cout.flush();
 }
 

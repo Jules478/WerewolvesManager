@@ -275,7 +275,7 @@ class ToughGuy : public ACard
 			~ToughGuy();
 
 			void beAttacked(int attacker);
-
+			bool getAbilityUsed() const;
 };
 
 class TroubleMaker : public ACard
@@ -377,6 +377,9 @@ class Hoodlum : public ACard
 			~Hoodlum();
 
 			void Mischief(int index1, int index2);
+
+			int getPlayer1();
+			int getPlayer2();
 
 };
 

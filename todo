@@ -1,6 +1,3 @@
-CUPID_ROLE
-MARTYR_ROLE
-MINION_ROLE
-DOPPELGANGER_ROLE
-CULTLEADER_ROLE
-HOODLUM_ROLE
+CUPID_ROLE - half done, need to figure out how to kill both players
+DOPPELGANGER_ROLE - half done, need to figure out how to give doppelganger functionality without deleting the dead player
+CULTLEADER_ROLE - half done, sometimes win condition doesn't trigger

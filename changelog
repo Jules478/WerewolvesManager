@@ -1,5 +1,13 @@
 Werewolves Manager 
 
+v0.4.1
+- Added Minion
+- Added Martyr
+- Added Doppelganger. Currently not functional. Will operate at night correctly but will not take over any special roles (such as Seer)
+- Added nighttime routine for Cult Leader, not all win scenarios are detected yet
+- Changed See functions for Seeing roles to not see the Minion as a werewolf
+- Added autofilling of game with villagers when starting without enough roles for all players
+
 v0.3.1
 - Added Old Man
 - Added Ghost

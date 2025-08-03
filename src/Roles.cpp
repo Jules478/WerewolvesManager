@@ -131,6 +131,15 @@ void Cupid::Love(int index1, int index2)
 	_player2 = index2;
 }
 
+int Cupid::getPlayer1()
+{
+	return _player1;
+}
+
+int Cupid::getPlayer2()
+{
+	return _player2;
+}
 
 Diseased::Diseased(Game* game) : ACard(DISEASED_ROLE, "Diseased", VILLAGER, false, game, 3)
 {
@@ -312,7 +321,7 @@ PI::~PI()
 }
 int PI::See(int index)
 {
-	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
+	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || (_game->getPlayerByIndex(index)->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != MINION_ROLE))
 		return 1;
 	std::vector<ACard*>& players = _game->getPlayers();
 	int targetPos = -1;
@@ -346,12 +355,12 @@ int PI::See(int index)
 	}
 	if (leftNeighbor)
 	{
-		if (leftNeighbor->getSide() == WEREWOLF || leftNeighbor->getSide() == VAMPIRE)
+		if ((leftNeighbor->getSide() == WEREWOLF && leftNeighbor->getRole() != MINION_ROLE) || leftNeighbor->getSide() == VAMPIRE)
 			return 1;
 	}
 	if (rightNeighbor)
 	{
-		if (rightNeighbor->getSide() == WEREWOLF || leftNeighbor->getSide() == VAMPIRE)
+		if ((rightNeighbor->getSide() == WEREWOLF && rightNeighbor->getRole() != MINION_ROLE) || leftNeighbor->getSide() == VAMPIRE)
 			return 1;
 	}
 	return 0;
@@ -395,6 +404,8 @@ void Priest::Protect(int index)
 
 int Priest::See(int index)
 {
+	if (_game->getPlayerByIndex(index)->getRole() == MINION_ROLE)
+		return 0;
 	if (_game->getPlayerByIndex(index)->getRole() == LYCAN_ROLE || _game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
 		return 1;
 	return 0;
@@ -439,6 +450,8 @@ Seer::~Seer()
 
 int Seer::See(int index)
 {
+	if (_game->getPlayerByIndex(index)->getRole() == MINION_ROLE)
+		return 0;
 	if (_game->getPlayerByIndex(index)->getRole() == LYCAN_ROLE || _game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
 		return 1;
 	return 0;
@@ -590,7 +603,7 @@ void Cursed::beAttacked(int attacker)
 	}
 }
 
-Doppelganger::Doppelganger(Game* game) : ACard(DOPPELGANGER_ROLE, "Doppelganger", VILLAGER, false, game, -2), _identity(nullptr)
+Doppelganger::Doppelganger(Game* game) : ACard(DOPPELGANGER_ROLE, "Doppelganger", VILLAGER, false, game, -2)
 {
 }
 
@@ -599,16 +612,27 @@ Doppelganger::~Doppelganger()
 }
 void Doppelganger::Steal(int index)
 {
-	_identity = _game->getPlayerByIndex(index);
+	_role = index;
 }
 
-ACard* Doppelganger::getStolenIdentity() const
+int Doppelganger::getStolenIdentity() const
 {
-	return _identity;
+	return _role;
+}
+
+bool Doppelganger::getAbilityUsed() const
+{
+	return _abilityUsed;
+}
+
+void Doppelganger::setAbilityUsed()
+{
+	_abilityUsed = true;
 }
 
 CultLeader::CultLeader(Game* game) : ACard(CULTLEADER_ROLE, "Cult Leader", VILLAGER, true, game, 1)
 {
+	_inCult = true;
 }
 
 CultLeader::~CultLeader()
@@ -641,6 +665,16 @@ int Hoodlum::getPlayer1()
 int Hoodlum::getPlayer2()
 {
 	return _player2;
+}
+
+void Hoodlum::setPlayer1(int index)
+{
+	_player1 = index;
+}
+
+void Hoodlum::setPlayer2(int index)
+{
+	_player2 = index;
 }
 
 Tanner::Tanner(Game* game) : ACard(TANNER_ROLE, "Tanner", VILLAGER, false, game, 1)

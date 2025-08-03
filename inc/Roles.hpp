@@ -82,6 +82,8 @@ class Cupid : public ACard
 			~Cupid();
 
 			void Love(int index1, int index2);
+			int getPlayer1();
+			int getPlayer2();
 
 };
 
@@ -349,14 +351,17 @@ class Cursed : public ACard
 class Doppelganger : public ACard
 {
 	private:
-			ACard* _identity;
+			int _role;
+			bool _abilityUsed = false;
 
 	public:
 			Doppelganger(Game* game);
 			~Doppelganger();
 
 			void Steal(int index);
-			ACard* getStolenIdentity() const;
+			int getStolenIdentity() const;
+			bool getAbilityUsed() const;
+			void setAbilityUsed();
 
 };
 
@@ -384,6 +389,9 @@ class Hoodlum : public ACard
 
 			int getPlayer1();
 			int getPlayer2();
+
+			void setPlayer1(int index);
+			void setPlayer2(int index);
 
 };
 

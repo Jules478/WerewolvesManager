@@ -41,6 +41,7 @@ class Game
 			int _assignedIndex = 0;
 			bool _drunkInGame = false;
 			bool _altGhostRule = false;
+			bool _loverDied = false;
 
 	public:
 			Game(int playerno);
@@ -56,6 +57,7 @@ class Game
 
 			bool isValidPlayerEntry(const str& input);
 			bool isValidPlayerNumber(const str& input);
+			bool isValidPlayerNumberAlt(const str& input, int index);
 			bool isValidAlivePlayer(const str& input);
 			bool isValidVoteNumber(const str& input);
 			void resetNightlyDeaths();

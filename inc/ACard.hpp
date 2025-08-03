@@ -96,11 +96,13 @@ class ACard
 			virtual void setSpellUsed(str spell) { (void)spell ; }
 			virtual bool getAbilityUsed() const { return true ; }
 			virtual void setAbilityUsed() { return ; }
-			virtual ACard* getStolenIdentity() const { return nullptr ; }
+			virtual int getStolenIdentity() const { return -1 ; }
 			virtual void takePlayerWith(int victim) { (void)victim ; }
 			virtual int getVictim() const { return -1; }
 			virtual int getPlayer1() { return -1; }
 			virtual int getPlayer2() { return -1; }
+			virtual void setPlayer1(int index) { (void)index; return ; }
+			virtual void setPlayer2(int index) { (void)index; return ; }
 			virtual void Dies() { return ; }
 
 			int getSide() const;

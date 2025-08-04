@@ -125,10 +125,14 @@ Cupid::~Cupid()
 {
 }
 
-void Cupid::Love(int index1, int index2)
+void Cupid::setPlayer1(int index)
 {
-	_player1 = index1;
-	_player2 = index2;
+	_player1 = index;
+}
+
+void Cupid::setPlayer2(int index)
+{
+	_player2 = index;
 }
 
 int Cupid::getPlayer1()
@@ -484,7 +488,10 @@ void ToughGuy::beAttacked(int attacker)
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
 		else
+		{
 			_alive = false;
+			_game->killVillager();
+		}
 	}
 }
 
@@ -586,7 +593,10 @@ void Cursed::beAttacked(int attacker)
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
 		else
+		{
 			_alive = false;
+			_game->killVillager();
+		}
 		}
 	}
 	else if (_side == WEREWOLF)
@@ -595,10 +605,13 @@ void Cursed::beAttacked(int attacker)
 			_game->setVampVictim(_index);
 		else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
 		{
-		if (_game->getTimeOfDay() == NIGHT)
-			_game->setNightlyDeaths(_index);
-		else
-			_alive = false;
+			if (_game->getTimeOfDay() == NIGHT)
+				_game->setNightlyDeaths(_index);
+			else
+			{
+				_alive = false;
+				_game->killWolf();
+			}
 		}
 	}
 }

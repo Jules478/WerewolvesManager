@@ -27,7 +27,7 @@ class Game
 			bool _vampWin = false;
 			int _diedInTheNight[68];
 			int _diedIndex = 0;
-			int	_vampireVictim;
+			int	_vampireVictim = -1;
 			bool _nighttime = true;
 			int	_balance = 0;
 			int _nightNo = 1;
@@ -93,6 +93,7 @@ class Game
 			void wolfCubKilled();
 			void printGameStatus();
 			void checkSideWins();
+			void updateVillageNumbers(int index);
 
 			void closeProgram();
 

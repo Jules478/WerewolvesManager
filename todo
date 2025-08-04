@@ -1,3 +1,14 @@
 CUPID_ROLE - half done, need to figure out how to kill both players
 DOPPELGANGER_ROLE - half done, need to figure out how to give doppelganger functionality without deleting the dead player
-CULTLEADER_ROLE - half done, sometimes win condition doesn't trigger
+
+
+Lover Deaths to implement
+
+Ghost death (line 1054):
+WolfCub::beLynched() (line 36)
+Hunter::beLynched() (line 184) 
+Prince::beLynched() (line 436)
+ToughGuy::beAttacked() day phase (line 492)
+Cursed::beAttacked() day phase (lines 597, 612)
+ACard::beAttacked() day phase (line 76)
+ACard::beLynched() (line 89)

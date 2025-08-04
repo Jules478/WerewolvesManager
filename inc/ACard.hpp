@@ -84,7 +84,6 @@ class ACard
 
 			virtual int See(int index) { (void)index; return -1; }
 			virtual void bePromoted() { return ; }
-			virtual void Love(int index1, int index2) { (void)index1; (void)index2; return ; }
 			virtual void Pox(int index) { (void)index; return ; }
 			virtual void Protect(int index) { (void)index; return ; }
 			virtual int SorcSee(int index) { (void)index; return -1; }

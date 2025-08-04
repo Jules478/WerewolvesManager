@@ -81,7 +81,8 @@ class Cupid : public ACard
 			Cupid(Game* game);
 			~Cupid();
 
-			void Love(int index1, int index2);
+			void setPlayer1(int index);
+			void setPlayer2(int index);
 			int getPlayer1();
 			int getPlayer2();
 

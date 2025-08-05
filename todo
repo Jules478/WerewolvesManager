@@ -1,14 +1,1 @@
-CUPID_ROLE - half done, need to figure out how to kill both players
-DOPPELGANGER_ROLE - half done, need to figure out how to give doppelganger functionality without deleting the dead player
-
-
-Lover Deaths to implement
-
-Ghost death (line 1054):
-WolfCub::beLynched() (line 36)
-Hunter::beLynched() (line 184) 
-Prince::beLynched() (line 436)
-ToughGuy::beAttacked() day phase (line 492)
-Cursed::beAttacked() day phase (lines 597, 612)
-ACard::beAttacked() day phase (line 76)
-ACard::beLynched() (line 89)
+DOPPELGANGER_ROLE - maybe done? Need to implement into game logic where when fetching a player it can return the doppelganger if appropriate

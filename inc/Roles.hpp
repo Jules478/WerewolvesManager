@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ACard.hpp"
+#include "Doppelganger.hpp"
 
 class Game;
 
@@ -108,7 +109,6 @@ class Hunter : public ACard
 {
 	private:
 			int _victim;
-			bool _lynched = false;
 
 	public:
 			Hunter(Game* game);
@@ -119,6 +119,7 @@ class Hunter : public ACard
 			void setVictim(int victim);
 			int getVictim() const;
 			void takePlayerWith(int victim);
+			void setLife(bool alive);
 };
 
 class Idiot : public ACard
@@ -197,7 +198,7 @@ class OldMan : public ACard
 			~OldMan();
 
 			void Dies();
-			bool getAbilityUsed() const;
+			bool getAbilityUsed(bool checkIfCopied) const;
 			
 };
 
@@ -211,7 +212,7 @@ class PI : public ACard
 			~PI();
 
 			int See(int index);
-			bool getAbilityUsed() const;
+			bool getAbilityUsed(bool checkIfCopied) const;
 
 };
 
@@ -235,7 +236,7 @@ class Priest : public ACard
 
 			void Protect(int index);
 			int See(int index);
-			bool getAbilityUsed() const;
+			bool getAbilityUsed(bool checkIfCopied) const;
 
 };
 
@@ -250,7 +251,7 @@ class Prince : public ACard
 
 			void beLynched();
 
-			bool getAbilityUsed() const;
+			bool getAbilityUsed(bool checkIfCopied) const;
 
 };
 
@@ -282,7 +283,7 @@ class ToughGuy : public ACard
 			~ToughGuy();
 
 			void beAttacked(int attacker);
-			bool getAbilityUsed() const;
+			bool getAbilityUsed(bool checkIfCopied) const;
 };
 
 class TroubleMaker : public ACard
@@ -294,7 +295,7 @@ class TroubleMaker : public ACard
 			TroubleMaker(Game* game);
 			~TroubleMaker();
 
-			bool getAbilityUsed() const;
+			bool getAbilityUsed(bool checkIfCopied) const;
 			void setAbilityUsed();
 };
 
@@ -346,23 +347,6 @@ class Cursed : public ACard
 			~Cursed();
 
 			void beAttacked(int attacker);
-
-};
-
-class Doppelganger : public ACard
-{
-	private:
-			int _role;
-			bool _abilityUsed = false;
-
-	public:
-			Doppelganger(Game* game);
-			~Doppelganger();
-
-			void Steal(int index);
-			int getStolenIdentity() const;
-			bool getAbilityUsed() const;
-			void setAbilityUsed();
 
 };
 

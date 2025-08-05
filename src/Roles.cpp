@@ -12,8 +12,18 @@ Werewolf::~Werewolf()
 
 void Werewolf::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
+	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	{
+		if (_game->getTimeOfDay() == NIGHT)
+			_game->setNightlyDeaths(_index);
+		else
+		{
+			_alive = false;
+			_game->killWolf();
+		}
+	}
 }
 
 WolfCub::WolfCub(Game* game) : ACard(WOLFCUB_ROLE, "Wolf Cub", WEREWOLF, true, game, -8)
@@ -27,8 +37,18 @@ WolfCub::~WolfCub()
 
 void WolfCub::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
+	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	{
+		if (_game->getTimeOfDay() == NIGHT)
+			_game->setNightlyDeaths(_index);
+		else
+		{
+			_alive = false;
+			_game->killWolf();
+		}
+	}
 }
 
 void WolfCub::beLynched()
@@ -36,6 +56,21 @@ void WolfCub::beLynched()
 	_alive = false;
 	_game->killWolf();
 	_game->wolfCubKilled();
+	if (_game->getRoles()[CUPID_ROLE])
+	{
+		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+		{
+			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+		}
+		else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+		{
+			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+		}
+	}
 }
 
 LoneWolf::LoneWolf(Game* game) : ACard(LONEWOLF_ROLE, "Lone Wolf", WEREWOLF, true, game, -5)
@@ -49,8 +84,18 @@ LoneWolf::~LoneWolf()
 
 void LoneWolf::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE_ROLE)
+	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
+	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	{
+		if (_game->getTimeOfDay() == NIGHT)
+			_game->setNightlyDeaths(_index);
+		else
+		{
+			_alive = false;
+			_game->killWolf();
+		}
+	}
 }
 
 Vampire::Vampire(Game* game) : ACard(VAMPIRE_ROLE, "Vampire", VAMPIRE, true, game, -8)
@@ -63,7 +108,16 @@ Vampire::~Vampire()
 
 void Vampire::beAttacked(int attacker)
 {
-	(void)attacker;
+	if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	{
+		if (_game->getTimeOfDay() == NIGHT)
+			_game->setNightlyDeaths(_index);
+		else
+		{
+			_alive = false;
+			_game->killVampire();
+		}
+	}
 }
 
 ApprenticeSeer::ApprenticeSeer(Game* game) : ACard(APPRENTICESEER_ROLE, "Apprentice Seer", VILLAGER, true, game, 4)
@@ -107,7 +161,7 @@ void Bodyguard::Protect(int index)
 {
 	if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
 	{
-		if (_game->getPlayerByIndex(index)->getAbilityUsed() == true)
+		if (_game->getPlayerByIndex(index)->getAbilityUsed(false) == true)
 			return ;
 	}
 	for (int i = 0; i < 68; i++)
@@ -188,18 +242,28 @@ void Hunter::beLynched()
 		_game->killVampire();
 	else
 		_game->killVillager();
-	if (_game->getGameMode() == false)
-		_lynched = true;
-	else
+	std::cout << "Player to die with the Hunter: ";
+	str input = get_input();
+	while (!_game->isValidPlayerNumber(input))
 	{
-		std::cout << "Player to die with the Hunter: ";
-		str input = get_input();
-		while (!_game->isValidPlayerNumber(input))
+		std::cout << "ERROR: Enter player number: ";
+		input = get_input();
+	}
+	_game->getPlayerByIndex(std::stol(input))->beAttacked(_index);
+	if (_game->getRoles()[CUPID_ROLE])
+	{
+		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
 		{
-			std::cout << "ERROR: Enter player number: ";
-			input = get_input();
+			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
 		}
-		_game->getPlayerByIndex(std::stol(input))->beAttacked(_index);
+		else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+		{
+			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+		}
 	}
 }
 
@@ -216,6 +280,22 @@ int Hunter::getVictim() const
 void Hunter::takePlayerWith(int victim)
 {
 	_game->getPlayerByIndex(victim)->beAttacked(_index);
+}
+
+void Hunter::setLife(bool alive)
+{
+	_alive = alive;
+	if (alive == DEAD)
+	{
+		std::cout << "Enter Hunter's victim: ";
+		str input = get_input();
+		while (!_game->isValidPlayerNumber(input))
+		{
+			std::cout << "ERROR: Enter player number: ";
+			input = get_input();
+		}
+		_game->getPlayerByRole(HUNTER_ROLE)->takePlayerWith(std::stoi(input));
+	}
 }
 
 Idiot::Idiot(Game* game) : ACard(IDIOT_ROLE, "Idiot", VILLAGER, false, game, 2)
@@ -311,8 +391,9 @@ void OldMan::Dies()
 	}
 }
 
-bool OldMan::getAbilityUsed() const
+bool OldMan::getAbilityUsed(bool checkIfCopied) const
 {
+	(void)checkIfCopied;
 	return _diesOldAge;
 }
 
@@ -370,8 +451,9 @@ int PI::See(int index)
 	return 0;
 }
 
-bool PI::getAbilityUsed() const
+bool PI::getAbilityUsed(bool checkIfCopied) const
 {
+	(void)checkIfCopied;
 	return _abilityUsed;
 }
 
@@ -394,7 +476,7 @@ void Priest::Protect(int index)
 {
 	if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
 	{
-		if (_game->getPlayerByIndex(index)->getAbilityUsed() == true)
+		if (_game->getPlayerByIndex(index)->getAbilityUsed(false) == true)
 			return ;
 	}
 	int i = -1;
@@ -415,8 +497,9 @@ int Priest::See(int index)
 	return 0;
 }
 
-bool Priest::getAbilityUsed() const
+bool Priest::getAbilityUsed(bool checkIfCopied) const
 {
+	(void)checkIfCopied;
 	return _abilityUsed;
 }
 
@@ -434,13 +517,29 @@ void Prince::beLynched()
 	{
 		_game->killVillager();
 		_alive = false;
+		if (_game->getRoles()[CUPID_ROLE])
+		{
+			if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+			{
+				std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+				_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+				_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+			}
+			else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+			{
+				std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+				_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+				_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+			}
+		}
 	}
 	else
 		_abilityUsed = true;
 }
 
-bool Prince::getAbilityUsed() const
+bool Prince::getAbilityUsed(bool checkIfCopied) const
 {
+	(void)checkIfCopied;
 	return _abilityUsed;
 }
 
@@ -491,12 +590,28 @@ void ToughGuy::beAttacked(int attacker)
 		{
 			_alive = false;
 			_game->killVillager();
+			if (_game->getRoles()[CUPID_ROLE])
+			{
+				if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+				{
+					std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+					_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+					_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+				}
+				else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+				{
+					std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+					_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+					_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+				}
+			}
 		}
 	}
 }
 
-bool ToughGuy::getAbilityUsed() const
+bool ToughGuy::getAbilityUsed(bool checkIfCopied) const
 {
+	(void)checkIfCopied;
 	return _goingToDie;
 }
 
@@ -513,8 +628,9 @@ void TroubleMaker::setAbilityUsed()
 	_abilityUsed = true;
 }
 
-bool TroubleMaker::getAbilityUsed() const
+bool TroubleMaker::getAbilityUsed(bool checkIfCopied) const
 {
+	(void)checkIfCopied;
 	return _abilityUsed;
 }
 
@@ -590,13 +706,28 @@ void Cursed::beAttacked(int attacker)
 			_game->setVampVictim(_index);
 		else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
 		{
-		if (_game->getTimeOfDay() == NIGHT)
-			_game->setNightlyDeaths(_index);
-		else
-		{
-			_alive = false;
-			_game->killVillager();
-		}
+			if (_game->getTimeOfDay() == NIGHT)
+				_game->setNightlyDeaths(_index);
+			else
+			{
+				_alive = false;
+				_game->killVillager();
+				if (_game->getRoles()[CUPID_ROLE])
+				{
+					if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+					{
+						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+					}
+					else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+					{
+						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+					}
+				}
+			}
 		}
 	}
 	else if (_side == WEREWOLF)
@@ -611,36 +742,24 @@ void Cursed::beAttacked(int attacker)
 			{
 				_alive = false;
 				_game->killWolf();
+				if (_game->getRoles()[CUPID_ROLE])
+				{
+					if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+					{
+						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+					}
+					else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+					{
+						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+					}
+				}
 			}
 		}
 	}
-}
-
-Doppelganger::Doppelganger(Game* game) : ACard(DOPPELGANGER_ROLE, "Doppelganger", VILLAGER, false, game, -2)
-{
-}
-
-Doppelganger::~Doppelganger()
-{
-}
-void Doppelganger::Steal(int index)
-{
-	_role = index;
-}
-
-int Doppelganger::getStolenIdentity() const
-{
-	return _role;
-}
-
-bool Doppelganger::getAbilityUsed() const
-{
-	return _abilityUsed;
-}
-
-void Doppelganger::setAbilityUsed()
-{
-	_abilityUsed = true;
 }
 
 CultLeader::CultLeader(Game* game) : ACard(CULTLEADER_ROLE, "Cult Leader", VILLAGER, true, game, 1)

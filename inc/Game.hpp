@@ -94,6 +94,8 @@ class Game
 			void printGameStatus();
 			void checkSideWins();
 			void updateVillageNumbers(int index);
+			bool* getRoles();
+			bool isAliveOrCopied(const ACard& player);
 
 			void closeProgram();
 

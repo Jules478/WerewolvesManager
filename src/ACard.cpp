@@ -80,6 +80,21 @@ void ACard::beAttacked(int attacker)
 				_game->killVampire();
 			else
 				_game->killVillager();
+			if (_game->getRoles()[CUPID_ROLE])
+			{
+				if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+				{
+					std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+					_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+					_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+				}
+				else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+				{
+					std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+					_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+					_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+				}
+			}
 		}
 	}
 }
@@ -93,6 +108,21 @@ void ACard::beLynched()
 		_game->killVampire();
 	else
 		_game->killVillager();
+	if (_game->getRoles()[CUPID_ROLE])
+	{
+		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+		{
+			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
+			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+		}
+		else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+		{
+			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
+			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+		}
+	}
 }
 
 bool ACard::getInVillage() const

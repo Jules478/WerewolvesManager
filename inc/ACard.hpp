@@ -93,9 +93,9 @@ class ACard
 			virtual void setVictim(int victim) { (void)victim ; }
 			virtual bool getSpellUsed(str spell) const { (void)spell; return false ; }
 			virtual void setSpellUsed(str spell) { (void)spell ; }
-			virtual bool getAbilityUsed() const { return true ; }
+			virtual bool getAbilityUsed(bool checkIfCopied) const { (void)checkIfCopied; return true ; }
 			virtual void setAbilityUsed() { return ; }
-			virtual int getStolenIdentity() const { return -1 ; }
+			virtual void copy(int index) { (void)index; return ; }
 			virtual void takePlayerWith(int victim) { (void)victim ; }
 			virtual int getVictim() const { return -1; }
 			virtual int getPlayer1() { return -1; }
@@ -103,6 +103,7 @@ class ACard
 			virtual void setPlayer1(int index) { (void)index; return ; }
 			virtual void setPlayer2(int index) { (void)index; return ; }
 			virtual void Dies() { return ; }
+			virtual int getCopiedRole() const { return -1; }
 
 			int getSide() const;
 			int getIndex() const;
@@ -118,7 +119,7 @@ class ACard
 			void setRole(t_roles role);
 			void setIndex(int index);
 			void setSide(int side);
-			void setLife(bool alive);
+			virtual void setLife(bool alive);
 			void setInVillage(bool exile);
 			void setInCult();
 			void setDrunk();

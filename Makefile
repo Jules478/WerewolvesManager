@@ -16,12 +16,14 @@ SRCS = \
 		$(SRC_DIR)/main.cpp \
 		$(SRC_DIR)/ACard.cpp \
 		$(SRC_DIR)/Game.cpp \
-		$(SRC_DIR)/Roles.cpp
+		$(SRC_DIR)/Roles.cpp \
+		$(SRC_DIR)/Doppelganger.cpp
 
 HEADERS = \
 			$(INC_DIR)/ACard.hpp \
 			$(INC_DIR)/Game.hpp \
-			$(INC_DIR)/Roles.hpp
+			$(INC_DIR)/Roles.hpp \
+			$(INC_DIR)/Doppelganger.hpp
 
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 DEBUG_OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.debug.o)

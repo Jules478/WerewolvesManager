@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.5.1
+- Doppelganger overhauled. New logic to control how it works. Currently not implemented into game logic. Some more functions need to be added to make it work correctly.
+- Changed the way players are found by role to accommodate for them being replaced by a Doppelganger
+
 v0.4.2
 - Finished Vampire implementation
 - Added more Cupid logic, some lover scenarios need to be added

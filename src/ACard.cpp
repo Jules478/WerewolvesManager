@@ -61,7 +61,7 @@ str ACard::getName() const
 
 void ACard::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
+	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF || _game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
 	{
 		_game->setNightlyDeaths(_index);
 	}
@@ -102,7 +102,7 @@ void ACard::beAttacked(int attacker)
 void ACard::beLynched()
 {
 	_alive = false;
-	if (_side == WEREWOLF)
+	if (_side == WEREWOLF && _role != MINION_ROLE && _role != SORCERER_ROLE)
 		_game->killWolf();
 	else if (_side == VAMPIRE)
 		_game->killVampire();

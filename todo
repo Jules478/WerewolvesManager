@@ -1,1 +1,1 @@
-DOPPELGANGER_ROLE - maybe done? Need to implement into game logic where when fetching a player it can return the doppelganger if appropriate
+Doppelganger - figure out a way for the messages to display when in reveal roles mode to not call out for a replaced role (possibly similar method to how it calls it's own functions?)

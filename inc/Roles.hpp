@@ -151,6 +151,7 @@ class Magician : public ACard
 			bool getSpellUsed(str spell) const;
 
 			void setSpellUsed(str spell);
+			void Protect(int index);
 
 };
 
@@ -320,6 +321,7 @@ class Witch : public ACard
 			bool getSpellUsed(str spell) const;
 
 			void setSpellUsed(str spell);
+			void Protect(int index);
 };
 
 class Sorcerer : public ACard

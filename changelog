@@ -1,5 +1,17 @@
 Werewolves Manager 
 
+v0.6.1
+- Doppelganger fully implemented
+- Witch can now use healing and killing spells
+- Magician can now use healing and killing spells
+- Fixed Minion to no longer count as a werewolf when being killed
+- Fixed a bug where when the Drunk is in game, the role which is Drunk would be called for depite already having a player index
+- Fixed bug in PI logic that was incorrectly searching players
+- Fixed bug where failing to start the game would not reset player counts
+- PI can no longer use their ability multiple times per game
+- Updated messages from players using See ability to state if a player is Villager or not rather than a Werewolf or not
+- Made continue messages more consistent
+
 v0.5.1
 - Doppelganger overhauled. New logic to control how it works. Currently not implemented into game logic. Some more functions need to be added to make it work correctly.
 - Changed the way players are found by role to accommodate for them being replaced by a Doppelganger

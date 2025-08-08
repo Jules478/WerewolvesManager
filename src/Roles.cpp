@@ -12,7 +12,9 @@ Werewolf::~Werewolf()
 
 void Werewolf::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	if (_game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
 	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
 	{
@@ -37,7 +39,9 @@ WolfCub::~WolfCub()
 
 void WolfCub::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	if (_game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
 	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
 	{
@@ -84,7 +88,9 @@ LoneWolf::~LoneWolf()
 
 void LoneWolf::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	if (_game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
 	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
 	{
@@ -108,7 +114,9 @@ Vampire::~Vampire()
 
 void Vampire::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	if (_game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
 	{
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
@@ -225,10 +233,8 @@ Hunter::~Hunter()
 
 void Hunter::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
-	{
+	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF || _game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
 		_game->setNightlyDeaths(_index);
-	}
 	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
 }
@@ -249,7 +255,7 @@ void Hunter::beLynched()
 		std::cout << "ERROR: Enter player number: ";
 		input = get_input();
 	}
-	_game->getPlayerByIndex(std::stol(input))->beAttacked(_index);
+	_game->getPlayerByIndex(std::stoi(input))->beAttacked(_index);
 	if (_game->getRoles()[CUPID_ROLE])
 	{
 		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
@@ -338,6 +344,21 @@ void Magician::setSpellUsed(str spell)
 		_killUsed = true;
 }
 
+void Magician::Protect(int index)
+{
+	_healUsed = true;
+	if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
+	{
+		if (_game->getPlayerByIndex(index)->getAbilityUsed(false) == true)
+			return ;
+	}
+	for (int i = 0; i < 68; i++)
+	{
+		if (_game->getNightlyDeaths()[i] == index)
+			_game->getNightlyDeaths()[i] = -1;
+	}
+}
+
 Martyr::Martyr(Game* game) : ACard(MARTYR_ROLE, "Martyr", VILLAGER, false, game, 3)
 {
 }
@@ -404,9 +425,10 @@ PI::PI(Game* game) : ACard(PI_ROLE, "PI", VILLAGER, true, game, 3)
 PI::~PI()
 {
 }
-int PI::See(int index)
+
+/*int PI::See(int index)
 {
-	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || (_game->getPlayerByIndex(index)->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != MINION_ROLE))
+	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || (_game->getPlayerByIndex(index)->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != SORCERER_ROLE && _game->getPlayerByIndex(index)->getRole() != MINION_ROLE))
 		return 1;
 	std::vector<ACard*>& players = _game->getPlayers();
 	int targetPos = -1;
@@ -418,34 +440,78 @@ int PI::See(int index)
 			break;
 		}
 	}
-	ACard* leftNeighbor = nullptr;
+	ACard* leftNeighbour = nullptr;
 	for (int steps = 1; steps < (int)players.size(); steps++)
 	{
 		int pos = (targetPos - steps + players.size()) % players.size();
-		if (players[pos] && players[pos]->getLife())
+		if (players[pos] && players[pos]->getLife() == ALIVE)
 		{
-			leftNeighbor = players[pos];
+			leftNeighbour = players[pos];
 			break;
 		}
 	}
-	ACard* rightNeighbor = nullptr;
+	ACard* rightNeighbour = nullptr;
 	for (int steps = 1; steps < (int)players.size(); steps++)
 	{
 		int pos = (targetPos + steps) % players.size();
-		if (players[pos] && players[pos]->getLife())
+		if (players[pos] && players[pos]->getLife() == ALIVE)
 		{
-			rightNeighbor = players[pos];
+			rightNeighbour = players[pos];
 			break;
 		}
 	}
-	if (leftNeighbor)
+	if (leftNeighbour)
 	{
-		if ((leftNeighbor->getSide() == WEREWOLF && leftNeighbor->getRole() != MINION_ROLE) || leftNeighbor->getSide() == VAMPIRE)
+		if ((leftNeighbour->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != SORCERER_ROLE && leftNeighbour->getRole() != MINION_ROLE) || leftNeighbour->getSide() == VAMPIRE)
 			return 1;
 	}
-	if (rightNeighbor)
+	if (rightNeighbour)
 	{
-		if ((rightNeighbor->getSide() == WEREWOLF && rightNeighbor->getRole() != MINION_ROLE) || leftNeighbor->getSide() == VAMPIRE)
+		if ((rightNeighbour->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != SORCERER_ROLE && rightNeighbour->getRole() != MINION_ROLE) || leftNeighbour->getSide() == VAMPIRE)
+			return 1;
+	}
+	return 0;
+}*/
+
+int PI::See(int index)
+{
+	_abilityUsed = true;
+	if (_game->getPlayerByIndex(index)->getSide() == VAMPIRE || (_game->getPlayerByIndex(index)->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != SORCERER_ROLE && _game->getPlayerByIndex(index)->getRole() != MINION_ROLE))
+		return 1;
+	std::vector<ACard*>& players = _game->getPlayers();
+	ACard* leftNeighbour = nullptr;
+	int neighbour = index;
+	int max = static_cast<int>(players.size());
+	while (--neighbour > 0)
+	{
+		if (_game->getPlayerByIndex(neighbour)->getLife() == ALIVE)
+		{
+			leftNeighbour = _game->getPlayerByIndex(neighbour);
+			break;
+		}
+		if (neighbour == 1)
+			neighbour = max;
+	}
+	ACard* rightNeighbour = nullptr;
+	neighbour = index;
+	while (++neighbour <= max)
+	{
+		if (_game->getPlayerByIndex(neighbour)->getLife() == ALIVE)
+		{
+			rightNeighbour = _game->getPlayerByIndex(neighbour);
+			break;
+		}
+		if (neighbour == max)
+			neighbour = 0;
+	}
+	if (leftNeighbour)
+	{
+		if (leftNeighbour->getRole() == LYCAN_ROLE || (leftNeighbour->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != SORCERER_ROLE && leftNeighbour->getRole() != MINION_ROLE) || leftNeighbour->getSide() == VAMPIRE)
+			return 1;
+	}
+	if (rightNeighbour)
+	{
+		if (rightNeighbour->getRole() == LYCAN_ROLE || (rightNeighbour->getSide() == WEREWOLF && _game->getPlayerByIndex(index)->getRole() != SORCERER_ROLE && rightNeighbour->getRole() != MINION_ROLE) || leftNeighbour->getSide() == VAMPIRE)
 			return 1;
 	}
 	return 0;
@@ -578,7 +644,9 @@ ToughGuy::~ToughGuy()
 
 void ToughGuy::beAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
+	if (_game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
 		_goingToDie = true;
 	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
@@ -642,7 +710,7 @@ Villager::~Villager()
 {
 }
 
-Witch::Witch(Game* game) : ACard(WITCH_ROLE, "WITCH", VILLAGER, true, game, 4)
+Witch::Witch(Game* game) : ACard(WITCH_ROLE, "Witch", VILLAGER, true, game, 4)
 {
 }
 
@@ -664,6 +732,21 @@ void Witch::setSpellUsed(str spell)
 		_healUsed = true;
 	else
 		_killUsed = true;
+}
+
+void Witch::Protect(int index)
+{
+	_healUsed = true;
+	if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
+	{
+		if (_game->getPlayerByIndex(index)->getAbilityUsed(false) == true)
+			return ;
+	}
+	for (int i = 0; i < 68; i++)
+	{
+		if (_game->getNightlyDeaths()[i] == index)
+			_game->getNightlyDeaths()[i] = -1;
+	}
 }
 
 Sorcerer::Sorcerer(Game* game) : ACard(SORCERER_ROLE, "Sorcerer", WEREWOLF, true, game, -3)
@@ -698,7 +781,9 @@ Cursed::~Cursed()
 
 void Cursed::beAttacked(int attacker)
 {
-	if (_side == VILLAGER)
+	if (_game->getPlayerByIndex(attacker)->getRole() == WITCH_ROLE || _game->getPlayerByIndex(attacker)->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_side == VILLAGER)
 	{
 		if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
 			_game->setNightlyDeaths(_index);

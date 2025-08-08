@@ -20,6 +20,16 @@ int Doppelganger::getCopiedRole() const
 	return _copiedRole;
 }
 
+int Doppelganger::getCopiedPlayer() const
+{
+	return _copiedPlayer;
+}
+
+void Doppelganger::setCopiedPlayer(int index)
+{
+	_copiedPlayer = index;
+}
+
 bool Doppelganger::getAbilityUsed(bool checkIfCopied) const
 {
 	if (checkIfCopied)
@@ -139,7 +149,7 @@ void Doppelganger::hunterBeLynched()
 		std::cout << "ERROR: Enter player number: ";
 		input = get_input();
 	}
-	_game->getPlayerByIndex(std::stol(input))->beAttacked(_index);
+	_game->getPlayerByIndex(std::stoi(input))->beAttacked(_index);
 	if (_game->getRoles()[CUPID_ROLE])
 	{
 		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)

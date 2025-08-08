@@ -39,6 +39,7 @@ class Game
 			int _howManyRoles[MAX_ROLES];
 			int _assignedPlayers[68];
 			int _assignedIndex = 0;
+			int _drunkRole = -1;
 			bool _drunkInGame = false;
 			bool _altGhostRule = false;
 			bool _loverDied = false;
@@ -96,6 +97,7 @@ class Game
 			void updateVillageNumbers(int index);
 			bool* getRoles();
 			bool isAliveOrCopied(const ACard& player);
+			void checkDoppelganger(const ACard& player);
 
 			void closeProgram();
 

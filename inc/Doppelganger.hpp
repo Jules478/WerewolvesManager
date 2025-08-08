@@ -7,7 +7,7 @@ class Game;
 class Doppelganger : public ACard
 {
 	private:
-			t_roles _copiedRole;
+			t_roles _copiedRole = MAX_ROLES;
 			int _copiedPlayer;
 			bool _abilityUsed = false;
 
@@ -25,7 +25,8 @@ class Doppelganger : public ACard
 			// Doppelganger Native Functions
 			void copy(int index) override;
 			int getCopiedRole() const override;
-			// Implement a way to get the player index
+			int getCopiedPlayer() const override;
+			void setCopiedPlayer(int index) override;
 			bool getAbilityUsed(bool checkIfCopied) const override;
 			void setAbilityUsed() override;
 				

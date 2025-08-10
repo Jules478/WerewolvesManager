@@ -1985,7 +1985,7 @@ void Game::wakeAllActiveRoles()
 				input = get_input();
 			}
 			int res = getPlayerByRole(SEER_ROLE)->See(std::stoi(input));
-			std::cout << "Player " << input << " is " << (res ? "NOT a Villager" : "is a Villager") << std::endl;
+			std::cout << "Player " << input << " is " << (res ? "NOT a Villager" : "a Villager") << std::endl;
 			std::cout << std::endl << std::endl << "Press Enter to continue...";
 			get_input();
 		}

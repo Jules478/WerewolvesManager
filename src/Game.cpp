@@ -81,7 +81,7 @@ bool Game::isValidPlayerEntry(const str& input)
 			if (_player[i] && number == _player[i]->getIndex())
 				return false;
 		}
-		return (number >= 1 && number <= 68);
+		return (number >= 1 && number <= _playerNo);
 	}
 	catch (const std::exception&)
 	{
@@ -118,7 +118,7 @@ bool Game::isValidPlayerNumber(const str& input)
 	try
 	{
 		int number = std::stoi(input);
-		return (number >= 1 && number <= 68);
+		return (number >= 1 && number <= _playerNo);
 	}
 	catch (const std::exception&)
 	{
@@ -1524,17 +1524,34 @@ void Game::dayPhase()
 			}
 			if (votes > (_villagerNo + _vampNo + _wolfNo) / 2)
 			{
-				if (_whichRoles[MARTYR_ROLE] && getPlayerByRole(MARTYR_ROLE)->getLife() == ALIVE)
+				if (_whichRoles[MARTYR_ROLE])
 				{
-					std::cout << "Does the Martyr wish to take the place of the lynched player? (y/n): ";
-					input = get_input();
-					while ((input != "y" && input != "Y") && (input != "n" && input != "N"))
+					if (getPlayerByRole(MARTYR_ROLE)->getLife() == ALIVE)
 					{
-						std::cout << "ERROR: Enter vote: ";
+						std::cout << "Does the Martyr wish to take the place of the lynched player? (y/n): ";
 						input = get_input();
+						while ((input != "y" && input != "Y") && (input != "n" && input != "N"))
+						{
+							std::cout << "ERROR: Enter vote: ";
+							input = get_input();
+						}
+						if (input == "y" || input == "Y")
+						{
+							index = getPlayerByRole(MARTYR_ROLE)->getIndex();
+							getPlayerByRole(MARTYR_ROLE)->setAbilityUsed();
+						}
 					}
-					if (input == "y" || input == "Y")
-						index = getPlayerByRole(MARTYR_ROLE)->getIndex();
+					else
+					{
+						if (_revealCards == false && getPlayerByRole(MARTYR_ROLE)->getAbilityUsed(true) == false)
+						{
+							std::cout << "The Martyr is dead. Call for them to conceal this fact" << std::endl;
+							std::cout << std::endl << std::endl << "Press Enter to continue...";
+							get_input();
+							clearScreen();
+							printGameStatus();
+						}
+					}
 				}
 				if (getPlayerByIndex(index)->getRole() == PRINCE_ROLE && getPlayerByIndex(index)->getAbilityUsed(false) == false)
 					std::cout << "The Prince has been lynched. Reveal their role. The Prince does not die" << std::endl;
@@ -1914,12 +1931,16 @@ void Game::wakeAllActiveRoles()
 				{
 					int res = getPlayerByRole(PI_ROLE)->See(num);
 					std::cout << "Player " << input << (res ? " or their neighbour is NOT a Villager" : " and their neighbours are Villagers") << std::endl;
+					std::cout << std::endl << std::endl << "Press Enter to continue...";
+					get_input();
 				}
 			}
 			else
+			{
 				std::cout << "The PI has used their ability. Call for them to conceal this fact" << std::endl;
-			std::cout << std::endl << std::endl << "Press Enter to continue...";
-			get_input();
+				std::cout << std::endl << std::endl << "Press Enter to continue...";
+				get_input();
+			}
 		}
 		else
 		{
@@ -2318,7 +2339,7 @@ void Game::checkSideWins()
 	}
 	if (_whichRoles[HOODLUM_ROLE])
 	{
-		if (getPlayerByIndex(getPlayerByRole(HOODLUM_ROLE)->getPlayer1())->getLife() == DEAD && getPlayerByIndex(getPlayerByRole(HOODLUM_ROLE)->getPlayer2())->getLife() == DEAD)
+		if (getPlayerByRole(HOODLUM_ROLE)->getLife() == ALIVE && getPlayerByIndex(getPlayerByRole(HOODLUM_ROLE)->getPlayer1())->getLife() == DEAD && getPlayerByIndex(getPlayerByRole(HOODLUM_ROLE)->getPlayer2())->getLife() == DEAD)
 			std::cout << "HOODLUM WINS" << std::endl;
 	}
 	if (_villageWin)
@@ -2362,7 +2383,7 @@ void Game::printGameStatus()
 		std::cout << "+";
 	for (int i = 0; i < col4Width + 2; i++) std::cout << "-";
 		std::cout << "+" << std::endl;
-		
+
 	std::cout << "| " << std::setw(col1Width) << std::left << "Player No" << " | ";
 	std::cout << std::setw(col2Width) << std::left << "Role" << " | ";
 	std::cout << std::setw(col3Width) << std::left << "Status" << " | ";
@@ -2403,11 +2424,15 @@ void Game::printGameStatus()
 		std::cout << "+";
 	for (int i = 0; i < col4Width + 2; i++) std::cout << "-";
 		std::cout << "+" << std::endl;
-
-	std::cout << (_nighttime ? "Night " : "Day " ) << _nightNo << std::endl << std::endl;
-	std::cout << "Alive Villagers: (" << _villagerNo << ")" << std::endl;
-	std::cout << "Alive Werewolves: (" << _wolfNo << ")" << std::endl;
-	std::cout << "Alive Vampires: (" << _vampNo << ")" << std::endl;
-	std::cout << "Total Alive Players: (" << _villagerNo + _wolfNo + _vampNo << "/" << _playerNo << ")" << std::endl << std::endl;
+	std::cout << "| " << std::setw(6) << (_nighttime ? "Night " : "Day " ) << std::setw(52) << _nightNo << "|" << std::endl;
+	std::cout << std::setw(60) << "|" << "|" << std::endl;
+	std::cout << "| " << "Alive Villagers: " << std::setw(41) << _villagerNo << "|" << std::endl;
+	std::cout << "| " << "Alive Werewolves: " << std::setw(40) << _wolfNo << "|" << std::endl;
+	std::cout << "| " << "Alive Vampires: " << std::setw(42) << _vampNo << "|" << std::endl;
+	int len = 35;
+	if (_villagerNo + _wolfNo + _vampNo > 9)
+		len--;
+	std::cout << "| " << "Total Alive Players: " << _villagerNo + _wolfNo + _vampNo << "/" << std::setw(len) << _playerNo << "|" << std::endl;
+	std::cout << "+-----------------------------------------------------------+" << std::endl << std::endl;
 }
  

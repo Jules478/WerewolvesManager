@@ -157,9 +157,15 @@ class Magician : public ACard
 
 class Martyr : public ACard
 {
+	private:
+			bool _abilityUsed = false;
+
 	public:
 			Martyr(Game* game);
 			~Martyr();
+
+			bool getAbilityUsed(bool checkIfCopied) const;
+			void setAbilityUsed();
 
 };
 

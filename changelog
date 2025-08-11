@@ -1,5 +1,12 @@
 Werewolves Manager 
 
+v0.6.3
+- Martyr is now called for in a no reveal game when killed before using their ability
+- Hoodlum must now be alive to meet their win condition
+- User does not need to press enter after not using the PI's ability
+- Fully encased all game data in table so that only day/night activities appear outside of it
+- Fixed bug that would crash the program when using an ability on a player number that did not exist in the game but was within the max player number
+
 v0.6.2
 - Typo fixes
 

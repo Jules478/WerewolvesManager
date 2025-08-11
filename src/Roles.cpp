@@ -367,6 +367,17 @@ Martyr::~Martyr()
 {
 }
 
+bool Martyr::getAbilityUsed(bool checkIfCopied) const
+{
+	(void)checkIfCopied;
+	return _abilityUsed;
+}
+
+void Martyr::setAbilityUsed()
+{
+	_abilityUsed = true;
+}
+
 Mason::Mason(Game* game) : ACard(MASON_ROLE, "Mason", VILLAGER, false, game, 2)
 {
 }

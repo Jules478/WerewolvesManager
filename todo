@@ -1,3 +1,5 @@
 Doppelganger - figure out a way for the messages to display when in reveal roles mode to not call out for a replaced role (possibly similar method to how it calls it's own functions?)
 
 Seer - Implement second seer
+
+Wolf cub - see how death triggers ability. May need to implement other ways to trigger

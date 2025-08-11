@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.6.4
+- Fixed typo on Seer's first night
+- Added game rule information to game status table
+
 v0.6.3
 - Martyr is now called for in a no reveal game when killed before using their ability
 - Hoodlum must now be alive to meet their win condition

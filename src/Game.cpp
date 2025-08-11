@@ -1136,7 +1136,7 @@ void Game::firstNight()
 		input = get_input();
 	}
 	int res = _player[seer]->See(std::stoi(input));
-	std::cout << "Player " << input << " is " << (res ? "NOT a Villager" : "is a Villager") << std::endl;
+	std::cout << "Player " << input << " is " << (res ? "NOT a Villager" : "a Villager") << std::endl;
 	std::cout << std::endl << std::endl << "Press Enter to continue...";
 	get_input();
 	setTimeOfDay();
@@ -2374,6 +2374,10 @@ void Game::printGameStatus()
 	const int col3Width = 10;
 	const int col4Width = 10;
 
+	/*std::cout << "+-----------------------------------------------------------+" << std::endl;
+	std::cout << "| Drunk: " << (_drunkInGame ? GREEN : RED) << std::setw(3) << (_drunkInGame ? "ON" : "OFF") << RESET;
+	std::cout << "   | Role Reveal: " << (_revealCards ? GREEN : RED) << std::setw(3) << (_revealCards ? "ON" : "OFF") << RESET;
+	std::cout << " | Alt Ghost Rule: " << (_altGhostRule ? GREEN : RED) << std::setw(3) << (_altGhostRule ? "ON" : "OFF") << RESET << "     |" << std::endl;*/
 	std::cout << "+";
 	for (int i = 0; i < col1Width + 2; i++) std::cout << "-";
 		std::cout << "+";
@@ -2433,6 +2437,11 @@ void Game::printGameStatus()
 	if (_villagerNo + _wolfNo + _vampNo > 9)
 		len--;
 	std::cout << "| " << "Total Alive Players: " << _villagerNo + _wolfNo + _vampNo << "/" << std::setw(len) << _playerNo << "|" << std::endl;
-	std::cout << "+-----------------------------------------------------------+" << std::endl << std::endl;
+	std::cout << "+--------------+------------------+-------------------------+" << std::endl;
+	std::cout << "| Drunk: " << (_drunkInGame ? GREEN : RED) << std::setw(3) << (_drunkInGame ? "ON" : "OFF") << RESET;
+	std::cout << "   | Role Reveal: " << (_revealCards ? GREEN : RED) << std::setw(3) << (_revealCards ? "ON" : "OFF") << RESET;
+	std::cout << " | Alt Ghost Rule: " << (_altGhostRule ? GREEN : RED) << std::setw(3) << (_altGhostRule ? "ON" : "OFF") << RESET << "     |" << std::endl;
+	std::cout << "+--------------+------------------+-------------------------+" << std::endl;
+	std::cout << std::endl;
 }
  

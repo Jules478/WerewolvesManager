@@ -51,6 +51,7 @@ void WolfCub::beAttacked(int attacker)
 		{
 			_alive = false;
 			_game->killWolf();
+			_game->wolfCubKilled();
 		}
 	}
 }

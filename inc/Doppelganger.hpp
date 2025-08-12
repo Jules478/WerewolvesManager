@@ -10,6 +10,7 @@ class Doppelganger : public ACard
 			t_roles _copiedRole = MAX_ROLES;
 			int _copiedPlayer;
 			bool _abilityUsed = false;
+			int _copiedSide = VILLAGER;
 
 			bool _copiedAbilityUsed = false;
 
@@ -61,6 +62,9 @@ class Doppelganger : public ACard
 				
 			// CultLeader methods
 			void Convert(int index) override;
+
+			// Reveal Mode Control
+			void performAction(int index) override;
 
 	private:
 			// Helper methods for role-specific behavior implementation

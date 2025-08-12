@@ -195,7 +195,7 @@ Game::Game(int playerno) : _playerNo(playerno)
 	_player.reserve(playerno);
 	for (int i = 0; i < 68; i++)
 		_diedInTheNight[i] = -1;
-	for (int i = 0; i < 36; i++)
+	for (int i = 0; i < MAX_ROLES; i++)
 	{
 		_whichRoles[i] = false;
 		_howManyRoles[i] = 0;
@@ -1057,8 +1057,6 @@ void Game::firstNight()
 				input = get_input();
 			}
 			getPlayerByRole(CUPID_ROLE)->setPlayer2(std::stoi(input));
-			std::cout << std::endl << "Press Enter to continue..." << std::endl;
-			get_input();
 			clearScreen();
 			printGameStatus();
 			std::cout << "Wake up the Lovers (" << getPlayerByRole(CUPID_ROLE)->getPlayer1() << " & " << getPlayerByRole(CUPID_ROLE)->getPlayer2() << ")" << std::endl;
@@ -1246,6 +1244,8 @@ void Game::resetNightlyDeaths()
 			continue;
 		if (getPlayerByIndex(_diedInTheNight[i])->getSide() == WEREWOLF && getPlayerByIndex(_diedInTheNight[i])->getRole() != MINION_ROLE && getPlayerByIndex(_diedInTheNight[i])->getRole() != SORCERER_ROLE)
 		{
+			if (getPlayerByIndex(_diedInTheNight[i])->getRole() == WOLFCUB_ROLE)
+				wolfCubKilled();
 			killWolf();
 			getPlayerByIndex(_diedInTheNight[i])->setLife(DEAD);
 		}
@@ -1277,11 +1277,13 @@ void Game::resetNightlyDeaths()
 			if (getPlayerByRole(CUPID_ROLE)->getPlayer1() == _diedInTheNight[i] && getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
 			{
 				setNightlyDeaths(getPlayerByRole(CUPID_ROLE)->getPlayer2());
+				std::cout << getPlayerByRole(CUPID_ROLE)->getPlayer2() << " ";
 				_loverDied = true;
 			}
 			else if (getPlayerByRole(CUPID_ROLE)->getPlayer2() == _diedInTheNight[i] && getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
 			{
 				setNightlyDeaths(getPlayerByRole(CUPID_ROLE)->getPlayer1());
+				std::cout << getPlayerByRole(CUPID_ROLE)->getPlayer1() << " ";
 				_loverDied = true;
 			}
 		}
@@ -1412,25 +1414,6 @@ void Game::dayPhase()
 			std::cout << _diedInTheNight[i] << " ";
 	}
 	resetNightlyDeaths();
-	if (_loverDied)
-	{
-		if (getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == DEAD)
-		{
-			getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-			std::cout << getPlayerByRole(CUPID_ROLE)->getPlayer2() << " ";
-			_loverDied = false;
-			updateVillageNumbers(getPlayerByRole(CUPID_ROLE)->getPlayer2());
-			checkDoppelganger(*getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2()));
-		}
-		else if (getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == DEAD)
-		{
-			getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-			std::cout << getPlayerByRole(CUPID_ROLE)->getPlayer1() << " ";
-			_loverDied = false;
-			updateVillageNumbers(getPlayerByRole(CUPID_ROLE)->getPlayer1());
-			checkDoppelganger(*getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1()));
-		}
-	}
 	std::cout << std::endl << std::endl;
 	if (checkWin())
 	{
@@ -1473,6 +1456,8 @@ void Game::dayPhase()
 			if (_vampireVictim != -1)
 			{
 				getPlayerByIndex(_vampireVictim)->setLife(DEAD);
+				if (getPlayerByIndex(_vampireVictim)->getRole() == WOLFCUB_ROLE)
+					wolfCubKilled();
 				std::cout << "The Vampires have killed Player " << _vampireVictim << std::endl;
 				if (_whichRoles[CUPID_ROLE])
 				{
@@ -1480,6 +1465,8 @@ void Game::dayPhase()
 					{
 						std::cout << "The Player's lover (" << getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
 						getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
+						if (getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2())->getRole() == WOLFCUB_ROLE)
+							wolfCubKilled();
 						updateVillageNumbers(getPlayerByRole(CUPID_ROLE)->getPlayer2());
 						checkDoppelganger(*getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer2()));
 					}
@@ -1487,6 +1474,8 @@ void Game::dayPhase()
 					{
 						std::cout << "The Player's lover (" << getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
 						getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
+						if (getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1())->getRole() == WOLFCUB_ROLE)
+							wolfCubKilled();
 						updateVillageNumbers(getPlayerByRole(CUPID_ROLE)->getPlayer1());
 						checkDoppelganger(*getPlayerByIndex(getPlayerByRole(CUPID_ROLE)->getPlayer1()));
 					}
@@ -2234,6 +2223,8 @@ void Game::wakeAllActiveRoles()
 						break;
 					}
 				}
+				if (steal == false)
+					steal = !getPlayerByIndex(index)->getLife();
 				std::cout << (steal ? "Their target is dead. Show the doppelganger their new role" : "Their target is alive") << std::endl;
 				if (steal)
 					getPlayerByRole(DOPPELGANGER_ROLE)->setAbilityUsed();

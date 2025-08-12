@@ -310,6 +310,7 @@ void Doppelganger::wolfcubBeAttacked(int attacker)
 		{
 			_alive = false;
 			_game->killWolf();
+			_game->wolfCubKilled();
 		}
 	}
 }
@@ -570,4 +571,47 @@ void Doppelganger::Dies()
 void Doppelganger::Convert(int index)
 {
 	_game->getPlayerByIndex(index)->setInCult();
+}
+
+void Doppelganger::performAction(int index) // need to finish this
+{
+	(void)_copiedSide; // this is just so it compiles. Will need this later
+	if (_copiedRole == HUNTER_ROLE)
+	{
+		_hunter_victim = index;
+	}
+	else if (_copiedRole == CURSED_ROLE)
+	{
+		std::cout << "The Doppelganger is " << (_copiedAbilityUsed ? "a Werewolf" : "a Villager") << std::endl;
+	}
+	else if (_copiedRole == WITCH_ROLE)
+	{
+	}
+	else if (_copiedRole == MAGICIAN_ROLE)
+	{
+	}
+	else if (_copiedRole == SEER_ROLE)
+	{
+	}
+	else if (_copiedRole == AURASEER_ROLE)
+	{
+	}
+	else if (_copiedRole == SORCERER_ROLE)
+	{
+	}
+	else if (_copiedRole == BODYGUARD_ROLE)
+	{
+	}
+	else if (_copiedRole == PRIEST_ROLE)
+	{
+	}
+	else if (_copiedRole == PI_ROLE)
+	{
+	}
+	else if (_copiedRole == OLDHAG_ROLE)
+	{
+	}
+	else if (_copiedRole == CULTLEADER_ROLE)
+	{
+	}
 }

@@ -43,6 +43,7 @@ class Game
 			bool _drunkInGame = false;
 			bool _altGhostRule = false;
 			bool _loverDied = false;
+			// bool _secondSeer = false;
 
 	public:
 			Game(int playerno);

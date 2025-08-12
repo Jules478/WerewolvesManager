@@ -106,6 +106,7 @@ class ACard
 			virtual int getCopiedRole() const { return -1; }
 			virtual int getCopiedPlayer() const { return -1; }
 			virtual void setCopiedPlayer(int index) { (void)index; }
+			virtual void performAction(int index) { (void)index; return ; }
 
 			int getSide() const;
 			int getIndex() const;

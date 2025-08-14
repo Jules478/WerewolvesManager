@@ -1,17 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include "Colours.hpp"
 
 typedef std::string str;
-
-# define RED "\e[0;31m"
-# define BLUE "\e[0;34m"
-# define GREEN "\e[0;32m"
-# define PURPLE "\e[0;35m"
-# define YELLOW "\e[0;33m"
-# define WHITE "\e[0;37m"
-# define GREY "\e[0;90m"
-# define RESET "\e[0m"
 
 typedef enum e_roles
 {

@@ -1,5 +1,8 @@
 Werewolves Manager 
 
+v0.6.8
+- Added new colour header file
+
 v0.6.7
 - Fixed bug where Seer would not see the Sorcerer as a villager
 

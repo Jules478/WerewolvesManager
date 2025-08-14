@@ -23,7 +23,8 @@ HEADERS = \
 			$(INC_DIR)/ACard.hpp \
 			$(INC_DIR)/Game.hpp \
 			$(INC_DIR)/Roles.hpp \
-			$(INC_DIR)/Doppelganger.hpp
+			$(INC_DIR)/Doppelganger.hpp \
+			$(INC_DIR)/Colours.hpp
 
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 DEBUG_OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.debug.o)

@@ -13,6 +13,11 @@ Doppelganger::~Doppelganger()
 void Doppelganger::copy(int index)
 {
 	_copiedPlayer = index;
+	ACard* copy = _game->getPlayerByIndex(index);
+	if (copy->getRole() == MINION_ROLE || copy->getRole() == SORCERER_ROLE)
+		_copiedSide = VILLAGER;
+	else
+		_copiedSide = copy->getSide();
 }
 
 int Doppelganger::getCopiedRole() const
@@ -46,6 +51,13 @@ void Doppelganger::setAbilityUsed()
 		_copiedAbilityUsed = true;
 	else
 		_abilityUsed = true;
+}
+
+int Doppelganger::getSide() const
+{
+	if (_abilityUsed == false)
+		return _side;
+	return _copiedSide;
 }
 
 /// Basic Function Overrides
@@ -575,7 +587,6 @@ void Doppelganger::Convert(int index)
 
 void Doppelganger::performAction(int index) // need to finish this
 {
-	(void)_copiedSide; // this is just so it compiles. Will need this later
 	if (_copiedRole == HUNTER_ROLE)
 	{
 		_hunter_victim = index;

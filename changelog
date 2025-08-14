@@ -1,5 +1,11 @@
 Werewolves Manager 
 
+v0.6.7
+- Fixed bug where Seer would not see the Sorcerer as a villager
+
+v0.6.6
+- Added a copied side attribute to Doppelganger to track what side the doppelganger is now on once the new role is adopted. Currently broken.
+
 v0.6.5
 - Minor changes to Doppelganger logic
 

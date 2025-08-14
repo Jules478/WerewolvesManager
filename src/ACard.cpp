@@ -9,11 +9,6 @@ ACard::~ACard()
 {
 }
 
-int ACard::getSide() const
-{
-	return _side;
-}
-
 int ACard::getIndex() const
 {
 	return _index;

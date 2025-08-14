@@ -631,7 +631,7 @@ Seer::~Seer()
 
 int Seer::See(int index)
 {
-	if (_game->getPlayerByIndex(index)->getRole() == MINION_ROLE)
+	if (_game->getPlayerByIndex(index)->getRole() == MINION_ROLE || _game->getPlayerByIndex(index)->getRole() == SORCERER_ROLE)
 		return 0;
 	if (_game->getPlayerByIndex(index)->getRole() == LYCAN_ROLE || _game->getPlayerByIndex(index)->getSide() == VAMPIRE || _game->getPlayerByIndex(index)->getSide() == WEREWOLF)
 		return 1;

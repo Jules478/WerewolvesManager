@@ -30,6 +30,7 @@ class Doppelganger : public ACard
 			void setCopiedPlayer(int index) override;
 			bool getAbilityUsed(bool checkIfCopied) const override;
 			void setAbilityUsed() override;
+			int getSide() const override;
 				
 			// Override virtual methods from ACard for polymorphic behavior
 			void beAttacked(int attacker) override;

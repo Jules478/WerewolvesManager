@@ -107,8 +107,8 @@ class ACard
 			virtual int getCopiedPlayer() const { return -1; }
 			virtual void setCopiedPlayer(int index) { (void)index; }
 			virtual void performAction(int index) { (void)index; return ; }
+			virtual int getSide() const { return _side; }
 
-			int getSide() const;
 			int getIndex() const;
 			bool getLife() const;
 			bool getWakes() const;

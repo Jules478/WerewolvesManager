@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.7.1
+- Reformatted death logs to be clearer and give player sides for games where only sides are revealed
+- Optimized logic by limiting the number of instances player classes need to be fetched
+
 v0.6.8
 - Added new colour header file
 

@@ -350,11 +350,16 @@ class Minion : public ACard
 
 class Cursed : public ACard
 {
+	private:
+			bool _abilityUsed = false;
+
 	public:
 			Cursed(Game* game);
 			~Cursed();
 
 			void beAttacked(int attacker);
+			bool getAbilityUsed(bool checkIfCopied) const;
+			void setAbilityUsed();
 
 };
 

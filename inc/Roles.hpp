@@ -264,11 +264,16 @@ class Prince : public ACard
 
 class Seer : public ACard
 {
+	private:
+			bool _secondSeer = false;
+
 	public:
 			Seer(Game* game);
 			~Seer();
 
 			int See(int index);
+			bool getAbilityUsed(bool checkIfCopied) const;
+			void setAbilityUsed();
 
 };
 

@@ -1,4 +1,6 @@
 Doppelganger - need to finish implementation of methods to call doppelganger at night in a reveal roles game where the doppelganger has an action (like seer) to perform
 			- implement a copied side so numbers will still be correct
 
-Seer - Implement second seer
+Seer - second seer mostly done, need to check for bugs and crashes
+
+Status table - maybe implement so that current active players are highlighted? Maybe in bold?

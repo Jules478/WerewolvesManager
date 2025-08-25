@@ -612,6 +612,17 @@ int Seer::See(int index)
 	return 0;
 }
 
+bool Seer::getAbilityUsed(bool checkIfCopied) const
+{
+	(void)checkIfCopied;
+	return _secondSeer;
+}
+
+void Seer::setAbilityUsed()
+{
+	_secondSeer = !_secondSeer;
+}
+
 Spellcaster::Spellcaster(Game* game) : ACard(SPELLCASTER_ROLE, "Spellcaster", VILLAGER, true, game, 1)
 {
 }

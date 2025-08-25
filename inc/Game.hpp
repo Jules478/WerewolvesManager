@@ -12,6 +12,8 @@
 #define DAY false
 #define ALIVE true
 #define DEAD false
+#define FIRST false
+#define SECOND true
 
 class Game
 {
@@ -31,7 +33,6 @@ class Game
 			bool _nighttime = true;
 			int	_balance = 0;
 			int _nightNo = 1;
-			bool _seerReplaced = false;
 			bool _secondWolfKill = false;
 			bool _secondLynching = false;
 			bool _wolfUpsetTummy = false;
@@ -42,8 +43,7 @@ class Game
 			int _drunkRole = -1;
 			bool _drunkInGame = false;
 			bool _altGhostRule = false;
-			bool _loverDied = false;
-			// bool _secondSeer = false;
+			bool _indexSet = false;
 
 	public:
 			Game(int playerno);
@@ -78,7 +78,7 @@ class Game
 			void setTimeOfDay();
 			
 			ACard* getPlayerByIndex(int index);
-			ACard* getPlayerByName(str name);
+			ACard* getSeer(bool which);
 			ACard* getPlayerByRole(int role);
 			int* getNightlyDeaths();
 			bool getTimeOfDay() const;
@@ -101,7 +101,6 @@ class Game
 			void checkDoppelganger(const ACard& player);
 
 			void closeProgram();
-
 };
 
 str get_input();

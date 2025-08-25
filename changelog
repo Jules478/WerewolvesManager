@@ -1,5 +1,11 @@
 Werewolves Manager 
 
+v0.8.0
+- Added second Seer functionality
+- Added player numbers to more callouts
+- Changed game status table to show players in index order once all players have been assigned an index
+- Fixed death report incorrectly listing Lycan as a villager
+
 v0.7.2
 - Further optimization
 

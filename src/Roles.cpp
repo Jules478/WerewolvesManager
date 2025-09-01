@@ -307,14 +307,19 @@ void Hunter::setLife(bool alive)
 	_alive = alive;
 	if (alive == DEAD)
 	{
-		std::cout << "Enter Hunter's victim: ";
-		str input = get_input();
-		while (!_game->isValidPlayerNumber(input))
+		if (_victim == -1)
 		{
-			std::cout << "ERROR: Enter player number: ";
-			input = get_input();
+			std::cout << "Enter Hunter's victim: ";
+			str input = get_input();
+			while (!_game->isValidPlayerNumber(input))
+			{
+				std::cout << "ERROR: Enter player number: ";
+				input = get_input();
+			}
+			takePlayerWith(std::stoi(input));
 		}
-		_game->getPlayerByRole(HUNTER_ROLE)->takePlayerWith(std::stoi(input));
+		else
+			takePlayerWith(_victim);
 	}
 }
 

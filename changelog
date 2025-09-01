@@ -1,5 +1,8 @@
 Werewolves Manager 
 
+v0.8.1
+- Fixed issue where Hunter would kill two targets when attacked at night
+
 v0.8.0
 - Added second Seer functionality
 - Added player numbers to more callouts

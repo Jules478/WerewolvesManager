@@ -4,3 +4,7 @@ Doppelganger - need to finish implementation of methods to call doppelganger at 
 Seer - second seer mostly done, need to check for bugs and crashes
 
 Status table - maybe implement so that current active players are highlighted? Maybe in bold?
+
+Fix drunk werewolf bug
+
+Hunter bug killing twice after death at night

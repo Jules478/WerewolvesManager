@@ -51,15 +51,8 @@ str get_input()
 {
 	str input;
 
-	input = "";
-	std::getline(std::cin, input);
-	if (std::cin.eof())
-	{
-		std::cin.clear();
+	if (!std::getline(std::cin, input))
 		exit(0);
-	}
-	if (input.empty())
-		return "";
 	return input;
 }
 
@@ -615,7 +608,7 @@ void Game::nightPhase()
 			std::cout << "Wake up the werewolves: \n";
 			for (int i = 0; i < _playerNo; i++)
 			{
-				if (_player[i]->getSide() == WEREWOLF && _player[i]->getLife() == ALIVE && _player[i]->getRole() != SORCERER_ROLE && _player[i]->getRole() != MINION_ROLE)
+				if (_player[i]->getSide() == WEREWOLF && _player[i]->getDrunk() == false && _player[i]->getLife() == ALIVE && _player[i]->getRole() != SORCERER_ROLE && _player[i]->getRole() != MINION_ROLE)
 				{
 					wolf = _player[i]->getIndex();
 					std::cout <<_player[i]->getName() << " (" << wolf << ") \n";
@@ -645,7 +638,7 @@ void Game::nightPhase()
 				std::cout << "Wake up the werewolves: \n";
 				for (int i = 0; i < _playerNo; i++)
 				{
-					if (_player[i]->getSide() == WEREWOLF && _player[i]->getLife() == ALIVE && _player[i]->getRole() != SORCERER_ROLE && _player[i]->getRole() != MINION_ROLE)
+					if (_player[i]->getSide() == WEREWOLF && _player[i]->getDrunk() == false && _player[i]->getLife() == ALIVE && _player[i]->getRole() != SORCERER_ROLE && _player[i]->getRole() != MINION_ROLE)
 					{
 						wolf = _player[i]->getIndex();
 						std::cout <<_player[i]->getRole() << " (" << wolf << ") \n";
@@ -813,10 +806,12 @@ void Game::firstNight()
 			if (_drunkRole == WEREWOLF_ROLE && drunkWolf == false)
 			{
 				drunkWolf = true;
-				i++;
-				std::cout << "A Werewolf is drunk. Call for them to conceal this fact" << std::endl;
-				std::cout << "\n\n" << "Press enter to continue..." << std::endl;
-				get_input();
+				if (_wolfNo == 1)
+				{
+					std::cout << "A Werewolf is drunk. Call for them to conceal this fact" << std::endl;
+					std::cout << "\n\n" << "Press enter to continue..." << std::endl;
+					get_input();
+				}
 			}
 			else
 			{
@@ -1893,12 +1888,14 @@ void Game::wakeAllActiveRoles()
 			std::cout << "Wake the Bodyguard (" << bodyg->getIndex() << ")\n" << std::endl;
 			std::cout << "Player to protect: ";
 			str input = get_input();
-			while (!isValidPlayerNumber(input))
+			while (!isValidPlayerNumberAlt(input, bodyg->getPlayer1()))
 			{
 				std::cout << "ERROR: Enter player number: ";
 				input = get_input();
 			}
-			bodyg->Protect(std::stoi(input));
+			int plyr = std::stoi(input);
+			bodyg->Protect(plyr);
+			bodyg->setPlayer1(plyr);
 		}
 		else
 		{

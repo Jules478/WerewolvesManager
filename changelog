@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.8.2
+- Optimized input function
+- Prevented Bodyguard from choosing the same target twice consecutively
+
 v0.8.1
 - Fixed issue where Hunter would kill two targets when attacked at night
 

@@ -5,6 +5,6 @@ Seer - second seer mostly done, need to check for bugs and crashes
 
 Status table - maybe implement so that current active players are highlighted? Maybe in bold?
 
-Fix drunk werewolf bug
+Hunter - Killing decreases player count by 2. Know the cause need to figure out a fix
 
-Hunter bug killing twice after death at night
+Vampire - conflicts with drunk

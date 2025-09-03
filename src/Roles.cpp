@@ -189,6 +189,16 @@ void Bodyguard::Protect(int index)
 	}
 }
 
+void Bodyguard::setPlayer1(int index)
+{
+	_lastProtect = index;
+}
+
+int Bodyguard::getPlayer1()
+{
+	return _lastProtect;
+}
+
 Cupid::Cupid(Game* game) : ACard(CUPID_ROLE, "Cupid", VILLAGER, false, game, -3)
 {
 }

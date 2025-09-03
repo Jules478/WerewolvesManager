@@ -64,11 +64,16 @@ class AuraSeer : public ACard
 
 class Bodyguard : public ACard
 {
+	private:
+		int _lastProtect = -1;
+
 	public:
 			Bodyguard(Game* game);
 			~Bodyguard();
 
 			void Protect(int index);
+			void setPlayer1(int index);
+			int getPlayer1();
 
 };
 

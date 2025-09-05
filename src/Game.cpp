@@ -678,13 +678,13 @@ void Game::nightPhase()
 	int vamp = -1;
 	if (_vampNo > 0)
 	{
-		std::cout << "Wake up the vampires: ";
+		std::cout << "Wake up the vampires: \n";
 			for (int i = 0; i < _playerNo; i++)
 			{
 				if (_player[i]->getSide() == VAMPIRE && _player[i]->getLife() == ALIVE)
 				{
 					vamp = _player[i]->getIndex();
-					std::cout <<_player[i]->getRole() << " (" << vamp << ") \n";
+					std::cout <<_player[i]->getName() << " (" << vamp << ") \n";
 				}
 			}
 			if (vamp != -1)
@@ -1293,6 +1293,7 @@ void Game::setNightlyDeaths(int index)
 
 void Game::resetNightlyDeaths()
 {
+	_nighttime = true;
 	for (int i = 0; i < 68; i++)
 	{
 		if (_diedInTheNight[i] == -1)
@@ -1324,9 +1325,26 @@ void Game::resetNightlyDeaths()
 				_wolfUpsetTummy = true;
 			else if (dead->getRole() == HUNTER_ROLE)
 			{
-				ACard* hunter = getPlayerByRole(HUNTER_ROLE);
-				hunter->takePlayerWith(hunter->getVictim());
-				std::cout << hunter->getVictim();
+				// ACard* hunter = getPlayerByRole(HUNTER_ROLE);
+				// str input;
+				// int victim;
+				// if (_revealCards)
+				// {
+				// 	std::cout << "Enter player to kill: ";
+				// 	input = get_input();
+				// 	while (!isValidAlivePlayer(input))
+				// 	{
+				// 		std::cout << "ERROR: Enter index: ";
+				// 		input = get_input();
+				// 	}
+				// 	victim = std::stoi(input);
+				// }
+				// else
+				// {
+				// 	victim = hunter->getVictim();
+				// }
+				// hunter->takePlayerWith(victim);
+				displayDeath(dead->getVictim());
 			}
 		}
 		if (_whichRoles[CUPID_ROLE])
@@ -1349,6 +1367,7 @@ void Game::resetNightlyDeaths()
 		_diedInTheNight[i] = -1;
 	}
 	_diedIndex = 0;
+	_nighttime = false;
 }
 
 void Game::setVampVictim(int index)
@@ -1478,25 +1497,7 @@ void Game::dayPhase()
 			}
 			else
 			{
-				std::cout << dead->getName() << " (" << dead->getIndex() << ") | Side: ";
-				switch (dead->getSide())
-				{
-					case VILLAGER:
-						if (dead->getRole() == LYCAN_ROLE)
-							std::cout << YELLOW "Werewolf" RESET << std::endl;
-						else
-							std::cout << BLUE "Villager" RESET << std::endl;
-						break;
-					case WEREWOLF:
-						if (dead->getRole() == MINION_ROLE || dead->getRole() == SORCERER_ROLE)
-							std::cout << BLUE "Villager" RESET << std::endl;
-						else
-							std::cout << YELLOW "Werewolf" RESET << std::endl;
-						break;
-					case VAMPIRE:
-						std::cout << PURPLE "Vampire" RESET << std::endl;
-						break;
-				}
+				displayDeath(dead->getIndex());
 			}
 		}
 	}
@@ -1544,25 +1545,13 @@ void Game::dayPhase()
 			if (_vampireVictim != -1)
 			{
 				ACard *vamp = getPlayerByIndex(_vampireVictim);
+				if (vamp->getRole() == HUNTER_ROLE)
+					std::cout << "The Hunter has died to the Vampires. ";
 				vamp->setLife(DEAD);
 				if (vamp->getRole() == WOLFCUB_ROLE)
 					wolfCubKilled();
-				std::cout << "\nThe Vampires have killed " << vamp->getName() << " (" << _vampireVictim << ") | Side: ";
-				switch (vamp->getSide())
-				{
-					case VILLAGER:
-						std::cout << BLUE "Villager" RESET << std::endl;
-						break;
-					case WEREWOLF:
-						if (vamp->getRole() == MINION_ROLE || vamp->getRole() == SORCERER_ROLE)
-							std::cout << BLUE "Villager" RESET << std::endl;
-						else
-							std::cout << YELLOW "Werewolf" RESET << std::endl;
-						break;
-					case VAMPIRE:
-						std::cout << PURPLE "Vampire" RESET << std::endl;
-						break;
-				}
+				std::cout << "\nThe Vampires have killed ";
+				displayDeath(_vampireVictim);
 				if (_whichRoles[CUPID_ROLE])
 				{
 					ACard* cupid = getPlayerByRole(CUPID_ROLE);
@@ -1655,24 +1644,12 @@ void Game::dayPhase()
 					std::cout << "\nThe Prince (" << lynch->getIndex() << ") has been lynched. Reveal their role. The Prince does not die" << std::endl;
 				else
 				{
-					std::cout << "\nVote was successful. The village has lynched " << lynch->getName() << " (" << index << ") | Side: ";
-					switch (lynch->getSide())
-					{
-						case VILLAGER:
-							std::cout << BLUE "Villager" RESET << std::endl;
-							break;
-						case WEREWOLF:
-							if (lynch->getRole() == MINION_ROLE || lynch->getRole() == SORCERER_ROLE)
-								std::cout << BLUE "Villager" RESET << std::endl;
-							else
-								std::cout << YELLOW "Werewolf" RESET << std::endl;
-							break;
-						case VAMPIRE:
-							std::cout << PURPLE "Vampire" RESET << std::endl;
-							break;
-					}
+					std::cout << "\nVote was successful. The village has lynched "; // << lynch->getName() << " (" << index << ") | Side: ";
+					displayDeath(lynch->getIndex());
 				}
 				lynch->beLynched();
+				if (lynch->getRole() == HUNTER_ROLE)
+						displayDeath(lynch->getVictim());
 				std::cout << std::endl;
 				if (_whichRoles[CUPID_ROLE])
 				{
@@ -1909,7 +1886,7 @@ void Game::wakeAllActiveRoles()
 		clearScreen();
 		printGameStatus();
 	}
-	if (_whichRoles[HUNTER_ROLE])
+	if (_whichRoles[HUNTER_ROLE] && !_revealCards)
 	{
 		ACard* hunter = getPlayerByRole(HUNTER_ROLE);
 		if (hunter->getLife() == ALIVE)
@@ -2476,6 +2453,30 @@ void Game::checkDoppelganger(const ACard& player)
 	ACard* doppel = getPlayerByRole(DOPPELGANGER_ROLE);
 	if (player.getIndex() == doppel->getCopiedPlayer())
 		doppel->setAbilityUsed();
+}
+
+void Game::displayDeath(int index)
+{
+	ACard *dead = getPlayerByIndex(index);
+	std::cout << dead->getName() << " (" << dead->getIndex() << ") | Side: ";
+	switch (dead->getSide())
+	{
+		case VILLAGER:
+			if (dead->getRole() == LYCAN_ROLE)
+				std::cout << YELLOW "Werewolf" RESET << std::endl;
+			else
+				std::cout << BLUE "Villager" RESET << std::endl;
+			return;
+		case WEREWOLF:
+			if (dead->getRole() == MINION_ROLE || dead->getRole() == SORCERER_ROLE)
+				std::cout << BLUE "Villager" RESET << std::endl;
+			else
+				std::cout << YELLOW "Werewolf" RESET << std::endl;
+			return;
+		case VAMPIRE:
+			std::cout << PURPLE "Vampire" RESET << std::endl;
+			return;
+	}
 }
 
 void Game::updateVillageNumbers(int index)

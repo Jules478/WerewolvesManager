@@ -99,6 +99,7 @@ class Game
 			bool* getRoles();
 			bool isAliveOrCopied(const ACard& player);
 			void checkDoppelganger(const ACard& player);
+			void displayDeath(int index);
 
 			void closeProgram();
 };

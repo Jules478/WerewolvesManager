@@ -245,6 +245,7 @@ Ghost::~Ghost()
 
 Hunter::Hunter(Game* game) : ACard(HUNTER_ROLE, "Hunter", VILLAGER, true, game, 3)
 {
+	_victim = -1;
 }
 
 Hunter::~Hunter()
@@ -276,7 +277,8 @@ void Hunter::beLynched()
 		std::cout << "ERROR: Enter player number: ";
 		input = get_input();
 	}
-	_game->getPlayerByIndex(std::stoi(input))->beAttacked(_index);
+	_victim = std::stoi(input);
+	_game->getPlayerByIndex(_victim)->beAttacked(_index);
 	if (_game->getRoles()[CUPID_ROLE])
 	{
 		ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
@@ -321,15 +323,14 @@ void Hunter::setLife(bool alive)
 		{
 			std::cout << "Enter Hunter's victim: ";
 			str input = get_input();
-			while (!_game->isValidPlayerNumber(input))
+			while (!_game->isValidPlayerNumberAlt(input, _index))
 			{
 				std::cout << "ERROR: Enter player number: ";
 				input = get_input();
 			}
-			takePlayerWith(std::stoi(input));
+			_victim = std::stoi(input);
 		}
-		else
-			takePlayerWith(_victim);
+		takePlayerWith(_victim);
 	}
 }
 

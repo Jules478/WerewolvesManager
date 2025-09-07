@@ -2,9 +2,9 @@
 
 void clearScreen()
 {
-    // std::cout << "\033[H\033[2J"; // Use this to keep history of previous window states
+	// std::cout << "\033[H\033[2J"; // Use this to keep history of previous window states
 	std::cout << "\033c"; // Use this to erase window and not keep history
-    std::cout.flush();
+	std::cout.flush();
 }
 
 void printTitle()
@@ -65,7 +65,7 @@ int main()
 	printTitle();
 	while (1)
 	{
-		std::cout << "Commands: " << "add | remove | resize | start | set reveal | set drunk | set ghost | quit" << std::endl;
+		std::cout << "Commands: " << "add | remove | resize | start | set reveal | set drunk | set ghost | import | export | quit" << std::endl;
 		std::cout << "\nCurrent Players: " << game.getPlayerNo() << " | Current Roles: " << game.getPlayers().size() << " | Current Balance: " << game.getBalance();
 		if (game.getBalance() > 0)
 			std::cout << " (Villager advantage)";
@@ -140,6 +140,46 @@ int main()
 			game.setGhostMode();
 			clearScreen();
 			printTitle();
+		}
+		else if (input.substr(0, 7) == "export ")
+		{
+			str filename = input.substr(7, input.length());
+			if (!std::all_of(filename.begin(), filename.end(), ::isalpha))
+			{
+				clearScreen();
+				printTitle();
+				std::cout << "Error: Invalid filename" << std::endl;
+				continue;
+			}
+			std::ofstream file;
+			try
+			{
+				std::filesystem::create_directories("presets");
+			}
+			catch (...)
+			{
+				clearScreen();
+				printTitle();
+				std::cout << "Error: preset directory could not be created" << std::endl;
+				continue;
+			}
+			file.open("presets/" + filename + ".ini");
+			if (!file.is_open())
+			{
+				clearScreen();
+				printTitle();
+				std::cout << "Error Opening File" << std::endl;
+				continue;
+			}
+			game.saveToINI(file);
+			clearScreen();
+			printTitle();
+			std::cout << "Game exported" << std::endl;
+		}
+		else if (input.substr(0, 7) == "import ")
+		{
+			str file = "presets/" + input.substr(7, input.length()) + ".ini";
+			game.loadFromINI(file);
 		}
 		else if (input == "quit")
 		{

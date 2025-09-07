@@ -681,7 +681,7 @@ void Game::nightPhase()
 		std::cout << "Wake up the vampires: \n";
 			for (int i = 0; i < _playerNo; i++)
 			{
-				if (_player[i]->getSide() == VAMPIRE && _player[i]->getLife() == ALIVE)
+				if (_player[i]->getSide() == VAMPIRE && _player[i]->getDrunk() == false && _player[i]->getLife() == ALIVE)
 				{
 					vamp = _player[i]->getIndex();
 					std::cout <<_player[i]->getName() << " (" << vamp << ") \n";
@@ -697,6 +697,12 @@ void Game::nightPhase()
 					input = get_input();
 				}
 				getPlayerByIndex(std::stoi(input))->beAttacked(vamp);
+			}
+			else
+			{
+				std::cout << "The Vampire is drunk. Call for them to conceal this fact\n";
+				std::cout << "\nPress enter to continue..." << std::endl;
+				get_input();
 			}
 			clearScreen();
 			printGameStatus();
@@ -800,36 +806,34 @@ void Game::firstNight()
 	printGameStatus();
 	if (_whichRoles[WEREWOLF_ROLE])
 	{
-		bool drunkWolf = false;
 		for (size_t i = 0; i < _player.size(); i++)
 		{
-			if (_drunkRole == WEREWOLF_ROLE && drunkWolf == false)
+			if (_drunkRole == WEREWOLF_ROLE && _wolfNo == 1)
 			{
-				drunkWolf = true;
-				if (_wolfNo == 1)
-				{
-					std::cout << "A Werewolf is drunk. Call for them to conceal this fact" << std::endl;
-					std::cout << "\n\n" << "Press enter to continue..." << std::endl;
-					get_input();
-				}
+				std::cout << "A Werewolf is drunk. Call for them to conceal this fact" << std::endl;
+				std::cout << "\n\n" << "Press enter to continue..." << std::endl;
+				get_input();
 			}
 			else
 			{
-				clearScreen();
-				printGameStatus();
-				std::cout << "Wake up all the Werewolves" << std::endl;
-				if (_player[i]->getRole() == WEREWOLF_ROLE)
+				if (!_player[i]->getDrunk())
 				{
-					std::cout << "Enter player number: ";
-					input = get_input();
-					while (!isValidPlayerEntry(input))
+					clearScreen();
+					printGameStatus();
+					std::cout << "Wake up all the Werewolves" << std::endl;
+					if (_player[i]->getRole() == WEREWOLF_ROLE)
 					{
-						std::cout << "ERROR: Enter player number: ";
+						std::cout << "Enter player number: ";
 						input = get_input();
+						while (!isValidPlayerEntry(input))
+						{
+							std::cout << "ERROR: Enter player number: ";
+							input = get_input();
+						}
+						int index = std::stoi(input);
+						_player[i]->setIndex(index);
+						_assignedPlayers[_assignedIndex++] = index;
 					}
-					int index = std::stoi(input);
-					_player[i]->setIndex(index);
-					_assignedPlayers[_assignedIndex++] = index;
 				}
 			}
 		}
@@ -2479,6 +2483,71 @@ void Game::displayDeath(int index)
 	}
 }
 
+void Game::saveToINI(std::ofstream& file)
+{
+	file << "[Settings]\n";
+	file << "revealCards=" << _revealCards << "\n";
+	file << "drunkInGame=" << _drunkInGame << "\n";
+	file << "altGhostRule=" << _altGhostRule << "\n\n";
+
+	file << "[Game Size]\n";
+	file << "playerNo=" << _playerNo << "\n\n";
+
+	file << "[Player]\n";
+	for (size_t i = 0; i < _player.size(); i++)
+	{
+		if (_player[i])
+		{
+			file << "role" << std::setw(2) << std::setfill('0') << i << "=" << _player[i]->getName() << "\n";
+		}
+	}
+	file.close();
+}
+
+void Game::loadFromINI(str& file)
+{
+	INIReader reader(file);
+
+	if (reader.ParseError() < 0)
+	{
+		clearScreen();
+		printTitle();
+		std::cout << "Failed to load INI file" << std::endl;
+		return ; 
+	}
+	_wolfNo = 0;
+	_vampNo = 0;
+	_villagerNo = 0;
+	_balance = 0;
+	for (int i = 0; i < MAX_ROLES; i++)
+	{
+		_whichRoles[i] = false;
+		_howManyRoles[i] = 0;
+	}
+	_revealCards = reader.GetBoolean("Settings", "revealCards", false);
+	_drunkInGame = reader.GetBoolean("Settings", "drunkInGame", false);
+	_altGhostRule = reader.GetBoolean("Settings", "altGhostRule", false);
+	_playerNo = reader.GetInteger("Game Size", "playerNo", 0);
+	size_t size = _player.size();
+	for (size_t i = 0; i < size; i++)
+		delete _player[i];
+	_player.clear();
+	_player.reserve(_playerNo);
+	for (int i = 0; ; i++)
+	{
+		std::ostringstream keyStream;
+		keyStream << "role" << std::setw(2) << std::setfill('0') << i;
+		str key = keyStream.str();
+		if (!reader.HasValue("Player", key))
+			break;
+		str role = reader.Get("Player", key, "");
+		addPlayer(role);
+		clearScreen();
+		printTitle();
+		std::cout << "Game imported" << std::endl;
+	}
+}
+
 void Game::updateVillageNumbers(int index)
 {
 	ACard* player = getPlayerByIndex(index);
@@ -2623,7 +2692,44 @@ void Game::printGameStatus()
 	std::cout << "+--------------+------------------+-------------------------+\n";
 	std::cout << "| Drunk: " << (_drunkInGame ? GREEN : RED) << std::setw(3) << (_drunkInGame ? "ON" : "OFF") << RESET;
 	std::cout << "   | Role Reveal: " << (_revealCards ? GREEN : RED) << std::setw(3) << (_revealCards ? "ON" : "OFF") << RESET;
-	std::cout << " | Alt Ghost Rule: " << (_altGhostRule ? GREEN : RED) << std::setw(3) << (_altGhostRule ? "ON" : "OFF") << RESET << "     |\n";
+	std::cout << " | Alt Ghost Rule: " << (_altGhostRule ? GREEN : RED) << std::setw(3) << (_altGhostRule ? "ON" : "OFF") << RESET << "	 |\n";
 	std::cout << "+--------------+------------------+-------------------------+\n";
 	std::cout << std::endl;
+}
+
+void Game::printCommands()
+{
+	const int col1Width = 12;
+	const int col2Width = 16;
+	const int col3Width = 10;
+	const char *commands[10] = { "add", "remove", "resize", "start", "set reveal", "set drunk", "set ghost", "import", "export", "quit" };
+
+	std::cout << "+";
+	for (int i = 0; i < col1Width + 2; i++) std::cout << "-";
+		std::cout << "+";
+	for (int i = 0; i < col2Width + 2; i++) std::cout << "-";
+		std::cout << "+";
+	for (int i = 0; i < col3Width + 2; i++) std::cout << "-";
+		std::cout << "+\n";
+	std::cout << "| " << std::setw(col1Width) << std::left << "Commands" << " | ";
+	std::cout << std::setw(col2Width) << std::left << "Roles" << " | ";
+	std::cout << std::setw(col3Width) << std::left << "Game Rules" << " |\n ";
+	std::cout << "+";
+	for (int i = 0; i < col1Width + 2; i++) std::cout << "-";
+		std::cout << "+";
+	for (int i = 0; i < col2Width + 2; i++) std::cout << "-";
+		std::cout << "+";
+	for (int i = 0; i < col3Width + 2; i++) std::cout << "-";
+		std::cout << "+\n";
+	for (size_t i = 0; i < _player.size(); i++)
+	{
+		std::cout << "| " << (commands[i] ? commands[i] : "") << "| " << (_player[i] ? _player[i]->getName() : "");
+	}
+	std::cout << "+";
+	for (int i = 0; i < col1Width + 2; i++) std::cout << "-";
+		std::cout << "+";
+	for (int i = 0; i < col2Width + 2; i++) std::cout << "-";
+		std::cout << "+";
+	for (int i = 0; i < col3Width + 2; i++) std::cout << "-";
+		std::cout << "+\n";
 }

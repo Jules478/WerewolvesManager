@@ -1,10 +1,6 @@
 Doppelganger - need to finish implementation of methods to call doppelganger at night in a reveal roles game where the doppelganger has an action (like seer) to perform
 			- implement a copied side so numbers will still be correct
 
-Seer - second seer mostly done, need to check for bugs and crashes
+Werewolf - fix wolf asking for kill when one wolf who is drunk
 
-Status table - maybe implement so that current active players are highlighted? Maybe in bold?
-
-Vampire - conflicts with drunk
-
-add export/import feature for game roles and settings to make presets
+Come up with better way to display commands

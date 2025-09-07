@@ -7,6 +7,10 @@
 #include <algorithm>
 #include <iomanip>
 #include <cctype>
+#include <fstream>
+#include "../inih/ini.h"
+#include "../inih/cpp/INIReader.h"
+#include <filesystem>
 
 #define NIGHT true
 #define DAY false
@@ -100,6 +104,9 @@ class Game
 			bool isAliveOrCopied(const ACard& player);
 			void checkDoppelganger(const ACard& player);
 			void displayDeath(int index);
+			void saveToINI(std::ofstream& file);
+			void loadFromINI(str& file);
+			void printCommands();
 
 			void closeProgram();
 };

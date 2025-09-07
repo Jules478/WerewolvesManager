@@ -10,6 +10,8 @@ INC_DIR = ./inc
 
 SRC_DIR = ./src
 
+INIH_DIR = ./inih
+
 OBJ_DIR = ./obj
 
 SRCS = \
@@ -17,7 +19,9 @@ SRCS = \
 		$(SRC_DIR)/ACard.cpp \
 		$(SRC_DIR)/Game.cpp \
 		$(SRC_DIR)/Roles.cpp \
-		$(SRC_DIR)/Doppelganger.cpp
+		$(SRC_DIR)/Doppelganger.cpp \
+		$(INIH_DIR)/ini.c \
+		$(INIH_DIR)/cpp/INIReader.cpp
 
 HEADERS = \
 			$(INC_DIR)/ACard.hpp \

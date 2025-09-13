@@ -1,5 +1,8 @@
 Werewolves Manager 
 
+v0.9.1
+- Refactoring main game functions
+
 v0.9.0
 - Roles and settings can be imported and exported
 - Fixed issue where a drunk Vampire would still get to kill

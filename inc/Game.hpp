@@ -114,3 +114,44 @@ class Game
 str get_input();
 void printTitle();
 void clearScreen();
+void error_max();
+
+static std::map<str, t_roles> roleLookup = 
+{
+	{"werewolf", WEREWOLF_ROLE},
+	{"wolf cub", WOLFCUB_ROLE},
+	{"lone wolf", LONEWOLF_ROLE},
+	{"vampire", VAMPIRE_ROLE},
+	{"apprentice seer", APPRENTICESEER_ROLE},
+	{"aura seer", AURASEER_ROLE},
+	{"bodyguard", BODYGUARD_ROLE},
+	{"cupid", CUPID_ROLE},
+	{"diseased", DISEASED_ROLE},
+	{"ghost", GHOST_ROLE},
+	{"hunter", HUNTER_ROLE},
+	{"idiot", IDIOT_ROLE},
+	{"lycan", LYCAN_ROLE},
+	{"magician", MAGICIAN_ROLE},
+	{"martyr", MARTYR_ROLE},
+	{"mason", MASON_ROLE},
+	{"mayor", MAYOR_ROLE},
+	{"old hag", OLDHAG_ROLE},
+	{"old man", OLDMAN_ROLE},
+	{"pi", PI_ROLE},
+	{"pacifist", PACIFIST_ROLE},
+	{"priest", PRIEST_ROLE},
+	{"prince", PRINCE_ROLE},
+	{"seer", SEER_ROLE},
+	{"spellcaster", SPELLCASTER_ROLE},
+	{"tough guy", TOUGHGUY_ROLE},
+	{"troublemaker", TROUBLEMAKER_ROLE},
+	{"villager", VILLAGER_ROLE},
+	{"witch", WITCH_ROLE},
+	{"sorcerer", SORCERER_ROLE},
+	{"minion", MINION_ROLE},
+	{"cursed", CURSED_ROLE},
+	{"doppelganger", DOPPELGANGER_ROLE},
+	{"cult leader", CULTLEADER_ROLE},
+	{"hoodlum", HOODLUM_ROLE},
+	{"tanner", TANNER_ROLE}
+};

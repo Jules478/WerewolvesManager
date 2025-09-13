@@ -20,6 +20,7 @@ SRCS = \
 		$(SRC_DIR)/Game.cpp \
 		$(SRC_DIR)/Roles.cpp \
 		$(SRC_DIR)/Doppelganger.cpp \
+		$(SRC_DIR)/GameUtils.cpp \
 		$(INIH_DIR)/ini.c \
 		$(INIH_DIR)/cpp/INIReader.cpp
 

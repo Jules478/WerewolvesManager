@@ -1,5 +1,8 @@
 #include "../inc/Game.hpp"
 
+/**
+ * Prints the error for role limit in menu
+ */
 void error_max()
 {
 	clearScreen();
@@ -7,6 +10,9 @@ void error_max()
 	std::cout << "Maximum number already in game" << std::endl;
 }
 
+/**
+ * Wrapper for getline. Will handle any errors with exit
+ */
 str get_input()
 {
 	str input;
@@ -16,7 +22,13 @@ str get_input()
 	return input;
 }
 
-
+/**
+ * Checks if the given string represents a player index within the size of the game that is unique
+ * 
+ * @param input String received from getline
+ * 
+ * @returns False if non unique. True if unique
+ */
 bool Game::isValidPlayerEntry(const str& input)
 {
 	if (input.empty())
@@ -42,6 +54,9 @@ bool Game::isValidPlayerEntry(const str& input)
 	}
 }
 
+/**
+ * Delete player array and then exit
+ */
 void Game::closeProgram()
 {
 	for (size_t i = 0; i < _player.size(); i++)
@@ -49,6 +64,11 @@ void Game::closeProgram()
 	exit(0);
 }
 
+/**
+ * Returns player with specified index
+ * 
+ * @param index Player index to fetch
+ */
 ACard* Game::getPlayerByIndex(int index)
 {
 	for (size_t i = 0; i < _player.size(); i++)
@@ -59,6 +79,11 @@ ACard* Game::getPlayerByIndex(int index)
 	return nullptr;
 }
 
+/**
+ * Checks if player index can exist in the current game size
+ * 
+ * @param input String from getline of index to check
+ */
 bool Game::isValidPlayerNumber(const str& input)
 {
 	if (input.empty())
@@ -79,6 +104,12 @@ bool Game::isValidPlayerNumber(const str& input)
 	}
 }
 
+/**
+ * Checks if player index can exist in the current game size excluding specified index
+ * 
+ * @param input String from getline of index to check
+ * @param index Index to be considered invalid
+ */
 bool Game::isValidPlayerNumberAlt(const str& input, int index)
 {
 	if (input.empty())
@@ -101,6 +132,11 @@ bool Game::isValidPlayerNumberAlt(const str& input, int index)
 	}
 }
 
+/**
+ * Checks if the number of votes entered for a lynching exceeds current living player count
+ * 
+ * @param input String from getline to be checked
+ */
 bool Game::isValidVoteNumber(const str& input)
 {
 	if (input.empty())
@@ -113,7 +149,7 @@ bool Game::isValidVoteNumber(const str& input)
 	try
 	{
 		int number = std::stoi(input);
-		return (number >= 0 && number <= 68);
+		return (number >= 0 && number <= _playerNo);
 	}
 	catch (const std::exception&)
 	{
@@ -121,6 +157,11 @@ bool Game::isValidVoteNumber(const str& input)
 	}
 }
 
+/**
+ * Checks if given player index is alive and not poxxed by the Old Hag
+ * 
+ * @param input String from getline to be checked
+ */
 bool Game::isValidAlivePlayer(const str& input)
 {
 	if (input.empty())
@@ -143,6 +184,12 @@ bool Game::isValidAlivePlayer(const str& input)
 	}
 }
 
+/**
+ * Add player to the player vector
+ * Will validate that the role exists
+ * 
+ * @param role String containing the case insensitive role name to add
+ */
 void Game::addPlayer(str role)
 {
 	if (static_cast<int>(_player.size()) == _playerNo)
@@ -467,6 +514,11 @@ void Game::addPlayer(str role)
 	}
 }
 
+/**
+ * Removes role from the game if present, otherwise prints error
+ * 
+ * @param role String containing role to be removed
+ */
 void Game::removePlayer(str role)
 {
 	str lowerRole = role;
@@ -497,6 +549,12 @@ void Game::removePlayer(str role)
 	printTitle();
 	std::cout << "Role " << lowerRole << " not in game" << std::endl;
 }
+
+/**
+ * Checks win conditions that will end the game
+ * 
+ * @returns True when conditions met
+ */
 bool Game::checkWin()
 {
 	if (_villagerNo <= _wolfNo && _vampNo == 0)
@@ -523,6 +581,12 @@ bool Game::checkWin()
 	return false;
 }
 
+/**
+ * Reserve size in the player vector for specified number of players
+ * If size <= current player number then error will be displayed
+ * 
+ * @param playerno Size to adjust game to
+ */
 void Game::setPlayerNo(int playerno)
 {
 	if (_playerNo == playerno)
@@ -545,11 +609,20 @@ void Game::setPlayerNo(int playerno)
 	printTitle();
 }
 
+/**
+ * Fetches array containing player deaths
+ */
 int* Game::getNightlyDeaths()
 {
 	return _diedInTheNight;
 }
 
+/**
+ * Add player to death array
+ * If player is already in the death array nothing happens
+ * 
+ * @param index Index to be added to the array
+ */
 void Game::setNightlyDeaths(int index)
 {
 	for (int i = 0; i < _diedIndex; i++)
@@ -561,6 +634,10 @@ void Game::setNightlyDeaths(int index)
 	_diedIndex++;
 }
 
+/**
+ * Reset the values of death array
+ * Handles the death of any player contained within
+ */
 void Game::resetNightlyDeaths()
 {
 	_nighttime = true;
@@ -621,41 +698,70 @@ void Game::resetNightlyDeaths()
 	_nighttime = false;
 }
 
+/**
+ * Sets vampire's target
+ */
 void Game::setVampVictim(int index)
 {
 	_vampireVictim = index;
 }
 
+/**
+ * Returns boolean representing current time
+ * DAY and NIGHT macros exist
+ */
 bool Game::getTimeOfDay() const
 {
 	return _nighttime;
 }
 
+/**
+ * Fetch number of alive werewolves
+ * Only true wolves count to this total
+ */
 int Game::getWereNo() const
 {
 	return _wolfNo;
 }
 
+/**
+ * Fetches reference to player array
+ */
 std::vector<ACard*>& Game::getPlayers()
 {
 	return _player;
 }
 
+/**
+ * Sets balance value on menu
+ */
 void Game::setBalance(int value)
 {
 	_balance = value;
 }
 
+/**
+ * Fetches current balance
+ * Adjusts value based on active rules
+ */
 int Game::getBalance() const
 {
 	return _balance + (_drunkInGame * -3) + (_altGhostRule * 2);
 }
 
+/**
+ * Returns current player total
+ */
 int Game::getPlayerNo() const
 {
 	return _playerNo;
 }
 
+/**
+ * Checks if all requirements are met for game to start
+ * Requirements are 1 Werewolf/Vampire & 1 Seer
+ * If game meets conditions but is not full it will ask to autopopulate game with Villagers
+ */
 bool Game::tryStart()
 {
 	for (int i = 0; i < static_cast<int>(_player.size()); i++)
@@ -723,6 +829,7 @@ bool Game::stopGame() const
 	return false;
 }
 
+
 int Game::getCurrentNight() const
 {
 	return _nightNo;
@@ -743,6 +850,12 @@ void Game::killVampire()
 	_vampNo--;
 }
 
+/**
+ * Fetches the Seer
+ * 
+ * @param which Boolean to control whether first or second Seer is returned
+ * FIRST and SECOND macros exist to differentiate
+ */
 ACard*	Game::getSeer(bool which)
 {
 	for (size_t i = 0; i < _player.size(); i++)
@@ -753,6 +866,10 @@ ACard*	Game::getSeer(bool which)
 	return nullptr;
 }
 
+/**
+ * Fetch player with specified role
+ * If the doppelganger has copied the player to be retrieved they will be returned instead
+ */
 ACard*	Game::getPlayerByRole(int role)
 {
 	if (role == DOPPELGANGER_ROLE)
@@ -771,10 +888,7 @@ ACard*	Game::getPlayerByRole(int role)
 			{
 				ACard* doppel = getPlayerByRole(DOPPELGANGER_ROLE);
 				if (_player[i]->getLife() == DEAD && doppel->getAbilityUsed(true) && doppel->getCopiedPlayer() == _player[i]->getIndex())
-				{
-					i = 0;
-					role = DOPPELGANGER_ROLE;
-				}
+					return doppel;
 				else
 					return _player[i];
 			}

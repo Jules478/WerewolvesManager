@@ -909,6 +909,11 @@ void Game::dayPhase()
 	printGameStatus();
 }
 
+/**
+ * This is for all roles that need to wake up.
+ * 
+ * Exceptions being Werewolves, Vampires, and Drunk (if applicable)
+ */
 void Game::wakeAllActiveRoles()
 {
 	if (_whichRoles[APPRENTICESEER_ROLE])

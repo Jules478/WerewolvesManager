@@ -9,7 +9,10 @@ Werewolf::~Werewolf()
 {
 }
 
-
+/**
+ * Has no handling for being attacked by wolf
+ * Intended behaviour for debugging purposes
+ */
 void Werewolf::beAttacked(int attacker)
 {
 	ACard* attack = _game->getPlayerByIndex(attacker);
@@ -37,7 +40,10 @@ WolfCub::~WolfCub()
 {
 }
 
-
+/**
+ * Has no handling for being attacked by wolf
+ * Intended behaviour for debugging purposes
+ */
 void WolfCub::beAttacked(int attacker)
 {
 	ACard* attack = _game->getPlayerByIndex(attacker);
@@ -58,6 +64,9 @@ void WolfCub::beAttacked(int attacker)
 	}
 }
 
+/**
+ * Sets flag for two wolf attacks
+ */
 void WolfCub::beLynched()
 {
 	_alive = false;
@@ -91,7 +100,10 @@ LoneWolf::~LoneWolf()
 {
 }
 
-
+/**
+ * Has no handling for being attacked by wolf
+ * Intended behaviour for debugging purposes
+ */
 void LoneWolf::beAttacked(int attacker)
 {
 	ACard* attack = _game->getPlayerByIndex(attacker);
@@ -119,6 +131,9 @@ Vampire::~Vampire()
 {
 }
 
+/**
+ * Cannot be attacked by Werewolf
+ */
 void Vampire::beAttacked(int attacker)
 {
 	ACard* attack = _game->getPlayerByIndex(attacker);
@@ -152,6 +167,13 @@ AuraSeer::~AuraSeer()
 {
 }
 
+/**
+ * Aura Seer only checks if player has special role
+ * 
+ * @param index Index of player to be seen
+ * 
+ * @returns 1 on special role, 0 on basic
+ */
 int AuraSeer::See(int index)
 {
 	ACard* seen = _game->getPlayerByIndex(index);
@@ -174,6 +196,9 @@ Bodyguard::~Bodyguard()
 {
 }
 
+/**
+ * Searches death array for given player and removes them
+ */
 void Bodyguard::Protect(int index)
 {
 	ACard* saved = _game->getPlayerByIndex(index);
@@ -189,6 +214,9 @@ void Bodyguard::Protect(int index)
 	}
 }
 
+/**
+ * Used to prevent same player being protected twice consecutively
+ */
 void Bodyguard::setPlayer1(int index)
 {
 	_lastProtect = index;
@@ -261,6 +289,9 @@ void Hunter::beAttacked(int attacker)
 		_game->setVampVictim(_index);
 }
 
+/**
+ * Handles Hunter being able to kill another player when lynched
+ */
 void Hunter::beLynched()
 {
 	_alive = false;
@@ -358,6 +389,11 @@ Magician::~Magician()
 {
 }
 
+/**
+ * Check if Magician abilities are used
+ * 
+ * @param spell if "heal" is passed then heal spell is checked, otherwise kill spell is checked
+ */
 bool Magician::getSpellUsed(str spell) const
 {
 	if (spell == "heal")
@@ -366,6 +402,11 @@ bool Magician::getSpellUsed(str spell) const
 		return _killUsed;
 }
 
+/**
+ * Sets Magician abilities as used
+ * 
+ * @param spell if "heal" is passed then heal spell used, otherwise kill spell is used
+ */
 void Magician::setSpellUsed(str spell)
 {
 	if (spell == "heal")
@@ -374,6 +415,10 @@ void Magician::setSpellUsed(str spell)
 		_killUsed = true;
 }
 
+/**
+ * Removes given player from the death array
+ * If player is Old Man it will check whether they're dying naturally or attacked
+ */
 void Magician::Protect(int index)
 {
 	ACard* saved = _game->getPlayerByIndex(index);
@@ -445,6 +490,10 @@ OldMan::~OldMan()
 {
 }
 
+/**
+ * Old Man should die on night X where X = number of werewolves + 1
+ * If condition is met then death will be set
+ */
 void OldMan::Dies()
 {
 	if (_alive && _game->getCurrentNight() >= _game->getWereNo() + 1)
@@ -468,6 +517,10 @@ PI::~PI()
 {
 }
 
+/**
+ * If selected player is a villager then neighbours will be checked
+ * Will cycle through neighbours until a living neighbour is found. Player list wraps around
+ */
 int PI::See(int index)
 {
 	ACard* seen = _game->getPlayerByIndex(index);
@@ -534,6 +587,10 @@ Priest::Priest(Game* game) : ACard(PRIEST_ROLE, "Priest", VILLAGER, true, game, 
 Priest::~Priest()
 {
 }
+
+/**
+ * Removes player from death array
+ */
 void Priest::Protect(int index)
 {
 	ACard* saved = _game->getPlayerByIndex(index);
@@ -551,6 +608,11 @@ void Priest::Protect(int index)
 	_abilityUsed = true;
 }
 
+/**
+ * Checks given player
+ * 
+ * @returns 0 for villager, 1 for non villager
+ */
 int Priest::See(int index)
 {
 	ACard* seen = _game->getPlayerByIndex(index);
@@ -575,6 +637,9 @@ Prince::~Prince()
 {
 }
 
+/**
+ * If first lynching of Prince then role will be revealed and will not die
+ */
 void Prince::beLynched()
 {
 	if (_abilityUsed == true)
@@ -618,6 +683,11 @@ Seer::~Seer()
 {
 }
 
+/**
+ * Checks given player
+ * 
+ * @returns 0 for villager, 1 for non villager
+ */
 int Seer::See(int index)
 {
 	ACard* seen = _game->getPlayerByIndex(index);
@@ -655,6 +725,10 @@ ToughGuy::~ToughGuy()
 {
 }
 
+/**
+ * Same logic as Villager but if attacked by wolves death does not occur immediately
+ * Flag set that Tough Guy will die the following night
+ */
 void ToughGuy::beAttacked(int attacker)
 {
 	ACard* attack = _game->getPlayerByIndex(attacker);
@@ -774,6 +848,12 @@ Sorcerer::Sorcerer(Game* game) : ACard(SORCERER_ROLE, "Sorcerer", WEREWOLF, true
 Sorcerer::~Sorcerer()
 {
 }
+
+/**
+ * Checks given player
+ * 
+ * @returns 1 for Seer or Apprentice Seer, 0 for everyone else
+ */
 int Sorcerer::SorcSee(int index)
 {
 	ACard* seen = _game->getPlayerByIndex(index);
@@ -798,6 +878,12 @@ Cursed::~Cursed()
 {
 }
 
+/**
+ * If Cursed is villager then logic the same as Villager unless attacked by wolf
+ * If wolf attacks then Cursed switches sides
+ * 
+ * If Cursed is werewolf then logic the same except no handling for wolf attack
+ */
 void Cursed::beAttacked(int attacker)
 {
 	ACard* attack = _game->getPlayerByIndex(attacker);

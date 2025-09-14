@@ -28,6 +28,10 @@ void printTitle()
 	std::cout << std::endl;
 }
 
+/**
+ * Check if first input is valid to start game
+ * Game states 5-68 players
+ */
 bool isValidStartNumber(const str& input)
 {
 	if (input.empty())

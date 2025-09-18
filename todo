@@ -10,3 +10,5 @@ Vampire - fix rule that will cause them to win when no villagers left but werewo
 Mason - find a way to kill players when the masons are mentioned
 
 Hunter - change hunter to always reveal on lynch
+
+Seer - fix issue where both Seers will wake up after death when Apprentice Seer is in game

@@ -758,7 +758,7 @@ void Game::dayPhase()
 		ACard *lynch = getPlayerByIndex(index);
 		if (index != -1)
 		{
-			if (_vampireVictim != -1)
+			if (_vampireVictim != -1 && getPlayerByIndex(_vampireVictim)->getLife() == ALIVE)
 			{
 				ACard *vamp = getPlayerByIndex(_vampireVictim);
 				if (vamp->getRole() == HUNTER_ROLE)

@@ -14,47 +14,61 @@ INIH_DIR = ./inih
 
 OBJ_DIR = ./obj
 
-SRCS = \
-		$(SRC_DIR)/main.cpp \
-		$(SRC_DIR)/ACard.cpp \
-		$(SRC_DIR)/Game.cpp \
-		$(SRC_DIR)/Roles.cpp \
-		$(SRC_DIR)/Doppelganger.cpp \
-		$(SRC_DIR)/GameUtils.cpp \
-		$(INIH_DIR)/ini.c \
-		$(INIH_DIR)/cpp/INIReader.cpp
+CPP_SRCS = \
+    $(SRC_DIR)/main.cpp \
+    $(SRC_DIR)/ACard.cpp \
+    $(SRC_DIR)/Game.cpp \
+    $(SRC_DIR)/Roles.cpp \
+    $(SRC_DIR)/Doppelganger.cpp \
+    $(SRC_DIR)/GameUtils.cpp \
+    $(INIH_DIR)/cpp/INIReader.cpp
 
-HEADERS = \
-			$(INC_DIR)/ACard.hpp \
-			$(INC_DIR)/Game.hpp \
-			$(INC_DIR)/Roles.hpp \
-			$(INC_DIR)/Doppelganger.hpp \
-			$(INC_DIR)/Colours.hpp
+C_SRCS = \
+    $(INIH_DIR)/ini.c
 
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-DEBUG_OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.debug.o)
-
-OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+CPP_OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(filter $(SRC_DIR)/%.cpp,$(CPP_SRCS)))
+CPP_OBJS += $(patsubst $(INIH_DIR)/cpp/%.cpp,$(OBJ_DIR)/INIReader.o,$(filter $(INIH_DIR)/cpp/%.cpp,$(CPP_SRCS)))
+C_OBJS = $(patsubst $(INIH_DIR)/%.c,$(OBJ_DIR)/%.o,$(C_SRCS))
+OBJS = $(CPP_OBJS) $(C_OBJS)
 
 GREEN = \e[1;32m
 PURPLE = \e[1;35m
 YELLOW = \e[1;33m
 RESET = \e[0m
 
-TOTAL_FILES = $(words $(SRCS))
+TOTAL_FILES := $(words $(OBJS))
 CURRENT_FILE = 0
 
 all: $(NAME)
 
+
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
-	@mkdir -p $(dir $@)
-	@$(eval CURRENT_FILE=$(shell echo $$(($(CURRENT_FILE)+1))))
+	@mkdir -p $(OBJ_DIR)
 	@c++ $(CFLAGS) $(STD) -c $< -o $@
-	@printf "$(YELLOW)\r[%3d%%] Compiling %-30s$(RESET)" $$(( $(CURRENT_FILE) * 100 / $(TOTAL_FILES) )) $<
+	@files_compiled=$$(ls $(OBJ_DIR)/*.o 2>/dev/null | wc -l); \
+	printf "$(YELLOW)\r[%3d%%] Compiling %-30s$(RESET)" $$((files_compiled * 100 / $(TOTAL_FILES))) $<
+
+$(OBJ_DIR)/INIReader.o: $(INIH_DIR)/cpp/INIReader.cpp
+	@mkdir -p $(OBJ_DIR)
+	@c++ $(CFLAGS) $(STD) -c $< -o $@
+	@files_compiled=$$(ls $(OBJ_DIR)/*.o 2>/dev/null | wc -l); \
+	printf "$(YELLOW)\r[%3d%%] Compiling %-30s$(RESET)" $$((files_compiled * 100 / $(TOTAL_FILES))) $<
+
+$(OBJ_DIR)/%.o: $(INIH_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	@cc -Wall -Wextra -Werror -c $< -o $@
+	@files_compiled=$$(ls $(OBJ_DIR)/*.o 2>/dev/null | wc -l); \
+	printf "$(YELLOW)\r[%3d%%] Compiling %-30s$(RESET)" $$((files_compiled * 100 / $(TOTAL_FILES))) $<
+
 
 $(OBJ_DIR)/%.debug.o: $(SRC_DIR)/%.cpp $(HEADERS)
 	@mkdir -p $(dir $@)
 	@c++ $(CFLAGS) $(GFLAG) $(STD) -c $< -o $@
+
+
+$(OBJ_DIR)/%.debug.o: $(INIH_DIR)/%.c
+	@mkdir -p $(dir $@)
+	@cc -Wall -Wextra -Werror -g -c $< -o $@
 
 shadow: CFLAGS := -Wall -Wextra -Werror -Wshadow
 shadow: re

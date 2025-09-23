@@ -5,10 +5,6 @@ Werewolf - fix wolf asking for kill when one wolf who is drunk
 
 Come up with better way to display commands
 
-Vampire - fix rule that will cause them to win when no villagers left but werewolves alive
-
-Mason - find a way to kill players when the masons are mentioned
-
 Hunter - change hunter to always reveal on lynch
 
 Seer - fix issue where both Seers will wake up after death when Apprentice Seer is in game

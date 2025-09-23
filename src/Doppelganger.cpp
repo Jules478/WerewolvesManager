@@ -155,11 +155,11 @@ void Doppelganger::hunterBeLynched()
 	else
 		_game->killVillager();
 	std::cout << "Player to die with the Hunter: ";
-	str input = get_input();
+	str input = get_input(_game, false);
 	while (!_game->isValidPlayerNumber(input))
 	{
 		std::cout << "ERROR: Enter player number: ";
-		input = get_input();
+		input = get_input(_game, false);
 	}
 	_game->getPlayerByIndex(std::stoi(input))->beAttacked(_index);
 	if (_game->getRoles()[CUPID_ROLE])
@@ -185,11 +185,11 @@ void Doppelganger::hunterSetLife(bool alive)
 	if (alive == DEAD)
 	{
 		std::cout << "Enter Hunter's victim: ";
-		str input = get_input();
+		str input = get_input(_game, false);
 		while (!_game->isValidPlayerNumber(input))
 		{
 			std::cout << "ERROR: Enter player number: ";
-			input = get_input();
+			input = get_input(_game, false);
 		}
 		_game->getPlayerByRole(HUNTER_ROLE)->takePlayerWith(std::stoi(input));
 	}

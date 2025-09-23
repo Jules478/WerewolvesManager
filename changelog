@@ -1,5 +1,8 @@
 Werewolves Manager 
 
+v0.10.0
+- Added debug command menu for killing/reviving players
+
 v0.9.3
 - Fixed bug where Vampire victim would die twice if attacked by Werewolves in the same night
 

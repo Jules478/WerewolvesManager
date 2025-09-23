@@ -13,13 +13,117 @@ void error_max()
 /**
  * Wrapper for getline. Will handle any errors with exit
  */
-str get_input()
+str get_input(Game* game, bool allowDebug)
 {
 	str input;
 
 	if (!std::getline(std::cin, input))
 		exit(0);
+	if (game && allowDebug && input == "~")
+		game->debugCommands();
 	return input;
+}
+
+#define DEBUGCMDS "Commands\n\nkill [Player Index] | revive [Player Index] | exit\n\nEnter Command: "
+
+/**
+ * Debug tool for game management
+ * Can kill or revive players
+ * Can only be used on a "Press Enter" screen
+ */
+void Game::debugCommands()
+{
+	clearScreen();
+	printGameStatus();
+	std::cout << DEBUGCMDS << std::endl;
+	str input;
+	ACard* player;
+	while (1)
+	{
+		input = get_input(this, false);
+		std::transform(input.begin(), input.end(), input.begin(), ::tolower);
+		if (input.substr(0, 5) == "kill ")
+		{
+			str index = input.substr(5);
+			if (isValidPlayerNumber(index))
+			{
+				int num = std::stoi(index);
+				player = getPlayerByIndex(num);
+				if (player->getLife() == DEAD)
+				{
+					clearScreen();
+					printGameStatus();
+					std::cout << "Player " << index << " is already dead\n";
+					std::cout << DEBUGCMDS << std::endl;
+				}
+				else
+				{
+					player->setLife(DEAD);
+					updateVillageNumbers(num);
+					clearScreen();
+					printGameStatus();
+					std::cout << "Player " << index << " killed\n";
+					std::cout << DEBUGCMDS << std::endl;
+				}
+				
+			}
+			else
+			{
+				clearScreen();
+				printGameStatus();
+				std::cout << "Invalid Player Index\n";
+				std::cout << DEBUGCMDS << std::endl;
+			}
+		}
+		else if (input.substr(0, 7) == "revive ")
+		{
+			str index = input.substr(7);
+			if (isValidPlayerNumber(index))
+			{
+				player = getPlayerByIndex(std::stoi(index));
+				if (player->getLife() == ALIVE)
+				{
+					clearScreen();
+					printGameStatus();
+					std::cout << "Player " << index << " is already alive\n";
+					std::cout << DEBUGCMDS << std::endl;
+				}
+				else
+				{
+					player->setLife(ALIVE);
+					if (player->getSide() == WEREWOLF && player->getRole() != SORCERER_ROLE && player->getRole() != MINION_ROLE)
+						_wolfNo++;
+					else if (player->getSide() == VAMPIRE)
+						_vampNo++;
+					else
+						_villagerNo++;
+					clearScreen();
+					printGameStatus();
+					std::cout << "Player " << index << " revived\n";
+					std::cout << DEBUGCMDS << std::endl;
+				}
+			}
+			else
+			{
+				clearScreen();
+				printGameStatus();
+				std::cout << "Invalid Player Index\n";
+				std::cout << DEBUGCMDS << std::endl;
+			}
+		}
+		else if (input.substr(0,4) == "exit")
+		{
+			break;
+		}
+		else
+		{
+			clearScreen();
+			printGameStatus();
+			std::cout << "Invalid Command\n";
+			std::cout << DEBUGCMDS << std::endl;
+		}
+	}
+
 }
 
 /**
@@ -574,8 +678,8 @@ bool Game::checkWin()
 	}
 	else if (_villagerNo == 0 && _wolfNo != 0 && _vampNo != 0)
 	{
-		_vampWin = true;
-		_wolfWin = true;
+		_vampWin = false;
+		_wolfWin = false;
 		return true;
 	}
 	return false;
@@ -799,11 +903,11 @@ bool Game::tryStart()
 		printTitle();
 		std::cout << _playerNo - static_cast<int>(_player.size()) << " player(s) missing roles" << std::endl;
 		std::cout << "Do you wish to autofill the game with Villagers?: (y/n): ";
-		str input = get_input();
+		str input = get_input(this, false);
 		while ((input != "y" && input != "Y") && (input != "n" && input != "N"))
 		{
 			std::cout << "ERROR: Enter choice: ";
-			input = get_input();
+			input = get_input(this, false);
 		}
 		if (input == "y" || input == "Y")
 		{
@@ -1109,6 +1213,12 @@ void Game::checkSideWins()
 		if (getPlayerByRole(TANNER_ROLE)->getLife() == DEAD)
 			std::cout << "TANNER WINS" << std::endl;
 	}
+	if (!_villageWin && !_vampWin && !_wolfWin)
+		std::cout << "NO ONE WINS" << std::endl;
+}
+
+void Game::printDebugMenu()
+{
 }
 
 void Game::printGameStatus()

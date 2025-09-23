@@ -302,11 +302,11 @@ void Hunter::beLynched()
 	else
 		_game->killVillager();
 	std::cout << "Player to die with the Hunter: ";
-	str input = get_input();
+	str input = get_input(_game, false);
 	while (!_game->isValidPlayerNumber(input))
 	{
 		std::cout << "ERROR: Enter player number: ";
-		input = get_input();
+		input = get_input(_game, false);
 	}
 	_victim = std::stoi(input);
 	_game->getPlayerByIndex(_victim)->beAttacked(_index);
@@ -353,11 +353,11 @@ void Hunter::setLife(bool alive)
 		if (_victim == -1)
 		{
 			std::cout << "Enter Hunter's victim: ";
-			str input = get_input();
+			str input = get_input(_game, false);
 			while (!_game->isValidPlayerNumberAlt(input, _index))
 			{
 				std::cout << "ERROR: Enter player number: ";
-				input = get_input();
+				input = get_input(_game, false);
 			}
 			_victim = std::stoi(input);
 		}

@@ -58,11 +58,11 @@ int main()
 	printTitle();
 	str input = "";
 	std::cout << "Enter number of players: ";
-	input = get_input();
+	input = get_input(nullptr, false);
 	while (!isValidStartNumber(input))
 	{
 		std::cout << "Enter between 5 and 68 players: ";
-		input = get_input();
+		input = get_input(nullptr, false);
 	}
 	Game game(std::stoi(input));
 	clearScreen();
@@ -82,7 +82,7 @@ int main()
 		for (int i = 0; i < static_cast<int>(game.getPlayers().size()); i++)
 			std::cout << game.getPlayers()[i]->getName() << std::endl;
 		std::cout << "\nEnter command: ";
-		input = get_input();
+		input = get_input(nullptr, false);
 		if (input.substr(0, 4) == "add ")
 		{
 			str arg = input.substr(4);
@@ -99,7 +99,7 @@ int main()
 			while (!isValidStartNumber(arg))
 			{
 				std::cout << "Enter between 5 and 68 players" << std::endl;
-				arg = get_input();
+				arg = get_input(nullptr, false);
 			}
 			game.setPlayerNo(std::stoi(arg));
 		}

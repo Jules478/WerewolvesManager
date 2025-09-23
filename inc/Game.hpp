@@ -107,11 +107,13 @@ class Game
 			void saveToINI(std::ofstream& file);
 			void loadFromINI(str& file);
 			void printCommands();
+			void printDebugMenu();
 
 			void closeProgram();
+			void debugCommands();
 };
 
-str get_input();
+str get_input(Game* game, bool allowDebug);
 void printTitle();
 void clearScreen();
 void error_max();

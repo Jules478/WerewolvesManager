@@ -53,6 +53,7 @@ void Game::nightPhase()
 						get_input(this, true);
 					}
 				}
+				_drunkRole = -1;
 			}
 		}
 		clearScreen();
@@ -65,7 +66,15 @@ void Game::nightPhase()
 	int wolf = -1;
 	if (_wolfNo > 0)
 	{
-		if (_wolfUpsetTummy == false)
+		if ((_drunkRole == WEREWOLF_ROLE || _drunkRole == WOLFCUB_ROLE || _drunkRole == LONEWOLF_ROLE ) && _wolfNo == 1)
+		{
+			std::cout << "The Werewolf is drunk. Call for them to conceal this fact" << std::endl;
+			std::cout << "\nPress enter to continue..." << std::endl;
+			get_input(this, true);
+			clearScreen();
+			printGameStatus();
+		}
+		else if (_wolfUpsetTummy == false)
 		{
 			std::cout << "Wake up the werewolves: \n";
 			for (int i = 0; i < _playerNo; i++)
@@ -82,7 +91,7 @@ void Game::nightPhase()
 				std::cout << "\n\n" << "Choose first player to attack: ";
 			}
 			else
-			std::cout << "\n\n" << "Choose player to attack: ";
+				std::cout << "\n\n" << "Choose player to attack: ";
 			if (wolf != -1)
 			{
 				str input = get_input(this, false);
@@ -140,7 +149,17 @@ void Game::nightPhase()
 	int vamp = -1;
 	if (_vampNo > 0)
 	{
-		std::cout << "Wake up the vampires: \n";
+		if (_drunkRole == VAMPIRE_ROLE && _vampNo == 1)
+		{
+			std::cout << "The Vampire is drunk. Call for them to conceal this fact" << std::endl;
+			std::cout << "\nPress enter to continue..." << std::endl;
+			get_input(this, true);
+			clearScreen();
+			printGameStatus();
+		}
+		else
+		{
+			std::cout << "Wake up the vampires: \n";
 			for (int i = 0; i < _playerNo; i++)
 			{
 				if (_player[i]->getSide() == VAMPIRE && _player[i]->getDrunk() == false && _player[i]->getLife() == ALIVE)
@@ -160,14 +179,9 @@ void Game::nightPhase()
 				}
 				getPlayerByIndex(std::stoi(input))->beAttacked(vamp);
 			}
-			else
-			{
-				std::cout << "The Vampire is drunk. Call for them to conceal this fact\n";
-				std::cout << "\nPress enter to continue..." << std::endl;
-				get_input(this, true);
-			}
 			clearScreen();
 			printGameStatus();
+		}
 	}
 	wakeAllActiveRoles();
 }
@@ -270,11 +284,12 @@ void Game::firstNight()
 	{
 		for (size_t i = 0; i < _player.size(); i++)
 		{
-			if (_drunkRole == WEREWOLF_ROLE && _wolfNo == 1)
+			if ((_drunkRole == WEREWOLF_ROLE || _drunkRole == WOLFCUB_ROLE || _drunkRole == LONEWOLF_ROLE ) && _wolfNo == 1)
 			{
 				std::cout << "A Werewolf is drunk. Call for them to conceal this fact" << std::endl;
 				std::cout << "\n\n" << "Press enter to continue..." << std::endl;
 				get_input(this, true);
+				break;
 			}
 			else
 			{
@@ -713,7 +728,7 @@ void Game::dayPhase()
 			}
 			else
 			{
-				displayDeath(dead->getIndex());
+				displayDeath(dead->getIndex(), false);
 			}
 		}
 	}
@@ -760,39 +775,44 @@ void Game::dayPhase()
 		{
 			if (_vampireVictim != -1 && getPlayerByIndex(_vampireVictim)->getLife() == ALIVE)
 			{
-				ACard *vamp = getPlayerByIndex(_vampireVictim);
-				if (vamp->getRole() == HUNTER_ROLE)
-					std::cout << "The Hunter has died to the Vampires. ";
-				vamp->setLife(DEAD);
-				if (vamp->getRole() == WOLFCUB_ROLE)
-					wolfCubKilled();
-				std::cout << "\nThe Vampires have killed ";
-				displayDeath(_vampireVictim);
-				if (_whichRoles[CUPID_ROLE])
+				if (_vampireVictim == _blessedPlayer)
+					_blessedPlayer = -1;
+				else
 				{
-					ACard* cupid = getPlayerByRole(CUPID_ROLE);
-					ACard* player1 = getPlayerByIndex(cupid->getPlayer1());
-					ACard* player2 = getPlayerByIndex(cupid->getPlayer2());
-					if (cupid->getPlayer1() == _vampireVictim && player2->getLife() == ALIVE)
+					ACard *vamp = getPlayerByIndex(_vampireVictim);
+					if (vamp->getRole() == HUNTER_ROLE)
+					std::cout << "The Hunter has died to the Vampires. ";
+					vamp->setLife(DEAD);
+					if (vamp->getRole() == WOLFCUB_ROLE)
+					wolfCubKilled();
+					std::cout << "\nThe Vampires have killed ";
+					displayDeath(_vampireVictim, false);
+					if (_whichRoles[CUPID_ROLE])
 					{
-						std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
-						player2->setLife(DEAD);
-						if (player2->getRole() == WOLFCUB_ROLE)
+						ACard* cupid = getPlayerByRole(CUPID_ROLE);
+						ACard* player1 = getPlayerByIndex(cupid->getPlayer1());
+						ACard* player2 = getPlayerByIndex(cupid->getPlayer2());
+						if (cupid->getPlayer1() == _vampireVictim && player2->getLife() == ALIVE)
+						{
+							std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+							player2->setLife(DEAD);
+							if (player2->getRole() == WOLFCUB_ROLE)
 							wolfCubKilled();
-						updateVillageNumbers(cupid->getPlayer2());
-						checkDoppelganger(*player2);
-					}
-					else if (cupid->getPlayer2() == _vampireVictim && player1->getLife() == ALIVE)
-					{
-						std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
-						player1->setLife(DEAD);
-						if (player1->getRole() == WOLFCUB_ROLE)
+							updateVillageNumbers(cupid->getPlayer2());
+							checkDoppelganger(*player2);
+						}
+						else if (cupid->getPlayer2() == _vampireVictim && player1->getLife() == ALIVE)
+						{
+							std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+							player1->setLife(DEAD);
+							if (player1->getRole() == WOLFCUB_ROLE)
 							wolfCubKilled();
-						updateVillageNumbers(cupid->getPlayer1());
-						checkDoppelganger(*player1);
+							updateVillageNumbers(cupid->getPlayer1());
+							checkDoppelganger(*player1);
+						}
 					}
+					updateVillageNumbers(_vampireVictim);
 				}
-				updateVillageNumbers(_vampireVictim);
 				if (_vampireVictim == index)
 				{
 					_vampireVictim = -1;
@@ -861,11 +881,11 @@ void Game::dayPhase()
 				else
 				{
 					std::cout << "\nVote was successful. The village has lynched "; // << lynch->getName() << " (" << index << ") | Side: ";
-					displayDeath(lynch->getIndex());
+					displayDeath(lynch->getIndex(), true);
 				}
 				lynch->beLynched();
 				if (lynch->getRole() == HUNTER_ROLE)
-						displayDeath(lynch->getVictim());
+						displayDeath(lynch->getVictim(), true);
 				std::cout << std::endl;
 				if (_whichRoles[CUPID_ROLE])
 				{

@@ -749,6 +749,15 @@ void Game::resetNightlyDeaths()
 	{
 		if (_diedInTheNight[i] == -1)
 			continue;
+		if (_whichRoles[PRIEST_ROLE] && _blessedPlayer != -1)
+		{
+			if (_diedInTheNight[i] == _blessedPlayer)
+			{
+				_diedInTheNight[i] = -1;
+				_blessedPlayer = -1;
+				continue;
+			}
+		}
 		ACard* dead = getPlayerByIndex(_diedInTheNight[i]);
 		if (dead->getSide() == WEREWOLF && dead->getRole() != MINION_ROLE && dead->getRole() != SORCERER_ROLE)
 		{
@@ -776,7 +785,7 @@ void Game::resetNightlyDeaths()
 				_wolfUpsetTummy = true;
 			else if (dead->getRole() == HUNTER_ROLE)
 			{
-				displayDeath(dead->getVictim());
+				displayDeath(dead->getVictim(), false);
 			}
 		}
 		if (_whichRoles[CUPID_ROLE])
@@ -1038,6 +1047,11 @@ void Game::setTimeOfDay()
 	_nighttime = !_nighttime;
 }
 
+void Game::setBlessedPlayer(int index)
+{
+	_blessedPlayer = index;
+}
+
 void Game::wolfCubKilled()
 {
 	_secondWolfKill = true;
@@ -1067,8 +1081,10 @@ void Game::checkDoppelganger(const ACard& player)
 		doppel->setAbilityUsed();
 }
 
-void Game::displayDeath(int index)
+void Game::displayDeath(int index, bool lynch)
 {
+	if (!lynch && index == _blessedPlayer)
+		return ;
 	ACard *dead = getPlayerByIndex(index);
 	std::cout << dead->getName() << " (" << dead->getIndex() << ") | Side: ";
 	switch (dead->getSide())

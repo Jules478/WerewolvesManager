@@ -48,6 +48,7 @@ class Game
 			bool _drunkInGame = false;
 			bool _altGhostRule = false;
 			bool _indexSet = false;
+			int _blessedPlayer = -1;
 
 	public:
 			Game(int playerno);
@@ -80,6 +81,7 @@ class Game
 			void setDrunkMode();
 			void setGhostMode();
 			void setTimeOfDay();
+			void setBlessedPlayer(int index);
 			
 			ACard* getPlayerByIndex(int index);
 			ACard* getSeer(bool which);
@@ -103,7 +105,7 @@ class Game
 			bool* getRoles();
 			bool isAliveOrCopied(const ACard& player);
 			void checkDoppelganger(const ACard& player);
-			void displayDeath(int index);
+			void displayDeath(int index, bool lynch);
 			void saveToINI(std::ofstream& file);
 			void loadFromINI(str& file);
 			void printCommands();

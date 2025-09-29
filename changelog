@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.11.0
+- Changed how the Priest works to more closely follow the rulebook
+- Fixed drunk so that drunk Werewolves and Vampires are now handled correctly
+
 v0.10.0
 - Added debug command menu for killing/reviving players
 

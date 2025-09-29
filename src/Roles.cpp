@@ -599,12 +599,7 @@ void Priest::Protect(int index)
 		if (saved->getAbilityUsed(false) == true)
 			return ;
 	}
-	int i = -1;
-	while (_game->getNightlyDeaths()[++i] != -1)
-	{
-		if (_game->getNightlyDeaths()[i] == index)
-			_game->getNightlyDeaths()[i] = -1;
-	}
+	_game->setBlessedPlayer(index);
 	_abilityUsed = true;
 }
 

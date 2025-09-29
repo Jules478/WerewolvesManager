@@ -1,8 +1,6 @@
 Doppelganger - need to finish implementation of methods to call doppelganger at night in a reveal roles game where the doppelganger has an action (like seer) to perform
 			- implement a copied side so numbers will still be correct
 
-Werewolf - fix wolf asking for kill when one wolf who is drunk
-
 Come up with better way to display commands
 
 Hunter - change hunter to always reveal on lynch

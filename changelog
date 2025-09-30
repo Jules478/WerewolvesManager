@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.12.0
+- Fixed Apprentice Seer waking up as both Seers when they are dead
+- Changed Apprentice Seer to not wake up when roles are revealed
+
 v0.11.0
 - Changed how the Priest works to more closely follow the rulebook
 - Fixed drunk so that drunk Werewolves and Vampires are now handled correctly

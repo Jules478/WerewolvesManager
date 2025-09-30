@@ -1,6 +1,6 @@
 NAME = Werewolves
 
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror -g
 
 GFLAG = -g
 

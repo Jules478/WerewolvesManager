@@ -159,6 +159,27 @@ ApprenticeSeer::~ApprenticeSeer()
 {
 }
 
+bool ApprenticeSeer::getWhichSeer() const
+{
+	return _whichSeer;
+}
+
+void ApprenticeSeer::setWhichSeer(bool which)
+{
+	_whichSeer = which;
+}
+
+bool ApprenticeSeer::getAbilityUsed(bool checkIfCopied) const
+{
+	(void)checkIfCopied;
+	return _replacedSeer;
+}
+
+void ApprenticeSeer::setAbilityUsed()
+{
+	_replacedSeer = !_replacedSeer;
+}
+
 AuraSeer::AuraSeer(Game* game) : ACard(AURASEER_ROLE, "Aura Seer", VILLAGER, true, game, 3)
 {
 }

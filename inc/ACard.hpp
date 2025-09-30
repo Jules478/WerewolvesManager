@@ -100,6 +100,8 @@ class ACard
 			virtual void setCopiedPlayer(int index) { (void)index; }
 			virtual void performAction(int index) { (void)index; return ; }
 			virtual int getSide() const { return _side; }
+			virtual bool getWhichSeer() const { return false; }
+			virtual void setWhichSeer(bool which) { (void)which; }
 
 			int getIndex() const;
 			bool getLife() const;

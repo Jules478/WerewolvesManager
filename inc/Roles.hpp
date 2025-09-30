@@ -47,9 +47,18 @@ class Vampire : public ACard
 
 class ApprenticeSeer : public ACard
 {
+	private:
+			bool _whichSeer = false;
+			bool _replacedSeer = false;
+
 	public:
 			ApprenticeSeer(Game* game);
 			~ApprenticeSeer();
+
+			bool getWhichSeer() const;
+			void setWhichSeer(bool which);
+			bool getAbilityUsed(bool checkIfCopied) const;
+			void setAbilityUsed();
 
 };
 

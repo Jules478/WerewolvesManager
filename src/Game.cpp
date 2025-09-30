@@ -936,28 +936,40 @@ void Game::dayPhase()
  */
 void Game::wakeAllActiveRoles()
 {
-	if (_whichRoles[APPRENTICESEER_ROLE])
+	if (_whichRoles[APPRENTICESEER_ROLE] && _revealCards == false)
 	{
 		ACard* apseer = getPlayerByRole(APPRENTICESEER_ROLE);
 		if (apseer->getLife() == ALIVE)
 		{
 			std::cout << "Wake the Apprentice Seer (" << apseer->getIndex() << ")\n" << std::endl;
-			if (getSeer(FIRST)->getLife() == DEAD || (_howManyRoles[SEER_ROLE] == 2 && getSeer(SECOND)->getLife() == DEAD))
-				std::cout << "The Apprentice Seer is now the Seer" << std::endl;
+			if (apseer->getAbilityUsed(false) == true)
+			{
+				std::cout << "The Apprentice Seer is already the Seer" << std::endl;
+			}
 			else
-				std::cout << "The Apprentice Seer is NOT the Seer" << std::endl;
-			std::cout << "\n\n" << "Press enter to continue..." << std::endl;
-			get_input(this, true);
+			{
+				if (getSeer(FIRST)->getLife() == DEAD)
+				{
+					apseer->setAbilityUsed();
+					apseer->setWhichSeer(FIRST);
+					std::cout << "The Apprentice Seer is now the " << (_howManyRoles[SEER_ROLE] == 2 ? "Female" : "") << " Seer" << std::endl;
+				}
+				else if (_howManyRoles[SEER_ROLE] == 2 && getSeer(SECOND)->getLife() == DEAD)
+				{
+					apseer->setAbilityUsed();
+					apseer->setWhichSeer(SECOND);
+					std::cout << "The Apprentice Seer is now the Male Seer" << std::endl;
+				}
+				else
+					std::cout << "The Apprentice Seer is NOT the Seer" << std::endl;
+			}
 		}
 		else
 		{
-			if (_revealCards == false)
-			{
-				std::cout << "The Apprentice Seer is dead. Call for them to conceal this fact" << std::endl;
-				std::cout << "\n\n" << "Press enter to continue..." << std::endl;
-				get_input(this, true);
-			}
+			std::cout << "The Apprentice Seer is dead. Call for them to conceal this fact" << std::endl;
 		}
+		std::cout << "\n\n" << "Press enter to continue..." << std::endl;
+		get_input(this, true);
 		clearScreen();
 		printGameStatus();
 	}
@@ -1232,7 +1244,10 @@ void Game::wakeAllActiveRoles()
 	if (_whichRoles[SEER_ROLE])
 	{
 		ACard* seer = getSeer(FIRST);
-		if (seer->getLife() == ALIVE || (seer->getLife() == DEAD && _whichRoles[APPRENTICESEER_ROLE] && getPlayerByRole(APPRENTICESEER_ROLE)->getLife() == ALIVE))
+		ACard* apseer;
+		if (_whichRoles[APPRENTICESEER_ROLE])
+			apseer = getPlayerByRole(APPRENTICESEER_ROLE);
+		if (seer->getLife() == ALIVE || (seer->getLife() == DEAD && _whichRoles[APPRENTICESEER_ROLE] && apseer->getLife() == ALIVE && apseer->getAbilityUsed(false) == true && apseer->getWhichSeer() == FIRST))
 		{
 			std::cout << "Wake the" << (_howManyRoles[SEER_ROLE] == 2 ? " Female" : "") << " Seer (" << seer->getIndex() << ")\n" << std::endl;
 			std::cout << "Player number to see: ";
@@ -1261,7 +1276,7 @@ void Game::wakeAllActiveRoles()
 		if (_howManyRoles[SEER_ROLE] == 2)
 		{
 			ACard* seer = getSeer(SECOND);
-			if (seer->getLife() == ALIVE || (seer->getLife() == DEAD && _whichRoles[APPRENTICESEER_ROLE] && getPlayerByRole(APPRENTICESEER_ROLE)->getLife() == ALIVE))
+			if (seer->getLife() == ALIVE || (seer->getLife() == DEAD && _whichRoles[APPRENTICESEER_ROLE] && apseer->getLife() == ALIVE && apseer->getAbilityUsed(false) == true && apseer->getWhichSeer() == SECOND))
 			{
 				std::cout << "Wake the Male Seer (" << seer->getIndex() << ")\n" << std::endl;
 				std::cout << "Player number to see: ";

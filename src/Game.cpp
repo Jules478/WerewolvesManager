@@ -1032,33 +1032,33 @@ void Game::wakeAllActiveRoles()
 		clearScreen();
 		printGameStatus();
 	}
-	if (_whichRoles[HUNTER_ROLE] && !_revealCards)
-	{
-		ACard* hunter = getPlayerByRole(HUNTER_ROLE);
-		if (hunter->getLife() == ALIVE)
-		{
-			std::cout << "Wake the Hunter (" << hunter->getIndex() << ")\n" << std::endl;
-			std::cout << "Player to target if the Hunter dies: ";
-			str input = get_input(this, false);
-			while (!isValidPlayerNumber(input))
-			{
-				std::cout << "ERROR: Enter player number: ";
-				input = get_input(this, false);
-			}
-			hunter->setVictim(std::stoi(input));
-		}
-		else
-		{
-			if (_revealCards == false)
-			{
-				std::cout << "The Hunter is dead. Call for them to conceal this fact" << std::endl;
-				std::cout << "\n\n" << "Press Enter to continue...";
-				get_input(this, true);
-			}
-		}
-		clearScreen();
-		printGameStatus();
-	}
+	// if (_whichRoles[HUNTER_ROLE] && !_revealCards)
+	// {
+	// 	ACard* hunter = getPlayerByRole(HUNTER_ROLE);
+	// 	if (hunter->getLife() == ALIVE)
+	// 	{
+	// 		std::cout << "Wake the Hunter (" << hunter->getIndex() << ")\n" << std::endl;
+	// 		std::cout << "Player to target if the Hunter dies: ";
+	// 		str input = get_input(this, false);
+	// 		while (!isValidPlayerNumber(input))
+	// 		{
+	// 			std::cout << "ERROR: Enter player number: ";
+	// 			input = get_input(this, false);
+	// 		}
+	// 		hunter->setVictim(std::stoi(input));
+	// 	}
+	// 	else
+	// 	{
+	// 		if (_revealCards == false)
+	// 		{
+	// 			std::cout << "The Hunter is dead. Call for them to conceal this fact" << std::endl;
+	// 			std::cout << "\n\n" << "Press Enter to continue...";
+	// 			get_input(this, true);
+	// 		}
+	// 	}
+	// 	clearScreen();
+	// 	printGameStatus();
+	// }
 	if (_whichRoles[MAGICIAN_ROLE])
 	{
 		ACard* magi = getPlayerByRole(MAGICIAN_ROLE);

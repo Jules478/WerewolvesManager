@@ -24,7 +24,7 @@ str get_input(Game* game, bool allowDebug)
 	return input;
 }
 
-#define DEBUGCMDS "Commands\n\nkill [Player Index] | revive [Player Index] | exit\n\nEnter Command: "
+#define DEBUGCMDS "Commands\n\nkill [Player Index] | revive [Player Index] | bless [Player Index] exit\n\nEnter Command: "
 
 /**
  * Debug tool for game management
@@ -100,6 +100,36 @@ void Game::debugCommands()
 					clearScreen();
 					printGameStatus();
 					std::cout << "Player " << index << " revived\n";
+					std::cout << DEBUGCMDS << std::endl;
+				}
+			}
+			else
+			{
+				clearScreen();
+				printGameStatus();
+				std::cout << "Invalid Player Index\n";
+				std::cout << DEBUGCMDS << std::endl;
+			}
+		}
+		else if (input.substr(0, 6) == "bless ")
+		{
+			str index = input.substr(6);
+			if (isValidPlayerNumber(index))
+			{
+				player = getPlayerByIndex(std::stoi(index));
+				if (player->getLife() == DEAD)
+				{
+					clearScreen();
+					printGameStatus();
+					std::cout << "Player " << index << " is already dead\n";
+					std::cout << DEBUGCMDS << std::endl;
+				}
+				else
+				{
+					_blessedPlayer = player->getIndex();
+					clearScreen();
+					printGameStatus();
+					std::cout << "Player " << index << " blessed by Priest\n";
 					std::cout << DEBUGCMDS << std::endl;
 				}
 			}
@@ -785,7 +815,16 @@ void Game::resetNightlyDeaths()
 				_wolfUpsetTummy = true;
 			else if (dead->getRole() == HUNTER_ROLE)
 			{
-				displayDeath(dead->getVictim(), false);
+				// std::cout << "Player to die with the Hunter: ";
+				// str input = get_input(this, false);
+				// while (!isValidPlayerNumber(input))
+				// {
+				// 	std::cout << "ERROR: Enter player number: ";
+				// 	input = get_input(this, false);
+				// }
+				int victim = dead->getVictim();
+				getPlayerByIndex(victim)->beAttacked(dead->getIndex());
+				displayDeath(victim, false);
 			}
 		}
 		if (_whichRoles[CUPID_ROLE])
@@ -1287,9 +1326,12 @@ void Game::printGameStatus()
 	{
 		for (size_t i = 0; i < _player.size(); i++)
 		{
+			bool bless = false;
 			ACard* player = getPlayerByIndex(i + 1);
-			std::cout << "| " << (player->getDrunk() || !player->getInVillage() ? GREY : RESET) << std::setw(col1Width) << std::left << player->getIndex() << RESET << " | ";
-			std::cout << (player->getDrunk() || !player->getInVillage() ? GREY : RESET) << std::setw(col2Width) << std::left << player->getName() << RESET << " | ";
+			if (player->getIndex() == _blessedPlayer)
+				bless = true;
+			std::cout << "| " << (player->getDrunk() || !player->getInVillage() ? GREY : (bless ? CYAN : RESET)) << std::setw(col1Width) << std::left << player->getIndex() << RESET << " | ";
+			std::cout << (player->getDrunk() || !player->getInVillage() ? GREY : (bless ? CYAN : RESET)) << std::setw(col2Width) << std::left << player->getName() << RESET << " | ";
 			bool life = player->getLife();
 			std::cout << (life ? GREEN : RED) << std::setw(col3Width) << std::left << (life ? "Alive" : "Dead") << RESET << " | ";
 			int side = player->getSide();

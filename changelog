@@ -1,5 +1,9 @@
 Werewolves Manager 
 
+v0.12.1
+- Added colour in status table to indicate when a player is blessed by the Priest
+- Changed hunter to no long wake at night. The hunter victim will be selected when death occurs
+
 v0.12.0
 - Fixed Apprentice Seer waking up as both Seers when they are dead
 - Changed Apprentice Seer to not wake up when roles are revealed

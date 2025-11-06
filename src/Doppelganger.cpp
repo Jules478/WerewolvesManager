@@ -161,20 +161,24 @@ void Doppelganger::hunterBeLynched()
 		std::cout << "ERROR: Enter player number: ";
 		input = get_input(_game, false);
 	}
-	_game->getPlayerByIndex(std::stoi(input))->beAttacked(_index);
+	_hunter_victim = std::stoi(input);
+	_game->getPlayerByIndex(_hunter_victim)->beAttacked(_index);
 	if (_game->getRoles()[CUPID_ROLE])
 	{
-		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+		ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
+		ACard* player1 = _game->getPlayerByIndex(cupid->getPlayer1());
+		ACard* player2 = _game->getPlayerByIndex(cupid->getPlayer2());
+		if (cupid->getPlayer1() == _index && player2->getLife() == ALIVE)
 		{
-			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
-			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+			std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+			player2->setLife(DEAD);
+			_game->updateVillageNumbers(cupid->getPlayer2());
 		}
-		else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+		else if (cupid->getPlayer2() == _index && player1->getLife() == ALIVE)
 		{
-			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
-			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+			std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+			player1->setLife(DEAD);
+			_game->updateVillageNumbers(cupid->getPlayer1());
 		}
 	}
 }
@@ -184,24 +188,31 @@ void Doppelganger::hunterSetLife(bool alive)
 	_alive = alive;
 	if (alive == DEAD)
 	{
-		std::cout << "Enter Hunter's victim: ";
-		str input = get_input(_game, false);
-		while (!_game->isValidPlayerNumber(input))
+		if (_hunter_victim == -1)
 		{
-			std::cout << "ERROR: Enter player number: ";
-			input = get_input(_game, false);
+			std::cout << "Enter Hunter's victim: ";
+			str input = get_input(_game, false);
+			while (!_game->isValidPlayerNumberAlt(input, _index))
+			{
+				std::cout << "ERROR: Enter player number: ";
+				input = get_input(_game, false);
+			}
+			_hunter_victim = std::stoi(input);
 		}
-		_game->getPlayerByRole(HUNTER_ROLE)->takePlayerWith(std::stoi(input));
+		takePlayerWith(_hunter_victim);
 	}
 }
 
 void Doppelganger::toughguyBeAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
+	ACard* attack = _game->getPlayerByIndex(attacker);
+	if (attack->getRole() == WITCH_ROLE || attack->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (attack->getSide() == WEREWOLF)
 		_copiedAbilityUsed = true;
-	else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	else if (attack->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
-	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	else if (attack->getRole() == HUNTER_ROLE)
 	{
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
@@ -211,17 +222,20 @@ void Doppelganger::toughguyBeAttacked(int attacker)
 			_game->killVillager();
 			if (_game->getRoles()[CUPID_ROLE])
 			{
-				if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+				ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
+				ACard* player1 = _game->getPlayerByIndex(cupid->getPlayer1());
+				ACard* player2 = _game->getPlayerByIndex(cupid->getPlayer2());
+				if (cupid->getPlayer1() == _index && player2->getLife() == ALIVE)
 				{
-					std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
-					_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-					_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+					std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+					player2->setLife(DEAD);
+					_game->updateVillageNumbers(cupid->getPlayer2());
 				}
-				else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+				else if (cupid->getPlayer2() == _index && player1->getLife() == ALIVE)
 				{
-					std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
-					_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-					_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+					std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+					player1->setLife(DEAD);
+					_game->updateVillageNumbers(cupid->getPlayer1());
 				}
 			}
 		}
@@ -230,13 +244,19 @@ void Doppelganger::toughguyBeAttacked(int attacker)
 
 void Doppelganger::cursedBeAttacked(int attacker)
 {
-	if (_side == VILLAGER)
+	ACard* attack = _game->getPlayerByIndex(attacker);
+	if (attack->getRole() == WITCH_ROLE || attack->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (_side == VILLAGER)
 	{
-		if (_game->getPlayerByIndex(attacker)->getSide() == WEREWOLF)
+		if (attack->getSide() == WEREWOLF)
+		{
 			_game->setNightlyDeaths(_index);
-		else if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+			_abilityUsed = true;
+		}
+		else if (attack->getSide() == VAMPIRE)
 			_game->setVampVictim(_index);
-		else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+		else if (attack->getRole() == HUNTER_ROLE)
 		{
 			if (_game->getTimeOfDay() == NIGHT)
 				_game->setNightlyDeaths(_index);
@@ -246,17 +266,20 @@ void Doppelganger::cursedBeAttacked(int attacker)
 				_game->killVillager();
 				if (_game->getRoles()[CUPID_ROLE])
 				{
-					if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+					ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
+					ACard* player1 = _game->getPlayerByIndex(cupid->getPlayer1());
+					ACard* player2 = _game->getPlayerByIndex(cupid->getPlayer2());
+					if (cupid->getPlayer1() == _index && player2->getLife() == ALIVE)
 					{
-						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
-						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+						std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+						player2->setLife(DEAD);
+						_game->updateVillageNumbers(cupid->getPlayer2());
 					}
-					else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+					else if (cupid->getPlayer2() == _index && player1->getLife() == ALIVE)
 					{
-						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
-						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+						std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+						player1->setLife(DEAD);
+						_game->updateVillageNumbers(cupid->getPlayer1());
 					}
 				}
 			}
@@ -264,9 +287,9 @@ void Doppelganger::cursedBeAttacked(int attacker)
 	}
 	else if (_side == WEREWOLF)
 	{
-		if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+		if (attack->getSide() == VAMPIRE)
 			_game->setVampVictim(_index);
-		else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+		else if (attack->getRole() == HUNTER_ROLE)
 		{
 			if (_game->getTimeOfDay() == NIGHT)
 				_game->setNightlyDeaths(_index);
@@ -276,17 +299,20 @@ void Doppelganger::cursedBeAttacked(int attacker)
 				_game->killWolf();
 				if (_game->getRoles()[CUPID_ROLE])
 				{
-					if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+					ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
+					ACard* player1 = _game->getPlayerByIndex(cupid->getPlayer1());
+					ACard* player2 = _game->getPlayerByIndex(cupid->getPlayer2());
+					if (cupid->getPlayer1() == _index && player2->getLife() == ALIVE)
 					{
-						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
-						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+						std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+						player2->setLife(DEAD);
+						_game->updateVillageNumbers(cupid->getPlayer2());
 					}
-					else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+					else if (cupid->getPlayer2() == _index && player1->getLife() == ALIVE)
 					{
-						std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
-						_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-						_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+						std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+						player1->setLife(DEAD);
+						_game->updateVillageNumbers(cupid->getPlayer1());
 					}
 				}
 			}
@@ -296,9 +322,12 @@ void Doppelganger::cursedBeAttacked(int attacker)
 
 void Doppelganger::werewolfBeAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	ACard* attack = _game->getPlayerByIndex(attacker);
+	if (attack->getRole() == WITCH_ROLE || attack->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (attack->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
-	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	else if (attack->getRole() == HUNTER_ROLE)
 	{
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
@@ -312,9 +341,12 @@ void Doppelganger::werewolfBeAttacked(int attacker)
 
 void Doppelganger::wolfcubBeAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	ACard* attack = _game->getPlayerByIndex(attacker);
+	if (attack->getRole() == WITCH_ROLE || attack->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (attack->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
-	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	else if (attack->getRole() == HUNTER_ROLE)
 	{
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
@@ -334,26 +366,32 @@ void Doppelganger::wolfcubBeLynched()
 	_game->wolfCubKilled();
 	if (_game->getRoles()[CUPID_ROLE])
 	{
-		if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+		ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
+		ACard* player1 = _game->getPlayerByIndex(cupid->getPlayer1());
+		ACard* player2 = _game->getPlayerByIndex(cupid->getPlayer2());
+		if (cupid->getPlayer1() == _index && player2->getLife() == ALIVE)
 		{
-			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
-			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+			std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+			player2->setLife(DEAD);
+			_game->updateVillageNumbers(cupid->getPlayer2());
 		}
-		else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+		else if (cupid->getPlayer2() == _index && player1->getLife() == ALIVE)
 		{
-			std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
-			_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-			_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+			std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+			player1->setLife(DEAD);
+			_game->updateVillageNumbers(cupid->getPlayer1());
 		}
 	}
 }
 
 void Doppelganger::lonewolfBeAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getSide() == VAMPIRE)
+	ACard* attack = _game->getPlayerByIndex(attacker);
+	if (attack->getRole() == WITCH_ROLE || attack->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (attack->getSide() == VAMPIRE)
 		_game->setVampVictim(_index);
-	else if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	else if (attack->getRole() == HUNTER_ROLE)
 	{
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
@@ -367,7 +405,10 @@ void Doppelganger::lonewolfBeAttacked(int attacker)
 
 void Doppelganger::vampireBeAttacked(int attacker)
 {
-	if (_game->getPlayerByIndex(attacker)->getRole() == HUNTER_ROLE)
+	ACard* attack = _game->getPlayerByIndex(attacker);
+	if (attack->getRole() == WITCH_ROLE || attack->getRole() == MAGICIAN_ROLE)
+		_game->setNightlyDeaths(_index);
+	else if (attack->getRole() == HUNTER_ROLE)
 	{
 		if (_game->getTimeOfDay() == NIGHT)
 			_game->setNightlyDeaths(_index);
@@ -387,17 +428,20 @@ void Doppelganger::princeBeLynched()
 		_alive = false;
 		if (_game->getRoles()[CUPID_ROLE])
 		{
-			if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer1() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->getLife() == ALIVE)
+			ACard* cupid = _game->getPlayerByRole(CUPID_ROLE);
+			ACard* player1 = _game->getPlayerByIndex(cupid->getPlayer1());
+			ACard* player2 = _game->getPlayerByIndex(cupid->getPlayer2());
+			if (cupid->getPlayer1() == _index && player2->getLife() == ALIVE)
 			{
-				std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer2() << ") has also died of a broken heart" << std::endl;
-				_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2())->setLife(DEAD);
-				_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer2());
+				std::cout << "The Player's lover (" << cupid->getPlayer2() << ") has also died of a broken heart" << std::endl;
+				player2->setLife(DEAD);
+				_game->updateVillageNumbers(cupid->getPlayer2());
 			}
-			else if (_game->getPlayerByRole(CUPID_ROLE)->getPlayer2() == _index && _game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->getLife() == ALIVE)
+			else if (cupid->getPlayer2() == _index && player1->getLife() == ALIVE)
 			{
-				std::cout << "The Player's lover (" << _game->getPlayerByRole(CUPID_ROLE)->getPlayer1() << ") has also died of a broken heart" << std::endl;
-				_game->getPlayerByIndex(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1())->setLife(DEAD);
-				_game->updateVillageNumbers(_game->getPlayerByRole(CUPID_ROLE)->getPlayer1());
+				std::cout << "The Player's lover (" << cupid->getPlayer1() << ") has also died of a broken heart" << std::endl;
+				player1->setLife(DEAD);
+				_game->updateVillageNumbers(cupid->getPlayer1());
 			}
 		}
 	}
@@ -535,9 +579,10 @@ void Doppelganger::Protect(int index)
 {
 	if (_copiedRole == BODYGUARD_ROLE)
 	{
-		if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
+		ACard* saved = _game->getPlayerByIndex(index);
+		if (saved->getRole() == OLDMAN_ROLE)
 		{
-			if (_game->getPlayerByIndex(index)->getAbilityUsed(false) == true)
+			if (saved->getAbilityUsed(false) == true)
 				return ;
 		}
 		for (int i = 0; i < 68; i++)
@@ -548,17 +593,13 @@ void Doppelganger::Protect(int index)
 	}
 	else if (_copiedRole == PRIEST_ROLE)
 	{
-		if (_game->getPlayerByIndex(index)->getRole() == OLDMAN_ROLE)
+		ACard* saved = _game->getPlayerByIndex(index);
+		if (saved->getRole() == OLDMAN_ROLE)
 		{
-			if (_game->getPlayerByIndex(index)->getAbilityUsed(false) == true)
+			if (saved->getAbilityUsed(false) == true)
 				return ;
 		}
-		int i = -1;
-		while (_game->getNightlyDeaths()[++i] != -1)
-		{
-			if (_game->getNightlyDeaths()[i] == index)
-				_game->getNightlyDeaths()[i] = -1;
-		}
+		_game->setBlessedPlayer(index);
 		_copiedAbilityUsed = true;
 	}
 }

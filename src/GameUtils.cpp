@@ -910,6 +910,45 @@ int Game::getPlayerNo() const
 }
 
 /**
+ * Creates files to record the game log
+ */
+bool Game::openLog()
+{
+	try
+	{
+		std::filesystem::create_directories("logs");
+	}
+	catch (...)
+	{
+		clearScreen();
+		printTitle();
+		std::cout << "Error: logs directory could not be created" << std::endl;
+		return false;
+	}
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+	std::ostringstream oss;
+	oss << std::put_time(std::localtime(&now_time), "%Y%m%d_%H%M%S") << ".txt";
+	_logOutput.open("logs/" + oss.str());
+	if (!_logOutput.is_open())
+	{
+		clearScreen();
+		printTitle();
+		std::cout << "Error creating log file" << std::endl;
+		return false;
+	}
+	return true;
+}
+
+void Game::writeToHold(str name, str line)
+{
+}
+
+void Game::writeToLog()
+{
+}
+
+/**
  * Checks if all requirements are met for game to start
  * Requirements are 1 Werewolf/Vampire & 1 Seer
  * If game meets conditions but is not full it will ask to autopopulate game with Villagers
@@ -964,6 +1003,8 @@ bool Game::tryStart()
 				addPlayer("villager");
 				_villagerNo++;
 			}
+			if (!openLog())
+				return false;
 			return true;
 		}
 		_wolfNo = 0;
@@ -971,6 +1012,8 @@ bool Game::tryStart()
 		_vampNo = 0;
 		return false;
 	}
+	if (!openLog())
+		return false;
 	return true;
 }
 

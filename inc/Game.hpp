@@ -49,10 +49,16 @@ class Game
 			bool _altGhostRule = false;
 			bool _indexSet = false;
 			int _blessedPlayer = -1;
+			std::map<str, str> _logHold;
+			std::ofstream _logOutput;
 
 	public:
 			Game(int playerno);
 			~Game();
+
+			bool openLog();
+			void writeToHold(str name, str line);
+			void writeToLog();
 
 			void addPlayer(str role);
 			void removePlayer(str role);

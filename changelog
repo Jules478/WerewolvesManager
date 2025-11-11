@@ -1,5 +1,8 @@
 Werewolves Manager 
 
+v0.12.2
+- Added logfile creation
+
 v0.12.1
 - Added colour in status table to indicate when a player is blessed by the Priest
 - Changed hunter to no long wake at night. The hunter victim will be selected when death occurs
